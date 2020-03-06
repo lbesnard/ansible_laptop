@@ -85,6 +85,7 @@
   ignore_errors: yes
   apt:
     name: [
+      libfreetype6-dev,
       hdf4-tools,
       hdf5-helpers,
       hdf5-tools,

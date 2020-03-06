@@ -47,3 +47,16 @@
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
+
+- name: Install some packages via conda
+  conda:
+    channels:
+      - conda-forge
+    name:
+      - matplotlib
+      - scipy
+    state: present
+    environment: data_services3.5
+    executable: "{{conda_path}}/bin/conda"
+
+
