@@ -30,7 +30,6 @@
   #become: yes
   #become_user: "{{ user }}"
   #ignore_errors: true
-
 - name: Create data-services environment
   conda:
     name: python
@@ -40,6 +39,29 @@
   become: yes
   become_user: "{{ user }}"
 
+- name: Install some packages via conda
+  conda:
+    channels:
+      - conda-forge
+    name:
+      - beautifulsoup4
+      - click
+      - compliance-checker=4.1.1
+      - matplotlib
+      - netCDF4=1.5.3
+      - pandas
+      - pyexcel
+      - pyexcel-xls
+      - python-dotenv
+      - retrying
+      - scipy
+      - wand
+      - xlrd
+    state: present
+    environment: data_services3.5
+    executable: "{{conda_path}}/bin/conda"
+  ignore_errors: true
+
 - name: "install py packages using {{data_services_dir}}/requirements.txt"
   pip:
     executable: "{{conda_path}}/envs/data_services3.5/bin/pip"
@@ -47,16 +69,3 @@
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
-
-- name: Install some packages via conda
-  conda:
-    channels:
-      - conda-forge
-    name:
-      - matplotlib
-      - scipy
-    state: present
-    environment: data_services3.5
-    executable: "{{conda_path}}/bin/conda"
-
-
