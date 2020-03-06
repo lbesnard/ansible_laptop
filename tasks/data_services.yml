@@ -1,0 +1,47 @@
+- name: create src directory
+  become: yes
+  become_user: "{{user}}"
+  file:
+    path: "{{github_repo_dir}}/chef/src"
+    state: directory
+    mode: 0775
+
+- name: clone repo "{{item.name}}"
+  become: yes
+  become_user: "{{user}}"
+  git:
+    repo: "{{item.url}}"
+    dest: "{{github_repo_dir}}/chef/src{{item.name}}"
+    accept_hostkey: yes
+    track_submodules: yes
+    key_file: "{{key_file}}"
+    depth: 1
+    clone: yes
+    update: no
+  with_items:
+    - { url: "{{repo_data_services}}", name: data-services }
+
+- name: Update conda
+  conda:
+    name: conda
+    state: latest
+    executable: "{{conda_path}}/bin/conda"
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Create data-services environment
+  conda:
+    name: python
+    environment: data_services3.5
+    version: 3.5
+    state: latest
+  become: yes
+  become_user: "{{ user }}"
+
+- name: "install py packages using {{data_services_dir}}/requirements.txt"
+  pip:
+    executable: "{{conda_path}}/envs/data_services3.5/bin/pip"
+    requirements: "{{data_services_dir}}/requirements.txt"
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: true

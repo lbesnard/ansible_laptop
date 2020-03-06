@@ -1,0 +1,29 @@
+- name: create github directory
+  become: yes
+  become_user: "{{user}}"
+  file:
+    path: "{{github_repo_dir}}"
+    state: directory
+    mode: 0775
+
+- name: clone repo "{{item.name}}"
+  become: yes
+  become_user: "{{user}}"
+  git:
+    repo: "{{item.url}}"
+    dest: "{{github_repo_dir}}/{{item.name}}"
+    accept_hostkey: yes
+    track_submodules: yes
+    key_file: "{{key_file}}"
+    depth: 1
+    clone: yes
+    update: no
+  with_items:
+    - { url: "{{repo_dotfiles}}", name: dotfiles }
+    - { url: "{{repo_dotfiles_private}}", name: dotfiles_private }
+
+- name: install dotfiles
+  shell: ./install
+  args:
+    chdir: "{{github_repo_dir}}/dotfiles"
+  ignore_errors: yes

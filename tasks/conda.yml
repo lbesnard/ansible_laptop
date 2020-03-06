@@ -1,0 +1,44 @@
+- name: Ansible check conda exists
+  stat:
+    path: "{{conda_path}}/bin"
+  register: conda_file_details
+
+- name: Install Conda
+  block:
+    - name: Download conda
+      get_url:
+        url: "{{conda_url}}"
+        dest: /tmp/install-conda.sh
+        checksum: "{{conda_md5}}"
+        mode: 0550
+    - name: Create conda folder
+      become: yes
+      become_user: "{{ user }}"
+      #become: True
+      file:
+        path: "{{conda_path}}"
+        state: directory
+        #owner: "{{user}}"
+        #mode: 775
+        recurse: yes
+    - name: Run the installer
+      become: yes
+      become_user: "{{ user }}"
+      shell: "/tmp/install-conda.sh -b -u -p {{conda_path}}"
+    - name: Remove the installer
+      file:
+        state: absent
+        path: /tmp/install-conda.sh
+    - name: conda - execution permission for all
+      become: yes
+      become_user: "{{ user }}"
+      #become: True
+      file:
+        path: "{{conda_path}}/bin"
+        mode: +x
+        recurse: yes
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: yes
+  when: not conda_file_details.stat.exists
+

@@ -1,0 +1,74 @@
+- name: Update homebrew and upgrade all packages
+  homebrew:
+    update_homebrew: yes
+    upgrade_all: yes
+  become: yes
+  become_user: "{{ user }}"
+
+- name: "brew install packages"
+  homebrew:
+    name: [
+      cmake,
+      gcc,
+      ruby,
+      ruby-install,
+      autojump,
+      angle-grinder,
+      ansible
+      bat,
+      curl,
+      dfc,
+      exa,
+      fasd,
+      fd,
+      fpp,
+      fzf,
+      git,
+      googler,
+      highlight,
+      htop,
+      httpie,
+      hub,
+      lnav,
+      lsd,
+      midnight-commander,
+      ncdu,
+      node,
+      openssh, # in order to have latest version => SetEnv
+      p7zip,
+      pgcli,
+      pyenv,
+      pyenv-virtualenv,
+      ranger,
+      ripgrep,
+      task,
+      the_silver_searcher,
+      tig,
+      tmux,
+      urlview,
+      vim,
+      youtube-dl,
+      zsh
+      ]
+    state: present
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: yes
+
+- name: "homebrew monkeys-audio"
+  homebrew_tap:
+    name: fernandotcl/homebrew-fernandotcl
+    state: present
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: yes
+
+- name: "homebrew monkeys-audio"
+  homebrew:
+    name: [
+      monkeys-audio
+      ]
+    state: present
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: yes

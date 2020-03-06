@@ -1,0 +1,202 @@
+- name: Install essential packages
+  ignore_errors: yes
+  apt:
+    name: [
+      'ant',
+      'autojump',
+      'bash-completion',
+      'build-essential',
+      'chromium-browser',
+      'cifs-utils',
+      'cmake',
+      'coreutils',
+      'cowsay',
+      'devscripts',
+      'emacs',
+      'gftp',
+      'git',
+      'gt5',
+      'gtg',
+      'guake',
+      'htop',
+      'keepassx',
+      'kpcli',
+      'libpq-dev',
+      'libxml2-utils',
+      'mc',
+      'p7zip',
+      'pdfposter',
+      'powerline',
+      'python-pip',
+      'rake',
+      'ruby-dev',
+      'screen',
+      'shunit2',
+      'source-highlight',
+      'sshfs',
+      'sublime-text',
+      'tilda',
+      'time',
+      'tmux',
+      'ttf-ancient-fonts',
+      'txt2regex',
+      'unrar',
+      'unzip',
+      'vim-python-jedi',
+      'x11-utils',
+      'xdotool',
+      'xmlindent',
+      'xsltproc',
+      'xvfb',
+      'yajl-tools',
+      'zsh'
+      ]
+
+- name: Install network packages
+  ignore_errors: yes
+  apt:
+    name: [
+      curl,
+      'dnsmasq',
+      'dnsmasq-utils',
+      'elinks',
+      'gufw',
+      'irssi',
+      'libnotify-bin',
+      'lighttpd',
+      'network-manager',
+      'network-manager-gnome',
+      'network-manager-openvpn',
+      'network-manager-openvpn-gnome',
+      'network-manager-pptp',
+      'network-manager-pptp-gnome',
+      'network-manager-vpnc',
+      'network-manager-vpnc-gnome',
+      'ngrep',
+      'nmap',
+      'openssh-server',
+      'strace',
+      'transmission-gtk',
+      'whois'
+    ]
+
+
+- name: Install NetCDF
+  ignore_errors: yes
+  apt:
+    name: [
+      hdf4-tools,
+      hdf5-helpers,
+      hdf5-tools,
+      hdfview,
+      libhdf5-dev,
+      libjpeg-dev,
+      libnetcdf-dev,
+      libpython3-dev,
+      libpython3.6-dev,
+      libudunits2-dev,
+      nco,
+      ncview,
+      netcdf-bin
+    ]
+
+- name: install games packages
+  ignore_errors: yes
+  apt:
+    name: [
+      dos2unix,
+      playonlinux,
+      zsnes
+    ]
+
+- name: install virtual packages
+  ignore_errors: yes
+  apt:
+    name: [
+      bundler,
+      gem,
+      rbenv,
+      virtualbox,
+      virtualbox-guest-additions-iso,
+      virtualbox-guest-dkms,
+      virtualbox-guest-utils,
+      virtualbox-guest-x11,
+      virtualbox-qt,
+      virtualenv,
+      wine1.6
+      ]
+
+- name: install make packages
+  ignore_errors: yes
+  apt:
+    name: [
+      autoconf,
+      automake,
+      checkinstall,
+      intltool,
+      libcurl4-openssl-dev,
+      libevent-dev,
+      libglib2.0-dev,
+      libgtk2.0-dev,
+      libnotify-dev,
+      libtool,
+      libxml2-dev,
+      pkg-config
+    ]
+
+- name: install multimedia packages
+  ignore_errors: yes
+  apt:
+    name: [
+      arandr,
+      audacity,
+      cantata,
+      clementine,
+      cmus,
+      darktable,
+      easytag,
+      ffmpeg,
+      flac,
+      gmpc,
+      gstreamer1.0-plugins-bad,
+      gstreamer1.0-plugins-good,
+      gstreamer1.0-plugins-ugly,
+      handbrake,
+      handbrake-cli,
+      imagemagick,
+      lmms,
+      mp3blaster,
+      mp3val,
+      puddletag,
+      python-gi,
+      spark,
+      tomahawk,
+      timidity,
+      tuxguitar,
+      tuxguitar-jsa
+      vlc,
+      vlc-data,
+      vlc-plugin-notify,
+      youtube-dl
+    ]
+
+- name: install pdf packages
+  ignore_errors: yes
+  apt:
+    name: [
+      pdfmod,
+      pdftk,
+      scantailor
+    ]
+
+- name: install database packages
+  ignore_errors: yes
+  apt:
+    name: [
+      mdbtools,
+      mdbtools-gmdb,
+      pgadmin3,
+      postgresql-9.5,
+      sqlite3,
+      sqlitebrowser,
+      ]

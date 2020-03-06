@@ -1,0 +1,25 @@
+---
+user: "{{ lookup('env','USER') }}"
+user_home: "/home/{{user}}"
+key_file: "{{user_home}}/.ssh/id_rsa"
+
+dotfiles_dir: "{{user_home}}/.dotfiles"
+
+# github repos
+github_repo_dir: "{{user_home}}/github_repo"
+data_services_dir: "{{github_repo_dir}}/chef/src/data-services"
+
+repo_awesome_fonts: git@github.com:gabrielelana/awesome-terminal-fonts.git
+repo_chef: git@github.com:aodn/chef.git
+repo_chef_private: git@github.com:aodn/chef-private.git
+repo_data_services: git@github.com:aodn/data-services.git
+repo_dotfiles: git@github.com:lbesnard/dotfiles.git
+repo_dotfiles_private: git@github.com:lbesnard/dotfiles_private.git
+repo_ml_course: git@github.com:lbesnard/BuildingMachineLearningSystemsWithPython.git
+repo_nerd_fonts: git@github.com:ryanoasis/nerd-fonts.git
+repo_powerline: git@github.com:powerline/fonts.git
+
+# python
+conda_path: "{{user_home}}/anaconda3"
+conda_url: https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh
+conda_md5: md5:b77a71c3712b45c8f33c7b2ecade366c

@@ -1,0 +1,42 @@
+- name: create github directory
+  become: yes
+  become_user: "{{user}}"
+  file:
+    path: "{{github_repo_dir}}"
+    state: directory
+    mode: 0775
+
+- name: clone repo "{{item.name}}"
+  become: yes
+  become_user: "{{user}}"
+  git:
+    repo: "{{item.url}}"
+    dest: "{{github_repo_dir}}/{{item.name}}"
+    accept_hostkey: yes
+    track_submodules: yes
+    key_file: "{{key_file}}"
+    depth: 1
+    clone: yes
+    update: no
+  with_items:
+    - { url: "{{repo_awesome_fonts}}", name: awesome-terminal-fonts }
+    - { url: "{{repo_nerd_fonts}}", name: nerd-fonts }
+    - { url: "{{repo_powerline}}", name: powerline }
+
+- name: install powerline
+  shell: ". {{github_repo_dir}}/powerline/install.sh"
+  ignore_errors: yes
+
+- name: install nerd-fonts
+  block:
+    - name: "create nerd-fonts dir"
+      become: yes
+      become_user: "{{user}}"
+      file:
+        path: "{{user_home}}/.local/share/fonts"
+        state: directory
+        mode: 0775
+    - name: install fonts
+      get_url:
+        url: https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+        dest: "{{user_home}}/.local/share/fonts/Droid Sans Mono for Powerline Nerd Font Complete.otf"

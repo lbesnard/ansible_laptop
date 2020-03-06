@@ -1,0 +1,16 @@
+- name: create usr/bin directory
+  become: yes
+  become_user: "{{user}}"
+  file:
+    path: "{{user_home}}/usr/bin"
+    state: directory
+    mode: 0775
+
+- name: download cheat executable
+  get_url:
+    url: https://github.com/cheat/cheat/releases/download/3.0.1/cheat-linux-amd64
+    dest: "{{user_home}}/usr/bin/cheat"
+
+- name: Changing perm of "cheat", adding "+x"
+  file: dest="{{user_home}}/usr/bin/cheat" mode=a+x
+

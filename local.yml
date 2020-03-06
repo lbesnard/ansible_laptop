@@ -1,0 +1,33 @@
+---
+# system wide
+- hosts: localhost
+  connection: local
+  become: true
+  pre_tasks:
+    - name: update repositories
+      apt: update_cache=yes
+      ignore_errors: yes
+      changed_when: False
+  vars_files:
+    - vars.yml
+  tasks:
+    - {include: tasks/packages.yml, tags: ['packages', 'apt']}
+    - {include: tasks/homebrew.yml, tags: ['brew_install']}
+
+# user specific
+- hosts: localhost
+  connection: local
+  become: false
+  roles:
+    - role: evandam.conda
+  vars_files:
+    - vars.yml
+  tasks:
+    - {include: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
+    - {include: tasks/dotfiles.yml, tags: ['dotfiles']}
+    - {include: tasks/cheat.yml, tags: ['cheat']}
+    - {include: tasks/conda.yml, tags: ['conda']}
+    - {include: tasks/neovim.yml, tags: ['neovim']}
+    - {include: tasks/aodn_chef.yml, tags: ['aodn', 'chef']}
+    - {include: tasks/data_services.yml, tags: ['aodn', 'data_services']}
+    - {include: tasks/fonts.yml, tags: ['fonts']}

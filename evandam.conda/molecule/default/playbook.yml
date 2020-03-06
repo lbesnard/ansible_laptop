@@ -1,0 +1,88 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: evandam.conda
+  tasks:
+    - name: Install jupyter with a specific build
+      conda:
+        name: jupyter=1.0.0=py37_4
+
+    - name: Install an older version of conda
+      conda:
+        name: conda
+        version: 4.8.0
+
+    - name: Update conda to latest version
+      conda:
+        name: conda
+        state: latest
+
+    - name: Update conda again
+      conda:
+        name: conda
+        state: latest
+      register: latest_test
+
+    - name: Try to install a package that doesn't exist
+      conda:
+        name: fakepackage13412351235
+        state: present
+      register: bad_install
+      ignore_errors: true
+
+    - name: Install numpy
+      conda:
+        name: numpy
+        state: present
+
+    - name: Install numpy again
+      conda:
+        name: numpy
+        state: present
+      register: present_test
+
+    - name: Remove numpy
+      conda:
+        name: numpy
+        state: absent
+
+    - name: Remove numpy again
+      conda:
+        name: numpy
+        state: absent
+      register: absent_test
+
+    - name: Verify idempotency of basic tasks
+      assert:
+        that:
+          - not present_test.changed
+          - not absent_test.changed
+          # - not latest_test.changed
+          - bad_install is failed
+
+    - name: Install multiple packages
+      conda:
+        name:
+          - pandas
+          - sqlalchemy
+        state: present
+
+    - name: Install doc8 from conda-forge
+      conda:
+        name: doc8
+        channels: conda-forge
+
+    - name: Create an R virtual environment
+      conda:
+        name: r-base=3.5.1
+        environment: /opt/R
+        state: present
+
+    - name: Install some R packages in a venv
+      conda:
+        name:
+          - r-dplyr=0.7
+          - r-devtools=1.13
+        environment: /opt/R
+        state: latest

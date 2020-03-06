@@ -1,0 +1,34 @@
+- name: check neovim dotfiles exists
+  stat:
+    path: "{{user}}/.config/nvim/init.vim"
+  register: nvim_dotfile
+
+- name: install neovim
+  block:
+    - name: install homebrew neovim
+      homebrew:
+        name: [
+          nvim  # python dependancies will be installed via conda
+          ]
+        state: present
+
+    - name: Install some packages in a neovim conda environment
+      conda:
+        channels:
+          - conda-forge
+        name:
+          - neovim
+          - jedi
+          - pynvim
+          - msgpack-python
+        state: present
+        environment: neovim
+        executable: "{{conda_path}}/bin/conda"
+
+    - name: Install vim plugins
+      command: nvim "+silent! PlugInstall!" +qall!
+      ignore_errors: yes
+
+  become: yes
+  become_user: "{{ user }}"
+  when: nvim_dotfile.stat.exists
