@@ -1,9 +1,9 @@
-- name: Update homebrew and upgrade all packages
-  homebrew:
-    update_homebrew: yes
-    upgrade_all: yes
-  become: yes
-  become_user: "{{ user }}"
+#- name: Update homebrew and upgrade all packages
+  #homebrew:
+    #update_homebrew: yes
+    #upgrade_all: yes
+  #become: yes
+  #become_user: "{{ user }}"
 
 - name: "brew install packages"
   homebrew:
@@ -14,7 +14,7 @@
       ruby-install,
       autojump,
       angle-grinder,
-      ansible
+      ansible,
       bat,
       curl,
       dfc,

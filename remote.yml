@@ -1,19 +1,4 @@
 ---
-# system wide
-- hosts: localhost
-  connection: local
-  become: true
-  pre_tasks:
-    - name: update repositories
-      apt: update_cache=yes
-      ignore_errors: yes
-      changed_when: False
-  vars_files:
-    - vars.yml
-  tasks:
-    - {include: tasks/packages.yml, tags: ['packages', 'apt']}
-    - {include: tasks/homebrew.yml, tags: ['brew_install']}
-
 # user specific
 - hosts: localhost
   connection: local
@@ -24,6 +9,7 @@
   vars_files:
     - vars.yml
   tasks:
+    - {include: tasks/homebrew.yml, tags: ['brew_install']}
     - {include: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
     - {include: tasks/dotfiles.yml, tags: ['dotfiles']}
     - {include: tasks/cheat.yml, tags: ['cheat']}

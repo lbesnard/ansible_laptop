@@ -170,7 +170,6 @@
       puddletag,
       python-gi,
       spark,
-      tomahawk,
       timidity,
       tuxguitar,
       tuxguitar-jsa
@@ -193,8 +192,6 @@
   ignore_errors: yes
   apt:
     name: [
-      mdbtools,
-      mdbtools-gmdb,
       pgadmin3,
       postgresql-9.5,
       sqlite3,

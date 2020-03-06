@@ -17,17 +17,19 @@
     key_file: "{{key_file}}"
     depth: 1
     clone: yes
-    update: no
+    update: yes
   with_items:
     - { url: "{{repo_data_services}}", name: data-services }
+  ignore_errors: true
 
-- name: Update conda
-  conda:
-    name: conda
-    state: latest
-    executable: "{{conda_path}}/bin/conda"
-  become: yes
-  become_user: "{{ user }}"
+#- name: Update conda
+  #conda:
+    #name: conda
+    #state: present
+    #executable: "{{conda_path}}/bin/conda"
+  #become: yes
+  #become_user: "{{ user }}"
+  #ignore_errors: true
 
 - name: Create data-services environment
   conda:

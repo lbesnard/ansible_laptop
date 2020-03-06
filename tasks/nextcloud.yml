@@ -1,0 +1,11 @@
+- name: download nextcloud executable
+  get_url:
+    url: https://download.nextcloud.com/desktop/releases/Linux/latest
+    dest: "{{user_home}}/bin/Nextcloud.AppImage"
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Changing perm of "nextcloud", adding "+x"
+  file: dest="{{user_home}}/bin/Nextcloud.AppImage" mode=a+x
+  become: yes
+  become_user: "{{ user }}"
