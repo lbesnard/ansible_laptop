@@ -1,0 +1,19 @@
+- name: create mobac directory
+  become: yes
+  become_user: "{{user}}"
+  file:
+    path: "{{user_home}}/Mobac"
+    state: directory
+    mode: 0775
+
+
+- name: Unarchive Mobac that needs to be downloaded (added in 2.0)
+  unarchive:
+    src: https://sourceforge.net/projects/mobac/files/Mobile%20Atlas%20Creator/MOBAC%202.0/Mobile%20Atlas%20Creator%202.1.2.zip/download
+    dest: "{{user_home}}/Mobac"
+    remote_src: yes
+
+
+- name: Changing perm of "Mobac", adding "+x"
+  file: dest="{{user_home}}/Mobac/Mobile_Atlas_Creator.jar" mode=a+x
+

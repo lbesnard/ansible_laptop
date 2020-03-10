@@ -34,3 +34,4 @@
     - {include: tasks/fonts.yml, tags: ['fonts']}
     - {include: tasks/nextcloud.yml, tags: ['appimages','nextcloud', 'packages']}
     - {include: tasks/github_repos.yml, tags: ['github','repos']}
+    - {include: tasks/mobac.yml, tags: ['mobac']}
