@@ -1,4 +1,4 @@
-# Ansible - provision laptop
+# Ansible - provision laptop :computer:
 
 This repo aims at provisionning my personal laptop (debian base with XFCE). It 
 actively uses my personal [dotfiles](https://github.com/lbesnard/dotfiles).
@@ -16,10 +16,10 @@ It will install:
 * [neovim](https://github.com/neovim/neovim/) (vim replacement) with its python3 conda environment
 * git tools
   * [tig](https://github.com/jonas/tig)
-  * [forgit](https://github.com/wfxr/forgit) (glo, gla, gd)
+  * [forgit](https://github.com/wfxr/forgit) (```glo```, ```gla```, ```gd```)
 * [lnav](https://github.com/tstack/lnav) (log viewer)
 * [linuxbrew](https://docs.brew.sh/Homebrew-on-Linux)
-* [cheat](https://github.com/chrisallenlane/cheat) (cheat find  for example)
+* [cheat](https://github.com/chrisallenlane/cheat) (```cheat find```  for example)
 * [pgcli](https://www.pgcli.com/) (psql client with fuzzy search)
 * [colorls](https://github.com/athityakumar/colorls)
 * [powerline fonts](https://github.com/powerline/fonts)
