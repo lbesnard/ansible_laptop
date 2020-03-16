@@ -32,6 +32,7 @@
       'ruby-dev',
       'screen',
       'shunit2',
+      'snap',
       'source-highlight',
       'sshfs',
       'sublime-text',
@@ -175,7 +176,7 @@
       spark,
       timidity,
       tuxguitar,
-      tuxguitar-jsa
+      tuxguitar-jsa,
       vlc,
       vlc-data,
       vlc-plugin-notify,
@@ -187,7 +188,6 @@
   apt:
     name: [
       pdfmod,
-      pdftk,
       scantailor
     ]
 
@@ -196,7 +196,7 @@
   apt:
     name: [
       pgadmin3,
-      postgresql-9.5,
+      postgresql,
       sqlite3,
       sqlitebrowser,
       ]
@@ -209,3 +209,11 @@
 - name: Install zoom
   apt:
     deb: https://zoom.us/client/latest/zoom_amd64.deb
+
+- name: Install snap packages
+  snap:
+    name:
+      - pdftk
+      - riot-web
+      - youtube-dl
+    channel: latest/stable
