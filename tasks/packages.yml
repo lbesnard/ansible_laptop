@@ -33,6 +33,7 @@
       'screen',
       'shunit2',
       'snap',
+      'snapd',
       'source-highlight',
       'sshfs',
       'sublime-text',
@@ -213,6 +214,7 @@
 - name: Install snap packages
   snap:
     name:
+      - snap-store
       - pdftk
       - riot-web
       - youtube-dl
