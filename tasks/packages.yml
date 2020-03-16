@@ -166,6 +166,7 @@
       handbrake,
       handbrake-cli,
       imagemagick,
+      kazam,
       lmms,
       mp3blaster,
       mp3val,
@@ -201,10 +202,10 @@
       ]
 
 - name: Install skype
-    apt:
-      deb: https://repo.skype.com/latest/skypeforlinux-64.deb
+  apt:
+    deb: https://repo.skype.com/latest/skypeforlinux-64.deb
 
 
 - name: Install zoom
-    apt:
-      deb: https://zoom.us/client/latest/zoom_amd64.deb
+  apt:
+    deb: https://zoom.us/client/latest/zoom_amd64.deb
