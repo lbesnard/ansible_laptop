@@ -206,10 +206,24 @@
   apt:
     deb: https://repo.skype.com/latest/skypeforlinux-64.deb
 
-
 - name: Install zoom
   apt:
     deb: https://zoom.us/client/latest/zoom_amd64.deb
+
+- name: appimagelauncher
+  block:
+    - name: add appimagelauncher ppa
+      ignore_errors: yes
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:appimagelauncher-team/stable'
+        state: present
+    - name: update apt cache
+      ignore_errors: yes
+      apt: update_cache=yes
+    - name: install appimagelauncher
+      ignore_errors: yes
+      apt: appimagelauncher
 
 - name: Install snap packages
   snap:

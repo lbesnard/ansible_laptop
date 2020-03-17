@@ -37,17 +37,24 @@ installed via Homebrew/Linuxbrew. This way ensures to be able to install softwar
 and their latest version on various machines were sudo access is not granted
 
 # Installation
-## 1. install private key to $HOME/.ssh (600)
-## 2. install on machine
+## 1. install private key
+install key (usually ```id_rsa```)to $HOME/.ssh (600)
+```bash
+chmod 600 ~/.ssh/config
+chmod 644 ~/.ssh/id_rsa.pub
+chmod 600 ~/.ssh/id_rsa
+```
+
+## 2. provision localhost debian based machine with Ansible
 ### 2.1 with sudo privileges
 ```bash
 curl -L https://raw.githubusercontent.com/lbesnard/ansible_laptop/master/install.sh | bash
 
-# OR if ansible on already installed on the machine
+# OR if ansible is already installed on the machine
 
 ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts
 ```
-### 2.2 Without sudo (and ansible priorly installed via linuxbrew)
+### 2.2 Without sudo (and if ansible priorly installed via linuxbrew)
 ```bash
 ansible-pull -U https://github.com/lbesnard/ansible_laptop.git remote.yml -i hosts
 ```

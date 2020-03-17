@@ -11,7 +11,7 @@
   become_user: "{{user}}"
   git:
     repo: "{{item.url}}"
-    dest: "{{github_repo_dir}}/chef/src{{item.name}}"
+    dest: "{{github_repo_dir}}/chef/src/{{item.name}}"
     accept_hostkey: yes
     track_submodules: yes
     key_file: "{{key_file}}"
