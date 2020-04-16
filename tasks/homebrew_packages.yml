@@ -12,7 +12,6 @@
       gcc,
       ruby,
       ruby-install,
-      autojump,
       angle-grinder,
       ansible,
       bat,
@@ -33,6 +32,7 @@
       lnav,
       lsd,
       midnight-commander,
+      mycli,
       ncdu,
       node,
       openssh, # in order to have latest version => SetEnv

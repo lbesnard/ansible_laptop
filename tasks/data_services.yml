@@ -22,50 +22,20 @@
     - { url: "{{repo_data_services}}", name: data-services }
   ignore_errors: true
 
-#- name: Update conda
-  #conda:
-    #name: conda
-    #state: present
-    #executable: "{{conda_path}}/bin/conda"
-  #become: yes
-  #become_user: "{{ user }}"
-  #ignore_errors: true
-- name: Create data-services environment
-  conda:
-    name: python
-    environment: data_services3.5
-    version: 3.5
-    state: latest
+- name: create data-services conda env
+  shell: "{{conda_path}}/condabin/conda env create -f environment.yml"
+  args:
+    chdir: "{{data_services_dir}}"
+  ignore_errors: yes
   become: yes
   become_user: "{{ user }}"
-
-- name: Install some packages via conda
-  conda:
-    channels:
-      - conda-forge
-    name:
-      - beautifulsoup4
-      - click
-      - compliance-checker=4.1.1
-      - matplotlib
-      - netCDF4=1.5.3
-      - pandas
-      - pyexcel
-      - pyexcel-xls
-      - python-dotenv
-      - retrying
-      - scipy
-      - wand
-      - xlrd
-    state: present
-    environment: data_services3.5
-    executable: "{{conda_path}}/bin/conda"
   ignore_errors: true
 
-- name: "install py packages using {{data_services_dir}}/requirements.txt"
-  pip:
-    executable: "{{conda_path}}/envs/data_services3.5/bin/pip"
-    requirements: "{{data_services_dir}}/requirements.txt"
+- name: update data-services conda env
+  shell: "{{conda_path}}/condabin/conda env update -f environment.yml"
+  args:
+    chdir: "{{data_services_dir}}"
+  ignore_errors: yes
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true

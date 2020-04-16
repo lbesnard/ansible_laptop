@@ -19,6 +19,7 @@ repo_dotfiles_private: git@github.com:lbesnard/dotfiles_private.git
 repo_ml_course: git@github.com:lbesnard/BuildingMachineLearningSystemsWithPython.git
 repo_nerd_fonts: git@github.com:ryanoasis/nerd-fonts.git
 repo_powerline: git@github.com:powerline/fonts.git
+repo_imos_toolbox: git@github.com:aodn/imos-toolbox.git
 
 # python
 conda_path: "{{user_home}}/anaconda3"

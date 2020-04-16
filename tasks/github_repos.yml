@@ -21,4 +21,5 @@
   with_items:
     - { url: "{{repo_ml_course}}", name: BuildingMachineLearningSystemsWithPython }
     - { url: "{{repo_ansible_laptop}}", name: ansible_laptop }
+    - { url: "{{repo_imos_toolbox}}", name: imos-tooblox }
   ignore_errors: true

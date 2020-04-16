@@ -19,6 +19,7 @@
       'gtg',
       'guake',
       'htop',
+      'ipython',
       'keepassx',
       'kpcli',
       'libpq-dev',
@@ -79,6 +80,7 @@
       'openssh-server',
       'strace',
       'transmission-gtk',
+      'traceroute',
       'whois'
     ]
 
@@ -169,11 +171,13 @@
       handbrake-cli,
       imagemagick,
       kazam,
+      kdenlive,
       lmms,
       mp3blaster,
       mp3val,
       puddletag,
       python-gi,
+      subtitleeditor,
       spark,
       timidity,
       tuxguitar,
@@ -209,21 +213,6 @@
 - name: Install zoom
   apt:
     deb: https://zoom.us/client/latest/zoom_amd64.deb
-
-- name: appimagelauncher
-  block:
-    - name: add appimagelauncher ppa
-      ignore_errors: yes
-      apt_repository:
-        validate_certs: no
-        repo: 'ppa:appimagelauncher-team/stable'
-        state: present
-    - name: update apt cache
-      ignore_errors: yes
-      apt: update_cache=yes
-    - name: install appimagelauncher
-      ignore_errors: yes
-      apt: appimagelauncher
 
 - name: Install snap packages
   snap:
