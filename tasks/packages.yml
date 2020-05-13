@@ -3,6 +3,7 @@
   apt:
     name: [
       'ant',
+      'atool',
       'autojump',
       'bash-completion',
       'build-essential',
@@ -185,6 +186,7 @@
       vlc,
       vlc-data,
       vlc-plugin-notify,
+      webp,
       youtube-dl
     ]
 
