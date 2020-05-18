@@ -1,6 +1,6 @@
 - name: check neovim dotfiles exists
   stat:
-    path: "{{user}}/.config/nvim/init.vim"
+    path: "/home/{{user}}/.config/nvim/init.vim"
   register: nvim_dotfile
 
 - name: install neovim
@@ -30,4 +30,4 @@
 
   become: yes
   become_user: "{{ user }}"
-  when: nvim_dotfile.stat.exists
+  when: nvim_dotfile.stat.exists == True

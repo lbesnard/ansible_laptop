@@ -78,5 +78,5 @@ cd ansible_laptop
 ansible-playbook -i hosts remote.yml --skip-tags apt
 
 # run as non sudo user with a specific tag
-ansible-playbook -i hosts remote.yml --skip-tags -t conda
+ansible-playbook -i hosts remote.yml -t conda
 ```
