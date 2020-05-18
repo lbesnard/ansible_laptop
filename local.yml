@@ -13,6 +13,7 @@
   tasks:
     - {include: tasks/packages.yml, tags: ['packages', 'apt']}
     - {include: tasks/homebrew.yml, tags: ['brew_install']}
+    - {include: tasks/i3.yml, tags: ['i3', 'packages']}
 
 # user specific
 - hosts: localhost

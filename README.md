@@ -52,7 +52,7 @@ curl -L https://raw.githubusercontent.com/lbesnard/ansible_laptop/master/install
 
 # OR if ansible is already installed on the machine
 
-ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts
+/usr/bin/ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts
 ```
 ### 2.2 Without sudo (and if ansible priorly installed via linuxbrew)
 ```bash
@@ -72,7 +72,7 @@ git clone https://github.com/lbesnard/ansible_laptop.git
 cd ansible_laptop
 
 # run as root
-ansible-playbook -i hosts local.yml -K
+/usr/bin/ansible-playbook -i hosts local.yml -K
 
 # run as non sudo user
 ansible-playbook -i hosts remote.yml --skip-tags apt

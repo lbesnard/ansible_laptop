@@ -80,7 +80,6 @@
       'network-manager-vpnc-gnome',
       'ngrep',
       'nmap',
-      nmtui,
       'openssh-server',
       'strace',
       'transmission-gtk',
@@ -126,6 +125,8 @@
       bundler,
       gem,
       rbenv,
+      xorg-video-abi-23,
+      xserver-xorg-core,
       virtualbox,
       virtualbox-ext-pack,
       virtualbox-guest-additions-iso,
@@ -220,10 +221,16 @@
   apt:
     deb: https://zoom.us/client/latest/zoom_amd64.deb
 
-- name: Install snap packages
+- name: Install snap alacritty packages
   snap:
     name:
       - alacritty
+    classic: yes
+    channel: latest/stable
+
+- name: Install snap packages
+  snap:
+    name:
       - snap-store
       - pdftk
       - riot-web
