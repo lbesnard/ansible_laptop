@@ -14,7 +14,7 @@
     dest: "{{github_repo_dir}}/{{item.name}}"
     accept_hostkey: yes
     track_submodules: yes
-    key_file: "{{key_file}}"
+    #key_file: "{{key_file}}"
     depth: 1
     clone: yes
     update: yes

@@ -13,8 +13,8 @@
     repo: "{{item.url}}"
     dest: "{{github_repo_dir}}/{{item.name}}"
     accept_hostkey: yes
+    #key_file: "{{key_file}}"
     track_submodules: yes
-    key_file: "{{key_file}}"
     depth: 1
     clone: yes
     update: yes
