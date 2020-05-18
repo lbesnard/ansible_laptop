@@ -55,13 +55,11 @@
       zsh
       ]
     state: present
-  become: yes
-  become_user: "{{ user }}"
   ignore_errors: yes
+
 
 - name: "homebrew monkeys-audio"
   homebrew_tap:
-    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     name: fernandotcl/homebrew-fernandotcl
     state: present
   become: yes
@@ -70,7 +68,7 @@
 
 - name: "homebrew monkeys-audio"
   homebrew:
-    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
+    path: "/home/linuxbrew/.linuxbrew/bin:/homes/{{ user }}/.linuxbrew/bin"
     name: [
       monkeys-audio
       ]
