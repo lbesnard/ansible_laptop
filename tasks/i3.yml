@@ -1,0 +1,24 @@
+- name: Install i3 packages
+  ignore_errors: yes
+  apt:
+    name: [
+      acpi,
+      alsa-utils,
+      dmenu,
+      feh,
+      fonts-font-awesome,
+      i3,
+      i3blocks,
+      i3status,
+      pcmanfm,
+      neofetch,
+      redshift,
+      rofi,
+      rxvt-unicode-256color,
+      screen,
+      scrot,
+      xbacklight,
+      xdotool,
+      xinit,
+      xinput
+      ]
