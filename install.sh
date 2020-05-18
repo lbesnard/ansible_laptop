@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
+
+# check the ssh agent in order to clone git repos later on
+if [ -z "$SSH_AUTH_SOCK" ] ; then
+  eval `ssh-agent -s`
+  ssh-add
+fi
+
 sudo apt-get install -y git;
+
 sudo apt-get install -y software-properties-common;
 sudo apt-add-repository -y ppa:ansible/ansible;
 sudo apt-get update;
