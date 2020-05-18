@@ -25,8 +25,8 @@
   vars_files:
     - vars.yml
   tasks:
-    - {include: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
     - {include: tasks/dotfiles.yml, tags: ['dotfiles']}
+    - {include: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
     - {include: tasks/cheat.yml, tags: ['cheat']}
     - {include: tasks/conda.yml, tags: ['conda']}
     - {include: tasks/neovim.yml, tags: ['neovim']}
