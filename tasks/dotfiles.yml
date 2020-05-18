@@ -9,7 +9,6 @@
 - name: clone repo "{{item.name}}"
   become: yes
   become_user: "{{user}}"
-  sudo: no
   git:
     repo: "{{item.url}}"
     dest: "{{github_repo_dir}}/{{item.name}}"
