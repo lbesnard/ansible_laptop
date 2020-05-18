@@ -128,7 +128,7 @@
       xorg-video-abi-23,
       xserver-xorg-core,
       virtualbox,
-      virtualbox-ext-pack,
+      #virtualbox-ext-pack,
       virtualbox-guest-additions-iso,
       virtualbox-guest-dkms,
       virtualbox-guest-utils,
