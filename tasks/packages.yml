@@ -127,6 +127,7 @@
       rbenv,
       xorg-video-abi-23,
       xserver-xorg-core,
+      xserver-xorg-input-all, # VERY IMPORTANT. HAS frozen my logging prompt
       virtualbox,
       #virtualbox-ext-pack,
       virtualbox-guest-additions-iso,
@@ -221,12 +222,12 @@
   apt:
     deb: https://zoom.us/client/latest/zoom_amd64.deb
 
-#- name: Install snap alacritty packages
-#  snap:
-#    name:
-#      - alacritty
-#    classic: yes
-#    channel: latest/stable
+- name: Install snap alacritty packages
+  snap:
+    name:
+      - alacritty
+    classic: yes
+    channel: latest/stable
 
 - name: Install snap packages
   snap:
