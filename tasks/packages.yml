@@ -2,6 +2,7 @@
   ignore_errors: yes
   apt:
     name: [
+      'python3-apt',
       'ant',
       'atool',
       'autojump',
@@ -79,10 +80,12 @@
       'network-manager-vpnc-gnome',
       'ngrep',
       'nmap',
+      nmtui,
       'openssh-server',
       'strace',
       'transmission-gtk',
       'traceroute',
+      'wavemon',
       'whois'
     ]
 
@@ -220,6 +223,7 @@
 - name: Install snap packages
   snap:
     name:
+      - alacritty
       - snap-store
       - pdftk
       - riot-web
