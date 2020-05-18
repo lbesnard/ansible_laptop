@@ -26,7 +26,6 @@
   shell: "{{conda_path}}/condabin/conda env create -f environment.yml"
   args:
     chdir: "{{data_services_dir}}"
-  ignore_errors: yes
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
@@ -35,7 +34,6 @@
   shell: "{{conda_path}}/condabin/conda env update -f environment.yml"
   args:
     chdir: "{{data_services_dir}}"
-  ignore_errors: yes
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
