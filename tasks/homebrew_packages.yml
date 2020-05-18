@@ -6,7 +6,10 @@
   #become_user: "{{ user }}"
 
 - name: "brew install packages"
+  become: yes
+  become_user: "{{ user }}"
   homebrew:
+    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     name: [
       cmake,
       gcc,
@@ -35,7 +38,7 @@
       mycli,
       ncdu,
       node,
-      openssh, # in order to have latest version => SetEnv
+      #openssh, # in order to have latest version => SetEnv
       p7zip,
       pgcli,
       pyenv,
@@ -58,6 +61,7 @@
 
 - name: "homebrew monkeys-audio"
   homebrew_tap:
+    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     name: fernandotcl/homebrew-fernandotcl
     state: present
   become: yes
@@ -66,6 +70,7 @@
 
 - name: "homebrew monkeys-audio"
   homebrew:
+    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     name: [
       monkeys-audio
       ]
