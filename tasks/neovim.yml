@@ -7,10 +7,9 @@
   block:
     - name: install homebrew neovim
       homebrew:
-        name: [
-          nvim  # python dependancies will be installed via conda
-          ]
-        state: present
+        path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
+        name: neovim  # python dependancies will be installed via conda
+        state: latest
 
     - name: Install some packages in a neovim conda environment
       conda:
