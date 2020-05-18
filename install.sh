@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-sudo apt-get install -y git
+sudo apt-get install -y git;
 
 sudo apt-get install -y software-properties-common;
 sudo apt-add-repository -y ppa:ansible/ansible;
