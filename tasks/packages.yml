@@ -46,6 +46,7 @@
       'tmux',
       'ttf-ancient-fonts',
       'txt2regex',
+      'udiskie', # package to facilitate mount of HD
       'unrar',
       'unzip',
       'vim-python-jedi',
