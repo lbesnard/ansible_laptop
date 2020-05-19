@@ -8,6 +8,7 @@
       'autojump',
       'bash-completion',
       'build-essential',
+      'blueman', #bluetooth
       'chromium-browser',
       'cifs-utils',
       'cmake',
