@@ -24,6 +24,7 @@
       'htop',
       'ipython',
       'keepassx',
+      'pass',
       'kpcli',
       'libpq-dev',
       'libxml2-utils',
@@ -140,6 +141,22 @@
       virtualenv,
       wine1.6
       ]
+
+- name: Install vagrant packages
+  ignore_errors: yes
+  apt:
+    name: [
+      'vagrant'
+      ]
+    only_upgrade: yes
+
+- name: Install chef-dk
+  ignore_errors: yes
+  apt:
+    deb: https://packages.chef.io/files/stable/chefdk/1.3.40/ubuntu/16.04/chefdk_1.3.40-1_amd64.deb
+
+- name: install berkshelf plugin
+  shell: command -v berks >/dev/null || vagrant plugin install berkshelf
 
 - name: install make packages
   ignore_errors: yes
