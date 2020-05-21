@@ -15,11 +15,10 @@
     accept_hostkey: yes
     track_submodules: yes
     #key_file: "{{key_file}}"
-    depth: 1
+    #depth: 1
     clone: yes
     update: yes
   with_items:
     - { url: "{{repo_chef_private}}", name: chef-private }
     - { url: "{{repo_chef}}", name: chef }
   ignore_errors: true
-

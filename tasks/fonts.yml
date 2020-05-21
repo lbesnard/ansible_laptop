@@ -1,4 +1,4 @@
-- name: create github directory
+- name: create "{{ github_repo_dir }}"
   become: yes
   become_user: "{{user}}"
   file:
@@ -40,3 +40,24 @@
       get_url:
         url: https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
         dest: "{{user_home}}/.local/share/fonts/Droid Sans Mono for Powerline Nerd Font Complete.otf"
+
+
+- name: download and install patched fronts from nerd-fonts
+  block:
+    - name: create ~/.fonts directory
+      become: yes
+      become_user: "{{user}}"
+      file:
+        path: "{{user_home}}/.fonts"
+        state: directory
+        mode: 0775
+
+    - name: "download patched fonts"
+      unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/3270.zip
+        dest: "{{user_home}}/.fonts"
+        remote_src: yes
+
+    - name: "install fonts"
+      shell: "fc-cache -f -v"
+      ignore_errors: yes

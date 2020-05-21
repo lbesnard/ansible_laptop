@@ -37,7 +37,7 @@ installed via Homebrew/Linuxbrew. This way ensures to be able to install softwar
 and their latest version on various machines were sudo access is not granted
 
 # Installation
-## 1. install private key
+## 1.1 install private key
 install key (usually ```id_rsa```)to $HOME/.ssh (600)
 ```bash
 chmod 600 ~/.ssh/config
@@ -45,18 +45,23 @@ chmod 644 ~/.ssh/id_rsa.pub
 chmod 600 ~/.ssh/id_rsa
 ```
 ## 1.2 install homebrew manually
+I tried to automate this part, but its seems to fail. Better to run it manually:
 ```bash
 yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 ## 2. provision localhost debian based machine with Ansible
 ### 2.1 with sudo privileges
+
+Run the following command in bash. (will install git, ansible; good for a new OS)
 ```bash
 curl -L https://raw.githubusercontent.com/lbesnard/ansible_laptop/master/install.sh | bash
+```
 
-# OR if ansible is already installed on the machine
-
+OR if ansible is already installed on the machine
+```
 /usr/bin/ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts
 ```
+
 ### 2.2 Without sudo (and if ansible priorly installed via linuxbrew)
 ```bash
 ansible-pull -U https://github.com/lbesnard/ansible_laptop.git remote.yml -i hosts
@@ -69,7 +74,7 @@ ansible-pull -i hosts -U https://github.com/lbesnard/ansible_laptop.git -t conda
 ansible-pull -i hosts -U https://github.com/lbesnard/ansible_laptop.git -t neovim
 ```
 
-### 2.4 Run locally
+### 2.4 Run locally (examples)
 ```bash
 git clone https://github.com/lbesnard/ansible_laptop.git
 cd ansible_laptop

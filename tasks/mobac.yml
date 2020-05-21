@@ -1,4 +1,4 @@
-- name: create mobac directory
+- name: create ~/mobac directory
   become: yes
   become_user: "{{user}}"
   file:
