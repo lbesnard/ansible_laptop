@@ -9,7 +9,7 @@
       fonts-font-awesome,
       i3,
       i3blocks,
-      i3locks,
+      i3lock,
       i3status,
       pcmanfm,
       neofetch,
@@ -24,3 +24,16 @@
       xinit,
       xinput
       ]
+
+- name: install light
+  ignore_errors: yes
+  apt:
+    deb: https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb
+    only_upgrade: yes
+
+- name: add user to video group to use light
+  user:
+     name: "{{user}}"
+     shell: /bin/bash
+     groups: video
+     append: yes
