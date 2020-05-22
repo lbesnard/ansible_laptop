@@ -31,9 +31,17 @@
     deb: https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb
     only_upgrade: yes
 
+
 - name: add user to video group to use light
   user:
      name: "{{user}}"
      shell: /bin/bash
      groups: video
      append: yes
+
+- name: debian - change brightness permissions
+  file:
+     dest: /sys/class/backlight/intel_backlight/brightness
+     owner: root
+     group: video
+     mode: 0664
