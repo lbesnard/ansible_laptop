@@ -22,8 +22,19 @@ repo_powerline: git@github.com:powerline/fonts.git
 repo_imos_toolbox: git@github.com:aodn/imos-toolbox.git
 repo_imos_user_code_library: git@github.com:aodn/imos-user-code-library.git
 
-
 # python
 conda_path: "{{user_home}}/anaconda3"
 conda_url: https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh
 conda_md5: md5:b77a71c3712b45c8f33c7b2ecade366c
+
+# jetbrains
+toolbox_version: "1.17.6856"
+toolbox_install_dir: "{{user_home}}/bin"
+inotify_max_user_watches: "524288"
+
+# deb packages url
+light_url: https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb
+skype_url: https://repo.skype.com/latest/skypeforlinux-64.deb
+zoom_url: https://zoom.us/client/latest/zoom_amd64.db
+chefdk_url: https://packages.chef.io/files/stable/chefdk/1.3.40/ubuntu/16.04/chefdk_1.3.40-1_amd64.deb
+vagrant_url: https://releases.hashicorp.com/vagrant/2.1.1/vagrant_2.1.1_x86_64.deb

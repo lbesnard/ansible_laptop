@@ -88,3 +88,6 @@ ansible-playbook -i hosts remote.yml --skip-tags apt
 # run as non sudo user with a specific tag
 ansible-playbook -i hosts remote.yml -t conda
 ```
+## 3 Post Installation
+install manuall vbox ext pack because of manual licencing
+```sudo apt-get install virtualbox-ext-pack```

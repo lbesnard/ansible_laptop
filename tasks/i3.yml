@@ -29,7 +29,7 @@
 - name: install light
   ignore_errors: yes
   apt:
-    deb: https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb
+    deb: "{{light_url}}"
     only_upgrade: yes
 
 

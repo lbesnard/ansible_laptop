@@ -8,6 +8,8 @@
       apt: update_cache=yes
       ignore_errors: yes
       changed_when: False
+  roles:
+    - role: webarchitect609.jet_brains_toolbox
   vars_files:
     - vars.yml
   tasks:
