@@ -90,8 +90,10 @@
       'transmission-gtk',
       'traceroute',
       'wavemon',
-      'whois'
-    ]
+      'whois',
+      libtest-www-mechanize-perl,
+      libnet-whois-ip-perl
+      ]
 
 
 - name: Install NetCDF
