@@ -16,7 +16,7 @@
     #key_file: "{{key_file}}"
     track_submodules: yes
     depth: 1
-    clone: yes
+    clone: no
     update: yes
   with_items:
     - { url: "{{repo_dotfiles}}", name: dotfiles }

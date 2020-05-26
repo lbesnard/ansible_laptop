@@ -14,16 +14,14 @@
     dest: "{{github_repo_dir}}/chef/src/{{item.name}}"
     accept_hostkey: yes
     track_submodules: yes
-    #key_file: "{{key_file}}"
-    depth: 1
     clone: yes
-    update: yes
+    update: no
   with_items:
     - { url: "{{repo_data_services}}", name: data-services }
   ignore_errors: true
 
 - name: create data-services conda env
-  shell: "{{conda_path}}/condabin/conda env create -f environment.yml"
+  shell: "[[ $({{conda_path}}/condabin/conda env list | awk '{print $1}') = *'data_services'* ]] && echo 'data-services conda env already installed' || {{conda_path}}/condabin/conda env create -f environment.yml > /dev/null"
   args:
     chdir: "{{data_services_dir}}"
   become: yes
