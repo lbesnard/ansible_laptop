@@ -1,6 +1,6 @@
 - name: download nextcloud executable
   get_url:
-    url: https://download.nextcloud.com/desktop/releases/Linux/latest
+    url: "{{nextcloud_url}}"
     dest: "{{user_home}}/bin/Nextcloud.AppImage"
   become: yes
   become_user: "{{ user }}"

@@ -23,8 +23,16 @@
       xbacklight,
       xdotool,
       xinit,
-      xinput
+      xinput,
+      xss-lock
       ]
+
+- name: debian - change brightness permissions/ has to be done at each machine boot
+  file:
+     dest: "{{debian_brightness_path}}"
+     owner: root
+     group: video
+     mode: 0664
 
 - name: install light
   ignore_errors: yes
@@ -32,17 +40,9 @@
     deb: "{{light_url}}"
     only_upgrade: yes
 
-
 - name: add user to video group to use light
   user:
      name: "{{user}}"
      shell: /bin/bash
      groups: video
      append: yes
-
-- name: debian - change brightness permissions
-  file:
-     dest: /sys/class/backlight/intel_backlight/brightness
-     owner: root
-     group: video
-     mode: 0664

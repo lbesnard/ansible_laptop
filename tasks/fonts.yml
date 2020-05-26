@@ -14,7 +14,6 @@
     dest: "{{github_repo_dir}}/{{item.name}}"
     accept_hostkey: yes
     track_submodules: yes
-    #key_file: "{{key_file}}"
     depth: 1
     clone: yes
     update: no
@@ -38,9 +37,8 @@
         mode: 0775
     - name: install fonts
       get_url:
-        url: https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+        url: "{{nerd_font_1_url}}"
         dest: "{{user_home}}/.local/share/fonts/Droid Sans Mono for Powerline Nerd Font Complete.otf"
-
 
 - name: download and install patched fronts from nerd-fonts
   block:
@@ -54,7 +52,7 @@
 
     - name: "download patched fonts"
       unarchive:
-        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/3270.zip
+        src: "{{nerd_patched_fonts_url}}"
         dest: "{{user_home}}/.fonts"
         remote_src: yes
 

@@ -246,13 +246,6 @@
   apt:
     deb: "{zoom_url}"
 
-#- name: Install snap alacritty packages
-  #snap:
-    #name:
-      #- alacritty
-    #classic: yes
-#    channel: latest/stable
-
 - name: Install snap packages
   snap:
     name:

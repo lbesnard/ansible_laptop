@@ -41,4 +41,3 @@
   become_user: "{{ user }}"
   ignore_errors: yes
   when: not conda_file_details.stat.exists
-

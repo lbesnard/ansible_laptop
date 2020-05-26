@@ -8,7 +8,7 @@
 
 - name: download cheat executable
   get_url:
-    url: https://github.com/cheat/cheat/releases/download/3.0.1/cheat-linux-amd64
+    url: "{{cheat_exe_url}}"
     dest: "{{user_home}}/usr/bin/cheat"
 
 - name: Changing perm of "cheat", adding "+x"
