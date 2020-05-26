@@ -6,6 +6,11 @@
   ssh-add
 #fi
 
+# install linux brew
+if ! [ -x "$(command -v brew)" ]; then
+    yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+fi
+
 sudo apt-get install -y git;
 
 sudo apt-get install -y software-properties-common;
