@@ -20,6 +20,7 @@ repo_nerd_fonts: git@github.com:ryanoasis/nerd-fonts.git
 repo_powerline: git@github.com:powerline/fonts.git
 repo_imos_toolbox: git@github.com:aodn/imos-toolbox.git
 repo_imos_user_code_library: git@github.com:aodn/imos-user-code-library.git
+repo_keepass_rofi: git@github.com:samedamci/rofi-keepassxc.git
 
 # python
 conda_path: "{{user_home}}/anaconda3"
