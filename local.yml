@@ -21,6 +21,8 @@
   become: true
   roles:
     - role: webarchitect609.jet_brains_toolbox
+  vars_files:
+    - vars.yml
 
 # user specific
 - hosts: localhost
