@@ -1,5 +1,6 @@
 - name: Update homebrew and upgrade all packages
   homebrew:
+    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     update_homebrew: yes
     upgrade_all: yes
   become: yes
@@ -62,6 +63,7 @@
 
 - name: "homebrew monkeys-audio"
   homebrew_tap:
+    path: "/home/linuxbrew/.linuxbrew/bin:/homes/{{ user }}/.linuxbrew/bin"
     name: fernandotcl/homebrew-fernandotcl
     state: present
   become: yes
