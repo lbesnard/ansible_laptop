@@ -1,3 +1,3 @@
 [submodule "webarchitect609.jet_brains_toolbox"]
 	path = webarchitect609.jet_brains_toolbox
-	url = ssh://git@github.com:webarchitect609/ansible-role-jet-brains-toolbox.git
+	url = https://github.com/webarchitect609/ansible-role-jet-brains-toolbox.git
