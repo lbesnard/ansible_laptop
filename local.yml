@@ -15,15 +15,6 @@
     - {include: tasks/homebrew.yml, tags: ['brew_install']}
     - {include: tasks/i3.yml, tags: ['i3', 'packages']}
 
-# needs other packages to be installed first prior to run the following
-- hosts: localhost
-  connection: local
-  become: true
-  roles:
-    - role: webarchitect609.jet_brains_toolbox
-  vars_files:
-    - vars.yml
-
 # user specific
 - hosts: localhost
   connection: local
@@ -45,3 +36,14 @@
     - {include: tasks/nextcloud.yml, tags: ['appimages','nextcloud', 'packages']}
     - {include: tasks/github_repos.yml, tags: ['github','repos']}
     - {include: tasks/mobac.yml, tags: ['mobac']}
+
+# needs other packages to be installed first prior to run the following
+- hosts: localhost
+  connection: local
+  become: true
+  roles:
+    - role: webarchitect609.jet_brains_toolbox
+  vars_files:
+    - vars.yml
+
+
