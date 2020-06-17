@@ -128,7 +128,7 @@
       zsnes
     ]
 
-- name: Install vbox packages
+- name: Install virtualbox specific version
   ignore_errors: yes
   apt:
     deb: "{{vbox_url}}"
@@ -144,12 +144,11 @@
       xorg-video-abi-23,
       xserver-xorg-core,
       xserver-xorg-input-all, # VERY IMPORTANT. HAS frozen my logging prompt
-      #virtualbox,
       virtualbox-guest-additions-iso,
       virtualbox-guest-dkms,
       virtualbox-guest-utils,
       virtualbox-guest-x11,
-      #virtualbox-qt,
+      virtualbox-qt,
       virtualenv,
       wine1.6,
       linux-headers-generic

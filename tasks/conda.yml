@@ -41,3 +41,9 @@
   become_user: "{{ user }}"
   ignore_errors: yes
   when: not conda_file_details.stat.exists
+
+- name: conda add conda-forge channel
+  shell: "{{conda_path}}/condabin/conda  config --add channels conda-forge"
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: true
