@@ -61,18 +61,17 @@
   ignore_errors: yes
 
 
-- name: "homebrew monkeys-audio"
-  homebrew_tap:
-    path: "/home/linuxbrew/.linuxbrew/bin:/homes/{{ user }}/.linuxbrew/bin"
-    name: fernandotcl/homebrew-fernandotcl
-    state: present
+- name: "homebrew add tap monkeys-audio"
+  shell: "[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && /home/linuxbrew/.linuxbrew/bin/brew tap fernandotcl/homebrew-fernandotcl || ([[ -f /home/{{ user }}/.linuxbrew/bin/brew ]] && /home/{{ user }}/.linuxbrew/bin/brew tap fernandotcl/homebrew-fernandotcl)"
+  args:
+    executable: /bin/bash
   become: yes
   become_user: "{{ user }}"
   ignore_errors: yes
 
 - name: "homebrew monkeys-audio"
   homebrew:
-    path: "/home/linuxbrew/.linuxbrew/bin:/homes/{{ user }}/.linuxbrew/bin"
+    path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     name: [
       monkeys-audio
       ]
