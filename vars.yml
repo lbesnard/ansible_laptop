@@ -42,6 +42,7 @@ vbox_url: https://download.virtualbox.org/virtualbox/5.2.42/virtualbox-5.2_5.2.4
 
 # url
 cheat_exe_url: https://github.com/cheat/cheat/releases/download/3.0.1/cheat-linux-amd64
+tldr_exe_url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
 nerd_patched_fonts_url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/3270.zip
 nerd_font_1_url: https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
 mobac_url: https://sourceforge.net/projects/mobac/files/Mobile%20Atlas%20Creator/MOBAC%202.0/Mobile%20Atlas%20Creator%202.1.2.zip/download
