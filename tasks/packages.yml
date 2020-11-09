@@ -32,6 +32,7 @@
       'libxml2-utils',
       'mc',
       nodejs,
+      nfs-common,
       orage,
       'p7zip',
       'pdfposter',
