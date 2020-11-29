@@ -34,6 +34,7 @@
       nodejs,
       nfs-common,
       orage,
+      'pasystray', # volume applet
       'p7zip',
       'pdfposter',
       'powerline',
