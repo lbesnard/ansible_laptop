@@ -147,11 +147,9 @@
       xorg-video-abi-23,
       xserver-xorg-core,
       xserver-xorg-input-all, # VERY IMPORTANT. HAS frozen my logging prompt
-      virtualbox-guest-additions-iso,
       virtualbox-guest-dkms,
       virtualbox-guest-utils,
       virtualbox-guest-x11,
-      virtualbox-qt,
       virtualenv,
       wine1.6,
       linux-headers-generic
