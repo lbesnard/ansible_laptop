@@ -80,6 +80,8 @@
       'gufw',
       'irssi',
       'libnotify-bin',
+      libtest-www-mechanize-perl,
+      libnet-whois-ip-perl,
       'lighttpd',
       'network-manager',
       'network-manager-gnome',
@@ -92,13 +94,13 @@
       'ngrep',
       'nmap',
       'openssh-server',
+      openresolv,
       'strace',
       'transmission-gtk',
       'traceroute',
       'wavemon',
       'whois',
-      libtest-www-mechanize-perl,
-      libnet-whois-ip-perl
+      wireguard
       ]
 
 
