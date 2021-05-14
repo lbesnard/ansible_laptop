@@ -24,11 +24,11 @@ repo_keepass_rofi: git@github.com:samedamci/rofi-keepassxc.git
 
 # python
 conda_path: "{{user_home}}/anaconda3"
-conda_url: https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh
-conda_md5: md5:b77a71c3712b45c8f33c7b2ecade366c
+conda_url: https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+conda_md5: md5:4cd48ef23a075e8555a8b6d0a8c4bae2
 
 # jetbrains
-toolbox_version: "1.17.6856"
+toolbox_version: "1.20.8352"
 toolbox_install_dir: "{{user_home}}/bin"
 inotify_max_user_watches: "524288"
 
@@ -38,7 +38,7 @@ skype_url: https://repo.skype.com/latest/skypeforlinux-64.deb
 zoom_url: https://zoom.us/client/latest/zoom_amd64.deb
 chefdk_url: https://packages.chef.io/files/stable/chefdk/1.3.40/ubuntu/16.04/chefdk_1.3.40-1_amd64.deb
 vagrant_url: https://releases.hashicorp.com/vagrant/2.2.10/vagrant_2.2.10_x86_64.deb
-vbox_url: https://download.virtualbox.org/virtualbox/6.1.16/virtualbox-6.1_6.1.16-140961~Ubuntu~bionic_amd64.deb
+vbox_url: https://download.virtualbox.org/virtualbox/6.1.22/virtualbox-6.1_6.1.22-144080~Ubuntu~bionic_amd64.deb
 
 # url
 cheat_exe_url: https://github.com/cheat/cheat/releases/download/3.0.1/cheat-linux-amd64
