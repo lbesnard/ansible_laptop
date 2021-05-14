@@ -32,7 +32,7 @@
       git,
       gh, # github cli
       googler,
-      highlight,
+      #highlight,
       htop,
       httpie,
       hub,
