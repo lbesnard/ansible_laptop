@@ -5,6 +5,7 @@
     upgrade_all: yes
   become: yes
   become_user: "{{ user }}"
+  ignore_errors: yes
 
 - name: "brew install packages"
   become: yes
@@ -18,6 +19,7 @@
       ruby-install,
       angle-grinder,
       ansible,
+      autojump,
       bat,
       curl,
       dfc,
