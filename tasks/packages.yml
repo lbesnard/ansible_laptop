@@ -276,8 +276,13 @@
     snap:
       name:
         - snap-store
-        - alacritty
         - pdftk
         - riot-web
         - youtube-dl
       channel: latest/stable
+  - name: install snap classic
+    ignore_errors: yes
+    snap:
+      name:
+        - alacritty
+      classic: yes
