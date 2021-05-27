@@ -43,6 +43,7 @@ install key (usually ```id_rsa```)to $HOME/.ssh (600)
 chmod 600 ~/.ssh/config
 chmod 644 ~/.ssh/id_rsa.pub
 chmod 600 ~/.ssh/id_rsa
+ssh-add
 ```
 ## 2. provision localhost debian based machine with Ansible
 ### 2.1 with sudo privileges
