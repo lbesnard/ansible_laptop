@@ -39,7 +39,7 @@
       'pdfposter',
       'powerline',
       'fonts-powerline',
-      'python-pip',
+      #'python-pip',
       'rake',
       'ruby-dev',
       'screen',
