@@ -153,7 +153,7 @@
       virtualbox-guest-utils,
       virtualbox-guest-x11,
       virtualenv,
-      wine1.6,
+      #wine1.6,
       linux-headers-generic
       ]
 
