@@ -258,6 +258,13 @@
   apt:
     deb: "{{zoom_url}}"
 
+- name: install snap packages
+  ignore_errors: yes
+  apt:
+    name: [
+      snapd
+      ]
+
 - name: Install snap packages
   ignore_errors: yes
   snap:
