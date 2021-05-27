@@ -21,7 +21,7 @@
       'git',
       gparted,
       'gt5',
-      'gtg',
+      #'gtg',
       'guake',
       'htop',
       'ipython',
@@ -117,7 +117,7 @@
       libjpeg-dev,
       libnetcdf-dev,
       libpython3-dev,
-      libpython3.6-dev,
+      #libpython3.6-dev,
       libudunits2-dev,
       nco,
       ncview,
@@ -216,7 +216,7 @@
       mediainfo,
       mp3blaster,
       mp3val,
-      puddletag,
+      #puddletag,
       python-gi,
       subtitleeditor,
       spark,
@@ -235,7 +235,7 @@
   apt:
     name: [
       pdfmod,
-      scantailor
+      #scantailor
     ]
 
 - name: install database packages
