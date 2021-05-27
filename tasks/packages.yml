@@ -259,18 +259,24 @@
     deb: "{{zoom_url}}"
 
 - name: install snap packages
-  ignore_errors: yes
-  apt:
-    name: [
-      snapd
-      ]
-
-- name: Install snap packages
-  ignore_errors: yes
-  snap:
-    name:
-      - snap-store
-      - pdftk
-      - riot-web
-      - youtube-dl
-    channel: latest/stable
+  block:
+  - name: remove nosnap
+    shell: "rm /etc/apt/preferences.d/nosnap.pref"
+  - name: update repositories
+    apt: update_cache=yes
+    ignore_errors: yes
+  - name: install snapd
+    apt:
+      name: [
+        snapd
+        ]
+  - name: Install snap packages
+    ignore_errors: yes
+    snap:
+      name:
+        - snap-store
+        - alacritty
+        - pdftk
+        - riot-web
+        - youtube-dl
+      channel: latest/stable
