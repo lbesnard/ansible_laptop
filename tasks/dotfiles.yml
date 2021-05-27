@@ -21,7 +21,7 @@
   with_items:
     - { url: "{{repo_dotfiles}}", name: dotfiles }
     - { url: "{{repo_dotfiles_private}}", name: dotfiles_private }
-  ignore_errors: true
+  ignore_errors: yes
 
 - name: install dotfiles
   shell: ./install
