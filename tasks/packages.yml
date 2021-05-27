@@ -45,7 +45,7 @@
       'screen',
       'shunit2',
       'snap',
-      'snapd',
+      #'snapd',
       'source-highlight',
       'sshfs',
       'sublime-text',
