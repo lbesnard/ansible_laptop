@@ -146,7 +146,7 @@
       bundler,
       gem,
       rbenv,
-      xorg-video-abi-23,
+      #xorg-video-abi-23,
       xserver-xorg-core,
       xserver-xorg-input-all, # VERY IMPORTANT. HAS frozen my logging prompt
       virtualbox-guest-dkms,
