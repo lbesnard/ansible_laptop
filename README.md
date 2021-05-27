@@ -4,8 +4,8 @@ This repo aims at provisionning my personal laptop (debian base with XFCE). It
 actively uses my personal [dotfiles](https://github.com/lbesnard/dotfiles).
 
 It will install:
+* i3 windows manager and i3blocks
 * Shell tools
-  * tilda (dropdown terminal with F12 keymap)
   * zsh (via [zplug](https://github.com/zplug/zplug)) powerful bash alternative
   * tmux (via [tpm](https://github.com/tmux-plugins/tpm)) (key binding ctrl-a in host and ctrl-b in guest vi ssh)
   * [fzf](https://github.com/junegunn/fzf) (perform vi ** tab for example)
