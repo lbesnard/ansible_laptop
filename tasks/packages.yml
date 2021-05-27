@@ -262,6 +262,7 @@
   block:
   - name: remove nosnap
     shell: "rm /etc/apt/preferences.d/nosnap.pref"
+    ignore_errors: yes
   - name: update repositories
     apt: update_cache=yes
     ignore_errors: yes
