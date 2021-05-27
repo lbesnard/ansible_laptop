@@ -259,6 +259,7 @@
     deb: "{{zoom_url}}"
 
 - name: Install snap packages
+  ignore_errors: yes
   snap:
     name:
       - snap-store
