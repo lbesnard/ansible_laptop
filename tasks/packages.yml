@@ -24,7 +24,7 @@
       #'gtg',
       'guake',
       'htop',
-      'ipython',
+      #'ipython',
       'keepassxc',
       'pass',
       'kpcli',
