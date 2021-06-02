@@ -21,6 +21,8 @@
       screen,
       scrot,
       tlp,
+      w3m,
+      w3m-img,
       xbacklight,
       xdotool,
       xinit,

@@ -39,6 +39,17 @@
       get_url:
         url: "{{nerd_font_1_url}}"
         dest: "{{user_home}}/.local/share/fonts/Droid Sans Mono for Powerline Nerd Font Complete.otf"
+    - name: install SourceCodePro
+      shell: ". {{github_repo_dir}}/nerd-fonts/install.sh SourceCodePro"
+      ignore_errors: yes
+    - name: install JetBrainsMono
+      shell: ". {{github_repo_dir}}/nerd-fonts/install.sh JetBrainsMono"
+      ignore_errors: yes
+    - name: "install fonts"
+      shell: "fc-cache -f -v"
+      ignore_errors: yes
+
+
 
 - name: download and install patched fronts from nerd-fonts
   block:
