@@ -269,7 +269,7 @@
 - name: install snap packages
   block:
   - name: remove nosnap
-    shell: "rm /etc/apt/preferences.d/nosnap.pref"
+    shell: "rm -f /etc/apt/preferences.d/nosnap.pref"
     ignore_errors: yes
   - name: update repositories
     apt: update_cache=yes
