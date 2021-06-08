@@ -1,0 +1,31 @@
+- name: edit samba conf
+  ignore_errors: yes
+  copy:
+      content: |
+        [global]
+        workgroup = WORKGROUP
+        security = user
+        map to guest = Bad User
+        server string = %h server (Samba, Ubuntu)
+        dns proxy = No
+        wins support = Yes
+        usershare allow guests = Yes
+        panic action = /usr/share/samba/panic-action %d
+
+        [SharedQemu]
+        comment = Shared Folder for QEMU
+        path = /home/lbesnard/Shared
+        public = no
+        browseable = yes
+        writeable = yes
+        read only = no
+        guest ok = yes
+        force user = lbesnard
+      dest: /etc/samba/smb.conf.test
+      backup: yes
+
+- name: Restart service samba
+  ignore_errors: yes
+  ansible.builtin.service:
+    name: smbd
+    state: restarted

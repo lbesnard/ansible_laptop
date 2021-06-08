@@ -95,6 +95,7 @@
       'nmap',
       'openssh-server',
       openresolv,
+      samba,
       'strace',
       'transmission-gtk',
       'traceroute',

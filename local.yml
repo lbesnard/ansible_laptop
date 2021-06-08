@@ -14,6 +14,7 @@
     - {include: tasks/packages.yml, tags: ['packages', 'apt']}
     - {include: tasks/homebrew.yml, tags: ['brew_install']}
     - {include: tasks/i3.yml, tags: ['i3', 'packages']}
+    - {include: tasks/samba.yml, tags: ['samba']}
 
 # user specific
 - hosts: localhost
@@ -45,5 +46,3 @@
     - role: webarchitect609.jet_brains_toolbox
   vars_files:
     - vars.yml
-
-
