@@ -6,7 +6,7 @@
     state: directory
     mode: 0775
 
-- name: clone repo "{{item.name}}"
+- name: clone AODN repos "{{item.name}}"
   become: yes
   become_user: "{{user}}"
   git:
@@ -19,6 +19,51 @@
   with_items:
     - { url: "{{repo_chef_private}}", name: chef-private }
     - { url: "{{repo_chef}}", name: chef }
+    - { url: "{{repo_imos_toolbox}}", name: imos-toolbox }
+  ignore_errors: true
+
+
+- name: create imos-toolbox yaml conda file
+  ignore_errors: yes
+  copy:
+      content: |
+        # An environment file for Project Officers wanted to use Conda rather than
+        # virtualenv
+        # This is based on scripts/setup_virtualenv.sh and doesn't interfere with the
+        # wheel package
+        # conda env create --file=stage_environment.yml
+        # conda env update --file=stage_environment.yml
+        name: "{{conda_imos_toolbox}}"
+        channels:
+          - conda-forge
+          - defaults
+        dependencies:
+          - cython
+          - python=3.6
+          - pip
+          - pip:
+            - docopt
+            - boto3
+            - botocore
+            - gitPython
+      dest: "{{ github_repo_dir }}/imos-toolbox/environment.yml"
+      backup: yes
+
+- name: create imos-toolbox conda env
+  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_imos_toolbox}}'* ]] && echo '{{conda_imos_toolbox}} conda env already installed' || {{conda_path}}/condabin/conda env create -f environment.yml"
+  args:
+    executable: /bin/bash
+    chdir: "{{github_repo_dir}}/imos-toolbox"
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: true
+
+- name: update imos-toolbox conda env
+  shell: "{{conda_path}}/condabin/conda env update -f environment.yml"
+  args:
+    chdir: "{{github_repo_dir}}/imos-toolbox"
+  become: yes
+  become_user: "{{ user }}"
   ignore_errors: true
 
 
@@ -32,17 +77,16 @@
         # wheel package
         # conda env create --file=stage_environment.yml
         # conda env update --file=stage_environment.yml
-        name: python-aodndata-conda
-        variables:
-          STAGE: production
+        name: "{{conda_aodndata}}"
         channels:
           - conda-forge
           - defaults
         dependencies:
           - cython
           - python=3.6
+          - pip
           - pip:
-            - --index-url http://imos-artifacts.s3-website-ap-southeast-2.amazonaws.com/repo/pypi/${STAGE}/
+            - --index-url http://imos-artifacts.s3-website-ap-southeast-2.amazonaws.com/repo/pypi/production/
             - --extra-index-url https://pypi.python.org/simple/
             - --trusted-host imos-artifacts.s3-website-ap-southeast-2.amazonaws.com
             - -c file:constraints.txt
@@ -52,7 +96,7 @@
       backup: yes
 
 - name: create aodndata conda env
-  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'python-aodndata-conda'* ]] && echo 'python-adondata-conda conda env already installed' || {{conda_path}}/condabin/conda env create -f stage_environment.yml"
+  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_aodndata}}'* ]] && echo '{{conda_aodndata}} conda env already installed' || {{conda_path}}/condabin/conda env create -f stage_environment.yml"
   args:
     executable: /bin/bash
     chdir: "{{aodndata_dir}}"
@@ -67,4 +111,3 @@
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
-

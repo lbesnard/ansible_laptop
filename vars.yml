@@ -50,3 +50,8 @@ mobac_url: https://sourceforge.net/projects/mobac/files/Mobile%20Atlas%20Creator
 nextcloud_url: https://download.nextcloud.com/desktop/releases/Linux/latest
 
 debian_brightness_path: /sys/class/backlight/intel_backlight/brightness
+
+# conda env names
+conda_imos_toolbox: imos-toolbox_3.6
+conda_aodndata: python-aodndata-conda
+conda_data_services: data_services_3.6

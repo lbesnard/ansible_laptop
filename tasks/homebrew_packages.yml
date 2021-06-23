@@ -57,6 +57,7 @@
       urlview,
       vim,
       youtube-dl,
+      yq,
       zsh
       ]
     state: present

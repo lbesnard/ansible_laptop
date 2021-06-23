@@ -21,7 +21,7 @@
   ignore_errors: true
 
 - name: create data-services conda env
-  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'data_services'* ]] && echo 'data-services conda env already installed' || {{conda_path}}/condabin/conda env create -f environment.yml"
+  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_data_services}}'* ]] && echo '{{conda_data_services}} conda env already installed' || {{conda_path}}/condabin/conda env create -f environment.yml"
   args:
     executable: /bin/bash
     chdir: "{{data_services_dir}}"
