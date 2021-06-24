@@ -75,18 +75,22 @@
         # virtualenv
         # This is based on scripts/setup_virtualenv.sh and doesn't interfere with the
         # wheel package
+        # stage values are "build", "rc", "production"
         # conda env create --file=stage_environment.yml
         # conda env update --file=stage_environment.yml
         name: "{{conda_aodndata}}"
         channels:
           - conda-forge
           - defaults
+          - pypi
         dependencies:
           - cython
-          - python=3.6
+          - python=3.8
+          - cf-units
           - pip
           - pip:
-            - --index-url http://imos-artifacts.s3-website-ap-southeast-2.amazonaws.com/repo/pypi/production/
+            - numpy<1.19.0
+            - --index-url http://imos-artifacts.s3-website-ap-southeast-2.amazonaws.com/repo/pypi/build/
             - --extra-index-url https://pypi.python.org/simple/
             - --trusted-host imos-artifacts.s3-website-ap-southeast-2.amazonaws.com
             - -c file:constraints.txt
