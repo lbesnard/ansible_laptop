@@ -18,6 +18,7 @@
     update: no
   with_items:
     - { url: "{{repo_chef_private}}", name: chef-private }
+    - { url: "{{repo_cloud_deploy}}", name: chef-private }
     - { url: "{{repo_chef}}", name: chef }
     - { url: "{{repo_imos_toolbox}}", name: imos-toolbox }
   ignore_errors: true

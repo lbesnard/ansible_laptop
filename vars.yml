@@ -13,6 +13,7 @@ repo_awesome_fonts: git@github.com:gabrielelana/awesome-terminal-fonts.git
 repo_ansible_laptop: git@github.com:lbesnard/ansible_laptop.git
 repo_chef: git@github.com:aodn/chef.git
 repo_chef_private: git@github.com:aodn/chef-private.git
+repo_cloud_deploy: git@github.com:aodn/cloud-deploy.git
 repo_data_services: git@github.com:aodn/data-services.git
 repo_dotfiles: git@github.com:lbesnard/dotfiles.git
 repo_dotfiles_private: git@github.com:lbesnard/dotfiles_private.git

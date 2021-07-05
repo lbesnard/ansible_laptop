@@ -74,6 +74,7 @@
   apt:
     name: [
       curl,
+      filezilla,
       'dnsmasq',
       'dnsmasq-utils',
       'elinks',

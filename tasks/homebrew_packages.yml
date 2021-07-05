@@ -20,6 +20,7 @@
       angle-grinder,
       ansible,
       autojump,
+      awscli,
       bat,
       curl,
       dfc,
@@ -32,6 +33,7 @@
       git,
       gh, # github cli
       googler,
+      grc,
       #highlight,
       htop,
       httpie,
