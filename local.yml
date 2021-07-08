@@ -42,6 +42,8 @@
 - hosts: localhost
   connection: local
   become: true
+  become: yes
+  become_user: "{{user}}"
   roles:
     - role: webarchitect609.jet_brains_toolbox
   vars_files:
