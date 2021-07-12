@@ -23,17 +23,13 @@
     - { url: "{{repo_imos_toolbox}}", name: imos-toolbox }
   ignore_errors: true
 
-
+######################
+# IMOS TOOLBOX CONDA
+######################
 - name: create imos-toolbox yaml conda file
   ignore_errors: yes
   copy:
       content: |
-        # An environment file for Project Officers wanted to use Conda rather than
-        # virtualenv
-        # This is based on scripts/setup_virtualenv.sh and doesn't interfere with the
-        # wheel package
-        # conda env create --file=stage_environment.yml
-        # conda env update --file=stage_environment.yml
         name: "{{conda_imos_toolbox}}"
         channels:
           - conda-forge
@@ -67,6 +63,9 @@
   become_user: "{{ user }}"
   ignore_errors: true
 
+######################
+# AODNDATA CONDA
+######################
 
 - name: create python-aodndata conda yaml
   ignore_errors: yes
@@ -116,3 +115,58 @@
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
+
+
+#################
+# ncvue conda
+#################
+- name: Create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: build
+
+- name: Create temporary file
+  ansible.builtin.tempfile:
+    state: file
+    suffix: .yml
+    prefix: conda_ncvue-
+  register: tempfile_1
+
+- name: create ncvue yaml conda file
+  ignore_errors: yes
+  copy:
+      content: |
+        name: "{{conda_ncvue}}"
+        channels:
+          - conda-forge
+          - defaults
+        dependencies:
+          - cartopy
+          - python=3.9
+          - pip
+          - pip:
+            - ncvue
+      dest: "{{ tempfile_1.path }}"
+      backup: yes
+
+- name: create imos-toolbox conda env
+  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_ncvue}}'* ]] \
+          && echo '{{conda_ncvue}} conda env already installed' || \
+          {{conda_path}}/condabin/conda env create -f '{{ tempfile_1.path }}'"
+  args:
+    executable: /bin/bash
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: true
+
+- name: update ncvue-toolbox conda env
+  shell: "{{conda_path}}/condabin/conda env update -f {{ tempfile_1.path }}"
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: true
+
+- name: Use the registered var and the file module to remove the temporary file
+  ansible.builtin.file:
+    path: "{{ tempfile_1.path }}"
+    state: absent
+  when: tempfile_1.path is defined
