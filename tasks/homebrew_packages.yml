@@ -23,6 +23,7 @@
       awscli,
       bat,
       curl,
+      croc, # send files p2p
       dfc,
       exa,
       fasd,
