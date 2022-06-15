@@ -41,7 +41,6 @@
 # needs other packages to be installed first prior to run the following
 - hosts: localhost
   connection: local
-  become: true
   become: yes
   become_user: "{{user}}"
   roles:

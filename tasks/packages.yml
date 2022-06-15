@@ -1,3 +1,30 @@
+- name: Install YQ
+  ignore_errors: yes
+  block:
+    - name: Ansible check yq exists
+      stat:
+        path: "/usr/bin/yq"
+      register: yq_file_details
+    - name: Create temporary dir
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: yq-
+      register: yq_binary
+    - name: Download yq
+      unarchive:
+        src: "{{yq_url}}"
+        dest: "{{ yq_binary.path }}"
+        remote_src: yes
+        mode: +x
+    - name: move yq binary
+      copy:
+        remote_src: True
+        src: "{{ yq_binary.path }}/yq_linux_amd64"
+        dest: /usr/bin/yq
+        mode: +x
+      when: not yq_file_details.stat.exists
+
+
 - name: Install essential packages
   ignore_errors: yes
   apt:
@@ -158,7 +185,12 @@
       virtualenv,
       qemu,
       #wine1.6,
-      linux-headers-generic
+      linux-headers-generic,
+      virt-manager,
+      qemu-kvm,
+      libvirt-daemon-system,
+      libvirt-clients,
+      bridge-utils
       ]
 
 - name: Install vagrant packages
@@ -297,3 +329,4 @@
       name:
         - alacritty
       classic: yes
+
