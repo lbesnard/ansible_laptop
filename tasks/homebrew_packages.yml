@@ -25,6 +25,7 @@
       curl,
       croc, # send files p2p
       dfc,
+      diff-so-fancy,
       exa,
       fasd,
       fd,

@@ -40,9 +40,11 @@
 
 # needs other packages to be installed first prior to run the following
 - hosts: localhost
+  ignore_errors: yes
   connection: local
   become: yes
   become_user: "{{user}}"
+  tags: "jetbrains"
   roles:
     - role: webarchitect609.jet_brains_toolbox
   vars_files:
