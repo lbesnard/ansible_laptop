@@ -5,7 +5,6 @@
     path: "{{github_repo_dir}}"
     state: directory
     mode: 0775
-  when: not conda_file_details.stat.exists
 
 - name: clone AODN repos "{{item.name}}"
   become: yes

@@ -33,6 +33,7 @@
       freetype, # for python matplotlib
       fzf,
       git,
+      git-delta,
       gh, # github cli
       googler,
       grc,
