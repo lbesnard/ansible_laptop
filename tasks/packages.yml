@@ -45,6 +45,7 @@
       'cowsay',
       'devscripts',
       'emacs',
+      'fasd',
       'gftp',
       'git',
       gparted,
