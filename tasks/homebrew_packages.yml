@@ -27,7 +27,7 @@
       dfc,
       diff-so-fancy,
       exa,
-      fasd,
+      # fasd, # no more maintained by homebrew 
       fd,
       fpp,
       freetype, # for python matplotlib
