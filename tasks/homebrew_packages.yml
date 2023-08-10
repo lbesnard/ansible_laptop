@@ -35,7 +35,7 @@
       git,
       git-delta,
       gh, # github cli
-      googler,
+      # googler, # not maintained
       grc,
       #highlight,
       htop,
