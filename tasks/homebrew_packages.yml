@@ -17,11 +17,13 @@
       gcc,
       ruby,
       ruby-install,
+      act, # github action
       angle-grinder,
       ansible,
       autojump,
       awscli,
       bat,
+      coreutils,
       curl,
       croc, # send files p2p
       dfc,
@@ -32,6 +34,7 @@
       fpp,
       freetype, # for python matplotlib
       fzf,
+      gcc@5,
       git,
       git-delta,
       gh, # github cli
@@ -54,6 +57,7 @@
       pyenv,
       pyenv-virtualenv,
       ranger,
+      rbenv,
       ripgrep,
       task,
       the_silver_searcher,
@@ -63,7 +67,9 @@
       tree,
       urlview,
       vim,
+      viu,
       xclip,
+      yt-dlp,
       youtube-dl,
       yq,
       zsh

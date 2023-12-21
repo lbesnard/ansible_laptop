@@ -37,6 +37,7 @@
       'build-essential',
       'blueman', #bluetooth
       'chromium-browser',
+      'chromium',
       'cifs-utils',
       calc,
       'cmake',
@@ -200,10 +201,10 @@
     deb: "{{vagrant_url}}"
     only_upgrade: yes
 
-- name: Install chef-dk
-  ignore_errors: yes
-  apt:
-    deb: "{{chefdk_url}}"
+#- name: Install chef-dk
+  #ignore_errors: yes
+  #apt:
+    #deb: "{{chefdk_url}}"
 
 - name: install berkshelf plugin
   shell: command -v berks >/dev/null || vagrant plugin install vagrant-berkshelf
@@ -255,6 +256,7 @@
       mp3val,
       #puddletag,
       python-gi,
+      shntool,
       subtitleeditor,
       #spark,
       timidity,
