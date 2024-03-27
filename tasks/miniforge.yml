@@ -1,0 +1,49 @@
+- name: Ansible check miniforge exists
+  stat:
+    path: "{{miniforge_path}}/bin"
+  register: miniforge_file_details
+
+- name: Install miniforge
+  block:
+    - name: Download miniforge
+      get_url:
+        url: "{{miniforge_url}}"
+        dest: /tmp/install-miniforge.sh
+        mode: 0550
+    - name: Create miniforge folder
+      become: yes
+      become_user: "{{ user }}"
+      #become: True
+      file:
+        path: "{{miniforge_path}}"
+        state: directory
+        #owner: "{{user}}"
+        #mode: 775
+        recurse: yes
+    - name: Run the installer
+      become: yes
+      become_user: "{{ user }}"
+      shell: "/tmp/install-miniforge.sh -b -u -s"
+    - name: Remove the installer
+      file:
+        state: absent
+        path: /tmp/install-miniforge.sh
+    - name: miniforge - execution permission for all
+      become: yes
+      become_user: "{{ user }}"
+      #become: True
+      file:
+        path: "{{miniforge_path}}/bin"
+        mode: +x
+        recurse: yes
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: yes
+  when: not miniforge_file_details.stat.exists
+
+- name: miniforge add conda-forge channel
+  shell: "{{miniforge_path}}/condabin/conda  config --add channels conda-forge"
+  become: yes
+  become_user: "{{ user }}"
+  ignore_errors: true
+

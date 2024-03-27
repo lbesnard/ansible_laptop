@@ -12,69 +12,65 @@
   become_user: "{{ user }}"
   homebrew:
     path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
-    name: [
-      cmake,
-      gcc,
-      ruby,
-      ruby-install,
-      act, # github action
-      angle-grinder,
-      ansible,
-      autojump,
-      awscli,
-      bat,
-      coreutils,
-      curl,
-      croc, # send files p2p
-      dfc,
-      diff-so-fancy,
-      exa,
-      # fasd, # no more maintained by homebrew 
-      fd,
-      fpp,
-      freetype, # for python matplotlib
-      fzf,
-      gcc@5,
-      git,
-      git-delta,
-      gh, # github cli
-      # googler, # not maintained
-      grc,
-      #highlight,
-      htop,
-      httpie,
-      hub,
-      lnav,
-      lsd,
-      mdcat,
-      midnight-commander,
-      mycli,
-      ncdu,
-      node,
-      #openssh, # in order to have latest version => SetEnv
-      p7zip,
-      pgcli,
-      pyenv,
-      pyenv-virtualenv,
-      ranger,
-      rbenv,
-      ripgrep,
-      task,
-      the_silver_searcher,
-      thefuck,
-      tig,
-      tmux,
-      tree,
-      urlview,
-      vim,
-      viu,
-      xclip,
-      yt-dlp,
-      youtube-dl,
-      yq,
-      zsh
-      ]
-    state: present
+    name: "{{ item }}"
+    state: present   # Ensure that the package is present
+  loop:
+    - cmake
+    - gcc
+    - ruby
+    - ruby-install
+    - act # github action
+    - angle-grinder
+    - ansible
+    - autojump
+    - awscli
+    - bat
+    - coreutils
+    - curl
+    - croc # send files p2p
+    - dfc
+    - diff-so-fancy
+    - fd
+    - fpp
+    - freetype # for python matplotlib
+    - fzf
+    - gcc
+    - git
+    - git-delta
+    - gh # github cli
+    - grc
+    - htop
+    - httpie
+    - hub
+    - lnav
+    - lsd
+    - mdcat
+    - midnight-commander
+    - mycli
+    - ncdu
+    - node
+    - openssh
+    - p7zip
+    - pgcli
+    - pyenv
+    - pyenv-virtualenv
+    - ranger
+    - rbenv
+    - ripgrep
+    - task
+    - the_silver_searcher
+    - thefuck
+    - tig
+    - tmux
+    - tree
+    - urlview
+    - vim
+    - viu
+    - xclip
+    - yt-dlp
+    - youtube-dl
+    - yq
+    - zsh
   ignore_errors: yes
 
 

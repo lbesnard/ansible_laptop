@@ -9,15 +9,15 @@
   vars_files:
     - vars.yml
   tasks:
-    - {include: tasks/homebrew.yml, tags: ['brew_install']}
-    - {include: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
-    - {include: tasks/dotfiles.yml, tags: ['dotfiles']}
-    - {include: tasks/cheat.yml, tags: ['cheat']}
-    - {include: tasks/conda.yml, tags: ['conda']}
-    - {include: tasks/conda_packages.yml, tags: ['conda', 'packages']}
-    - {include: tasks/neovim.yml, tags: ['neovim']}
-    - {include: tasks/aodn_chef.yml, tags: ['aodn', 'chef']}
-    - {include: tasks/data_services.yml, tags: ['aodn', 'data_services']}
-    - {include: tasks/fonts.yml, tags: ['fonts']}
-    - {include: tasks/nextcloud.yml, tags: ['appimages','nextcloud', 'packages']}
-    - {include: tasks/github_repos.yml, tags: ['github','repos']}
+    - {include_tasks: tasks/homebrew.yml, tags: ['brew_install']}
+    - {include_tasks: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
+    - {include_tasks: tasks/dotfiles.yml, tags: ['dotfiles']}
+    - {include_tasks: tasks/cheat.yml, tags: ['cheat']}
+    - {include_tasks: tasks/miniforge.yml, tags: ['miniforge']}
+    - {include_tasks: tasks/miniforge_packages.yml, tags: ['miniforge', 'packages']}
+    - {include_tasks: tasks/neovim.yml, tags: ['neovim']}
+    - {include_tasks: tasks/aodn_chef.yml, tags: ['aodn', 'chef']}
+    - {include_tasks: tasks/data_services.yml, tags: ['aodn', 'data_services']}
+    - {include_tasks: tasks/fonts.yml, tags: ['fonts']}
+    - {include_tasks: tasks/nextcloud.yml, tags: ['appimages','nextcloud', 'packages']}
+    - {include_tasks: tasks/github_repos.yml, tags: ['github','repos']}

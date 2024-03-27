@@ -8,10 +8,10 @@
     - name: install homebrew neovim
       homebrew:
         path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
-        name: neovim  # python dependancies will be installed via conda
+        name: neovim  # python dependancies will be installed via miniforge
         state: latest
 
-    - name: Install some packages in a neovim conda environment
+    - name: Install some packages in a neovim miniforge environment
       conda:
         channels:
           - conda-forge
@@ -22,7 +22,7 @@
           - msgpack-python
         state: present
         environment: neovim
-        executable: "{{conda_path}}/bin/conda"
+        executable: "{{miniforge_path}}/bin/mamba"
 
     - name: Install vim plugins
       command: "nvim +''PlugInstall'' +''PlugUpdate'' +''silent!'' +''qall!''"

@@ -25,11 +25,14 @@ repo_keepass_rofi: git@github.com:samedamci/rofi-keepassxc.git
 
 # python
 conda_path: "{{user_home}}/anaconda3"
-conda_url: https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
-conda_md5: md5:4cd48ef23a075e8555a8b6d0a8c4bae2
+conda_url: https://repo.anaconda.com/archive/Anaconda3-2024.02-1-Linux-x86_64.sh
+conda_md5: md5:be4ff0ed859e3e3b6d7611383294c70a
+
+miniforge_url: "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
+miniforge_path: "{{user_home}}/miniforge3"
 
 # jetbrains
-toolbox_version: "1.20.8352"
+toolbox_version: "2.2.3.20090"
 toolbox_install_dir: "{{user_home}}/bin"
 inotify_max_user_watches: "524288"
 
@@ -38,16 +41,16 @@ light_url: https://github.com/haikarainen/light/releases/download/v1.2/light_1.2
 skype_url: https://repo.skype.com/latest/skypeforlinux-64.deb
 zoom_url: https://zoom.us/client/latest/zoom_amd64.deb
 vagrant_url: https://releases.hashicorp.com/vagrant/2.2.10/vagrant_2.2.10_x86_64.deb
-vbox_url: https://download.virtualbox.org/virtualbox/6.1.22/virtualbox-6.1_6.1.22-144080~Ubuntu~eoan_amd64.deb
+vbox_url: https://download.virtualbox.org/virtualbox/6.1.50/virtualbox-6.1_6.1.50-161033~Ubuntu~jammy_amd64.deb
 
 # url
-cheat_exe_url: https://github.com/cheat/cheat/releases/download/3.0.1/cheat-linux-amd64
+cheat_exe_url: https://github.com/cheat/cheat/releases/download/4.4.2/cheat-linux-amd64.gz
 tldr_exe_url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
 nerd_patched_fonts_url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/3270.zip
 nerd_font_1_url: https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
 mobac_url: https://sourceforge.net/projects/mobac/files/Mobile%20Atlas%20Creator/MOBAC%202.0/Mobile%20Atlas%20Creator%202.1.2.zip/download
 nextcloud_url: https://download.nextcloud.com/desktop/releases/Linux/latest
-yq_url: https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_amd64.tar.gz
+yq_url: https://github.com/mikefarah/yq/releases/download/v4.42.1/yq_linux_amd64.tar.gz
 
 debian_brightness_path: /sys/class/backlight/intel_backlight/brightness
 

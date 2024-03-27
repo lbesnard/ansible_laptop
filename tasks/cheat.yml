@@ -2,17 +2,20 @@
   become: yes
   become_user: "{{user}}"
   file:
-    path: "{{user_home}}/usr/bin"
+    path: "{{user_home}}/bin"
     state: directory
     mode: 0775
 
 - name: download cheat executable
   get_url:
     url: "{{cheat_exe_url}}"
-    dest: "{{user_home}}/usr/bin/cheat"
+    dest: "{{user_home}}/bin/cheat-linux-amd64.gz"
+
+- name: Unzip cheat binary
+  command: "gunzip -fd {{user_home}}/bin/cheat-linux-amd64.gz"
 
 - name: Changing perm of "cheat", adding "+x"
-  file: dest="{{user_home}}/usr/bin/cheat" mode=a+x
+  file: dest="{{user_home}}/bin/cheat-linux-amd64" mode=a+x
 
 - name: download tldr executable
   get_url:

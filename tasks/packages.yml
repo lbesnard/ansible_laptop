@@ -36,6 +36,7 @@
       'bash-completion',
       'build-essential',
       'blueman', #bluetooth
+      'brightnessctl',
       'chromium-browser',
       'chromium',
       'cifs-utils',
@@ -181,7 +182,7 @@
       #xorg-video-abi-23,
       xserver-xorg-core,
       xserver-xorg-input-all, # VERY IMPORTANT. HAS frozen my logging prompt
-      virtualbox-guest-dkms,
+      #virtualbox-guest-dkms,
       virtualbox-guest-utils,
       virtualbox-guest-x11,
       virtualenv,
@@ -255,7 +256,7 @@
       mp3blaster,
       mp3val,
       #puddletag,
-      python-gi,
+      #python-gi,
       shntool,
       subtitleeditor,
       #spark,
@@ -288,7 +289,6 @@
   ignore_errors: yes
   apt:
     name: [
-      pgadmin3,
       postgresql,
       sqlite3,
       sqlitebrowser,
@@ -331,5 +331,6 @@
     snap:
       name:
         - alacritty
+        - slack
       classic: yes
 

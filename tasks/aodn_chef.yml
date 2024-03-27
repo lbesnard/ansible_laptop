@@ -46,8 +46,8 @@
       dest: "{{ github_repo_dir }}/imos-toolbox/environment.yml"
       backup: yes
 
-- name: create imos-toolbox conda env
-  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_imos_toolbox}}'* ]] && echo '{{conda_imos_toolbox}} conda env already installed' || {{conda_path}}/condabin/conda env create -f environment.yml"
+- name: create imos-toolbox mamba env
+  shell: "[[ $({{miniforge_path}}/condabin/mamba env list | cut -d' ' -f1) = *'{{conda_imos_toolbox}}'* ]] && echo '{{conda_imos_toolbox}} mamba env already installed' || {{miniforge_path}}/condabin/mamba env create -f environment.yml"
   args:
     executable: /bin/bash
     chdir: "{{github_repo_dir}}/imos-toolbox"
@@ -55,8 +55,8 @@
   become_user: "{{ user }}"
   ignore_errors: true
 
-- name: update imos-toolbox conda env
-  shell: "{{conda_path}}/condabin/conda env update -f environment.yml"
+- name: update imos-toolbox mamba env
+  shell: "{{miniforge_path}}/condabin/mamba env update -f environment.yml"
   args:
     chdir: "{{github_repo_dir}}/imos-toolbox"
   become: yes
@@ -67,7 +67,7 @@
 # AODNDATA CONDA
 ######################
 
-- name: create python-aodndata conda yaml
+- name: create python-aodndata mamba yaml
   ignore_errors: yes
   copy:
       content: |
@@ -76,8 +76,8 @@
         # This is based on scripts/setup_virtualenv.sh and doesn't interfere with the
         # wheel package
         # stage values are "build", "rc", "production"
-        # conda env create --file=stage_environment.yml
-        # conda env update --file=stage_environment.yml
+        # mamba env create --file=stage_environment.yml
+        # mamba env update --file=stage_environment.yml
         name: "{{conda_aodndata}}"
         channels:
           - conda-forge
@@ -100,8 +100,8 @@
       dest: "{{aodndata_dir}}/stage_environment.yml"
       backup: yes
 
-- name: create aodndata conda env
-  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_aodndata}}'* ]] && echo '{{conda_aodndata}} conda env already installed' || {{conda_path}}/condabin/conda env create -f stage_environment.yml"
+- name: create aodndata mamba env
+  shell: "[[ $({{miniforge_path}}/condabin/mamba env list | cut -d' ' -f1) = *'{{conda_aodndata}}'* ]] && echo '{{conda_aodndata}} mamba env already installed' || {{miniforge_path}}/condabin/mamba env create -f stage_environment.yml"
   args:
     executable: /bin/bash
     chdir: "{{aodndata_dir}}"
@@ -109,8 +109,8 @@
   become_user: "{{ user }}"
   ignore_errors: true
 
-- name: update aodndata conda env
-  shell: "{{conda_path}}/condabin/conda env update -f stage_environment.yml"
+- name: update aodndata mamba env
+  shell: "{{miniforge_path}}/condabin/mamba env update -f stage_environment.yml"
   args:
     chdir: "{{aodndata_dir}}"
   become: yes
@@ -150,18 +150,18 @@
       dest: "{{ tempfile_1.path }}"
       backup: yes
 
-- name: create imos-toolbox conda env
-  shell: "[[ $({{conda_path}}/condabin/conda env list | cut -d' ' -f1) = *'{{conda_ncvue}}'* ]] \
-          && echo '{{conda_ncvue}} conda env already installed' || \
-          {{conda_path}}/condabin/conda env create -f '{{ tempfile_1.path }}'"
+- name: create imos-toolbox mamba env
+  shell: "[[ $({{miniforge_path}}/condabin/mamba env list | cut -d' ' -f1) = *'{{conda_ncvue}}'* ]] \
+          && echo '{{conda_ncvue}} mamba env already installed' || \
+          {{miniforge_path}}/condabin/mamba env create -f '{{ tempfile_1.path }}'"
   args:
     executable: /bin/bash
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true
 
-- name: update ncvue-toolbox conda env
-  shell: "{{conda_path}}/condabin/conda env update -f {{ tempfile_1.path }}"
+- name: update ncvue-toolbox mamba env
+  shell: "{{miniforge_path}}/condabin/mamba env update -f {{ tempfile_1.path }}"
   become: yes
   become_user: "{{ user }}"
   ignore_errors: true

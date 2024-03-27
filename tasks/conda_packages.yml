@@ -1,8 +1,0 @@
-- name: "Install python packages in default conda env"
-  become: yes
-  become_user: "{{ user }}"
-  ignore_errors: true
-  pip:
-    executable: "{{conda_path}}/bin/pip3"
-    name:
-      - passhole

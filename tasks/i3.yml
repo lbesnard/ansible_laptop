@@ -17,7 +17,7 @@
       neofetch,
       redshift,
       rofi,
-      rxvt-unicode-256color,
+      rxvt-unicode, #-256color,
       screen,
       scrot,
       tlp,
