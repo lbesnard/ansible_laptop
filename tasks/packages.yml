@@ -323,7 +323,6 @@
       name:
         - snap-store
         - pdftk
-        - riot-web
         - youtube-dl
       channel: latest/stable
   - name: install snap classic
