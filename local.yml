@@ -11,10 +11,10 @@
   vars_files:
     - vars.yml
   tasks:
-#    - {include_tasks: tasks/packages.yml, tags: ['packages', 'apt']}
-    #- {include_tasks: tasks/homebrew.yml, tags: ['brew_install']}
-    #- {include_tasks: tasks/i3.yml, tags: ['i3', 'packages']}
-#    - {include_tasks: tasks/samba.yml, tags: ['samba']}
+    - {include_tasks: tasks/packages.yml, tags: ['packages', 'apt']}
+    - {include_tasks: tasks/homebrew.yml, tags: ['brew_install']}
+    - {include_tasks: tasks/i3.yml, tags: ['i3', 'packages']}
+    - {include_tasks: tasks/samba.yml, tags: ['samba']}
 
 # user specific
 - hosts: localhost
