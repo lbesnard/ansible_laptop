@@ -86,6 +86,7 @@
         dependencies:
           - cython
           - python=3.8
+          - cartopy=0.20.3
           - cf-units
           - pip
           - pip:
