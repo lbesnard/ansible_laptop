@@ -42,6 +42,9 @@
     - name: install SourceCodePro
       shell: "{{github_repo_dir}}/nerd-fonts/install.sh SourceCodePro"
       ignore_errors: yes
+    - name: install SourceCodeProMono
+      shell: "ln -sf {{github_repo_dir}}/nerd-fonts/patched-fonts/SourceCodePro/SauceCodeProNerdFontMono-* {{user_home}}/.local/share/fonts/NerdFonts/"
+      ignore_errors: yes
     - name: install JetBrainsMono
       shell: "{{github_repo_dir}}/nerd-fonts/install.sh JetBrainsMono"
       ignore_errors: yes
