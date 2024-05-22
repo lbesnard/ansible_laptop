@@ -1,0 +1,14 @@
+- hosts: remote_machine
+  connection: ssh
+  become: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - {include_tasks: tasks/dotfiles.yml, tags: ['dotfiles']}
+    - {include_tasks: tasks/homebrew.yml, tags: ['brew_install']}
+    - {include_tasks: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
+    - {include_tasks: tasks/cheat.yml, tags: ['cheat']}
+    - {include_tasks: tasks/miniforge.yml, tags: ['miniforge']}
+    - {include_tasks: tasks/miniforge_packages.yml, tags: ['miniforge', 'packages']}
+    - {include_tasks: tasks/neovim.yml, tags: ['neovim']}
+
