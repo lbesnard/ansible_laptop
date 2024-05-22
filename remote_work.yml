@@ -1,4 +1,4 @@
-- hosts: remote_machine
+- hosts: all
   connection: ssh
   become: no
   vars_files:
