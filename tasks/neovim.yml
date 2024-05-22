@@ -1,6 +1,4 @@
 - name: check neovim dotfiles exists
-  hosts: localhost
-  connection: local
   stat:
     path: "/home/{{user}}/.config/nvim/init.vim"
   register: nvim_dotfile
