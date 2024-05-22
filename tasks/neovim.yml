@@ -3,6 +3,13 @@
     path: "/home/{{user}}/.config/nvim/init.vim"
   register: nvim_dotfile
 
+- name: check neovim venv exists
+  stat:
+    path: "{{miniforge_path}}/envs/neovim/bin/python"
+  register: nvim_venv
+
+
+
 - name: install neovim
   block:
     - name: install homebrew neovim
@@ -30,4 +37,4 @@
 
   become: yes
   become_user: "{{ user }}"
-  when: nvim_dotfile.stat.exists == True
+  when: (nvim_dotfile.stat.exists == True) and (nvim_venv.stat.exists == False)
