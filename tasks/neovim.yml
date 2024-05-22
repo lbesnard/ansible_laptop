@@ -8,8 +8,6 @@
     path: "{{miniforge_path}}/envs/neovim/bin/python"
   register: nvim_venv
 
-
-
 - name: install neovim
   block:
     - name: install homebrew neovim

@@ -9,6 +9,10 @@
   vars_files:
     - vars.yml
   tasks:
+    - name: Print all tags
+      debug:
+        msg: "Available tags: {{ ansible_run_tags }}"
+  tasks:
     - {include_tasks: tasks/homebrew.yml, tags: ['brew_install']}
     - {include_tasks: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
     - {include_tasks: tasks/dotfiles.yml, tags: ['dotfiles']}
