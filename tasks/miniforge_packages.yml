@@ -6,3 +6,6 @@
     executable: "{{miniforge_path}}/bin/pip3"
     name:
       - passhole
+      - i3ipc  # required by i3 script to rename workspaces
+      - fontawsome # required by i3 script to rename workspaces
+

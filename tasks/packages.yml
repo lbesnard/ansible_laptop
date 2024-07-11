@@ -257,6 +257,7 @@
     - mp3val
     # - puddletag
     # - python-gi
+    - pavucontrol
     - shntool
     - subtitleeditor
     # - spark
