@@ -6,9 +6,8 @@
     - name: Install Python packages using Miniforge pip
       ansible.builtin.pip:
         executable: "{{ miniforge_path }}/bin/pip3"
-        name:
-          - passhole
-          - i3ipc
-          - fontawesome
+        name: passhole
+          #- i3ipc
+          #- fontawesome
       ignore_errors: true
 
