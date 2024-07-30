@@ -1,14 +1,4 @@
-- name: Install Python packages in default Miniforge environment
-  become: yes
-  become_user: "{{ user }}"
-  tasks:
-    - name: Install Python packages using Miniforge pip
-      ansible.builtin.pip:
-        executable: "{{ miniforge_path }}/bin/pip3"
-        name:
-          - passhole
-          - i3ipc
-          - fontawesome
-        state: present
-      ignore_errors: true
-
+- name: Install bottle for Python 3.3 specifically, using the 'pip3.3' executable
+  ansible.builtin.pip:
+    name: passhole
+    executable: "{{ miniforge_path }}/bin/pip3"
