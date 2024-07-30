@@ -1,5 +1,5 @@
 - name: Install Python packages using Miniforge pip
-  command: "{{ miniforge_path }}/bin/pip3 install {{ item }}"
+  shell: "{{ miniforge_path }}/bin/pip3 install {{ item }}"
   loop:
     - passhole
     - i3ipc
