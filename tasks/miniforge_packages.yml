@@ -1,8 +1,9 @@
-- name: Install Python packages using Miniforge pip
-  shell: "{{ miniforge_path }}/bin/pip3 install {{ item }}"
-  loop:
-    - passhole
-    - i3ipc
-    - fontawesome
-  #ignore_errors: true
+- name: Install multi python packages with version specifiers
+  ansible.builtin.pip:
+    name:
+      - passhole
+      - i3ipc
+      - fontawesome
+    executable: "{{ miniforge_path }}/bin/pip3"
+
 
