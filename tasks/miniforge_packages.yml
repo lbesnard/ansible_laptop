@@ -4,5 +4,5 @@
     - passhole
     - i3ipc
     - fontawesome
-  ignore_errors: true
+  #ignore_errors: true
 
