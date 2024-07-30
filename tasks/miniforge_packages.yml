@@ -5,7 +5,7 @@
   tasks:
     - name: Install Python packages using Miniforge pip
       ansible.builtin.pip:
-        executable: "{{ miniforge_path }}/bin/pip3"
+        executable: pip3
         name: passhole
           #- i3ipc
           #- fontawesome
