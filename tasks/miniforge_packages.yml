@@ -1,11 +1,15 @@
-- name: "Install python packages in default miniforge env"
+- name: Install Python packages in default Miniforge environment
   become: yes
   become_user: "{{ user }}"
-  ignore_errors: true
-  pip:
-    executable: "{{ miniforge_path }}/bin/pip3"
-    name:
-      - passhole
-      - i3ipc  # required by i3 script to rename workspaces
-      - fontawesome # required by i3 script to rename workspaces
+  tasks:
+    - name: Install Python packages using Miniforge pip
+      ansible.builtin.pip:
+        executable: "{{ miniforge_path }}/bin/pip3"
+        name: "{{ item }}"
+        state: present
+      loop:
+        - passhole
+        - i3ipc
+        - fontawesome
+      ignore_errors: true
 
