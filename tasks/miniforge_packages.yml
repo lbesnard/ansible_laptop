@@ -1,6 +1,5 @@
 ---
 - name: Install Python packages in default Miniforge environment
-  hosts: localhost
   become: yes
   become_user: "{{ user }}"
   tasks:
