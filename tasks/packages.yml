@@ -112,6 +112,7 @@
     - 'elinks'
     - 'gufw'
     - 'irssi'
+    - ifstat
     - 'libnotify-bin'
     - libtest-www-mechanize-perl
     - libnet-whois-ip-perl
@@ -132,6 +133,7 @@
     - 'strace'
     - 'transmission-gtk'
     - 'traceroute'
+    - vnstat
     - 'wavemon'
     - 'whois'
     - wireguard
