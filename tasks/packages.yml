@@ -330,5 +330,6 @@
         name:
           - alacritty
           - slack
+          - btop
         classic: yes
 
