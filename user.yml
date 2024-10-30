@@ -1,5 +1,6 @@
 # user specific
 - hosts: localhost
+  tags: local_user_install
   ignore_errors: yes
   #gather_facts: false         # Skip fact gathering to avoid privilege issues
   connection: local

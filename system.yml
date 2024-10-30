@@ -1,6 +1,7 @@
 ---
 # system wide
 - hosts: localhost
+  tags: local_system_install
   connection: local
   become: true
   gather_facts: true   # Gather facts here since it requires elevated permissions

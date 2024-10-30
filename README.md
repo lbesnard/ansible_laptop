@@ -66,8 +66,8 @@ ansible-pull -U https://github.com/lbesnard/ansible_laptop.git remote.yml -i hos
 ### 2.3 Install specific tag with no sudo privileges
 ```bash
 
-ansible-pull -i hosts -U https://github.com/lbesnard/ansible_laptop.git -t conda
-ansible-pull -i hosts -U https://github.com/lbesnard/ansible_laptop.git -t neovim
+ansible-pull -i hosts user.yml -U https://github.com/lbesnard/ansible_laptop.git -t conda
+ansible-pull -i hosts user.yml -U https://github.com/lbesnard/ansible_laptop.git -t neovim
 ```
 
 ### 2.4 Run locally (examples)
@@ -88,6 +88,13 @@ ansible-playbook -i hosts remote.yml -t conda
 # or
 ansible-playbook -i hosts user.yml -t conda
 ```
+
+### 2.5 List Tags
+
+```bash
+ansible-playbook user.yml --list-tags
+```
+
 ## 3 Post Installation
 install manuall vbox ext pack because of manual licencing
 ```sudo apt-get install virtualbox-ext-pack```
