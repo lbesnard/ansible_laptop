@@ -128,7 +128,7 @@
     - 'ngrep'
     - 'nmap'
     - 'openssh-server'
-    - openresolv
+    #- openresolv
     - samba
     - 'strace'
     - 'transmission-gtk'
@@ -165,7 +165,6 @@
   loop:
     - dos2unix
     - playonlinux
-    - zsnes
 
 - name: Install virtualbox specific version
   ignore_errors: yes
@@ -188,7 +187,7 @@
     - virtualbox-guest-utils
     - virtualbox-guest-x11
     - virtualenv
-    - qemu
+    - qemu-system
     # - wine1.6
     - linux-headers-generic
     - virt-manager
@@ -271,7 +270,6 @@
     - vlc-data
     - vlc-plugin-notify
     - webp
-    - youtube-dl
 
 - name: install java
   ignore_errors: yes

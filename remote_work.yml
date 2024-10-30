@@ -3,12 +3,58 @@
   become: no
   vars_files:
     - vars.yml
+
   tasks:
-    - {include_tasks: tasks/dotfiles.yml, tags: ['dotfiles']}
-    - {include_tasks: tasks/homebrew.yml, tags: ['brew_install']}
-    - {include_tasks: tasks/homebrew_packages.yml, tags: ['brew', 'packages']}
-    - {include_tasks: tasks/cheat.yml, tags: ['cheat']}
-    - {include_tasks: tasks/miniforge.yml, tags: ['miniforge']}
-    - {include_tasks: tasks/miniforge_packages.yml, tags: ['miniforge', 'packages']}
-    - {include_tasks: tasks/neovim.yml, tags: ['neovim']}
+    - name: Apply the dotfiles tag to the include and to all tasks in dotfiles.yml
+      include_tasks:
+        file: tasks/dotfiles.yml
+        apply:
+          tags: dotfiles
+      tags: dotfiles
+
+    - name: Apply the brew_install tag to the include and to all tasks in homebrew.yml
+      include_tasks:
+        file: tasks/homebrew.yml
+        apply:
+          tags: brew_install
+      tags: brew_install
+
+    - name: Apply the brew and packages tags to the include and to all tasks in homebrew_packages.yml
+      include_tasks:
+        file: tasks/homebrew_packages.yml
+        apply:
+          tags: brew
+      tags:
+        - brew
+        - packages
+
+    - name: Apply the cheat tag to the include and to all tasks in cheat.yml
+      include_tasks:
+        file: tasks/cheat.yml
+        apply:
+          tags: cheat
+      tags: cheat
+
+    - name: Apply the miniforge tag to the include and to all tasks in miniforge.yml
+      include_tasks:
+        file: tasks/miniforge.yml
+        apply:
+          tags: miniforge
+      tags: miniforge
+
+    - name: Apply the miniforge and packages tags to the include and to all tasks in miniforge_packages.yml
+      include_tasks:
+        file: tasks/miniforge_packages.yml
+        apply:
+          tags: miniforge
+      tags:
+        - miniforge
+        - packages
+
+    - name: Apply the neovim tag to the include and to all tasks in neovim.yml
+      include_tasks:
+        file: tasks/neovim.yml
+        apply:
+          tags: neovim
+      tags: neovim
 

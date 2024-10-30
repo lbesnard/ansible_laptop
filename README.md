@@ -55,7 +55,7 @@ curl -L https://raw.githubusercontent.com/lbesnard/ansible_laptop/master/install
 
 OR if ansible is already installed on the machine
 ```
-/usr/bin/ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts
+/usr/bin/ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts local.yml
 ```
 
 ### 2.2 Without sudo (and if ansible priorly installed via linuxbrew)
@@ -80,9 +80,13 @@ cd ansible_laptop
 
 # run as non sudo user
 ansible-playbook -i hosts remote.yml --skip-tags apt
+#or
+ansible-playbook -i hosts user.yml --skip-tags apt
 
 # run as non sudo user with a specific tag
 ansible-playbook -i hosts remote.yml -t conda
+# or
+ansible-playbook -i hosts user.yml -t conda
 ```
 ## 3 Post Installation
 install manuall vbox ext pack because of manual licencing

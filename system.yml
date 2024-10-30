@@ -1,0 +1,47 @@
+---
+# system wide
+- hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true   # Gather facts here since it requires elevated permissions
+  pre_tasks:
+    - name: update repositories
+      apt: update_cache=yes
+      ignore_errors: yes
+      changed_when: False
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Apply the packages and apt tags to the include and to all tasks in packages.yml
+      include_tasks:
+        file: tasks/packages.yml
+        apply:
+          tags: packages
+      tags:
+        - packages
+        - apt
+
+    - name: Apply the brew_install tag to the include and to all tasks in homebrew.yml
+      include_tasks:
+        file: tasks/homebrew.yml
+        apply:
+          tags: brew_install
+      tags: brew_install
+
+    - name: Apply the i3 and packages tags to the include and to all tasks in i3.yml
+      include_tasks:
+        file: tasks/i3.yml
+        apply:
+          tags: i3
+      tags:
+        - i3
+        - packages
+
+    - name: Apply the samba tag to the include and to all tasks in samba.yml
+      include_tasks:
+        file: tasks/samba.yml
+        apply:
+          tags: samba
+      tags: samba
+
+

@@ -18,4 +18,9 @@ sudo apt-add-repository -y ppa:ansible/ansible;
 sudo apt-get update;
 sudo apt-get install -y ansible;
 
+# install missing dependencies
+ansible-galaxy collection install ansible.builtin
+ansible-galaxy collection install community.general
+ansible-galaxy collection install ansible.posix
+
 ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts
