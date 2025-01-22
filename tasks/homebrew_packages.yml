@@ -13,7 +13,7 @@
   homebrew:
     path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
     name: "{{ item }}"
-    state: present   # Ensure that the package is present
+    state: present # Ensure that the package is present
   loop:
     - cmake
     - gcc
@@ -38,11 +38,13 @@
     - git
     - git-delta
     - gh # github cli
+    - glow
     - grc
     - htop
     - httpie
     - hub
-    - lf  # ranger clone
+    - lazygit
+    - lf # ranger clone
     - lnav
     - lsd
     - mdcat
@@ -58,6 +60,8 @@
     - ranger
     - rbenv
     - ripgrep
+    - sad
+    - sk
     - task
     - the_silver_searcher
     - thefuck
@@ -68,13 +72,14 @@
     - vim
     - viu
     - xclip
+    - yazi
     - yt-dlp
     - youtube-dl
     - yq
     - zsh
     - zoxide
+    - jstkdng/programs/ueberzugpp # used for image preview by yazi
   ignore_errors: yes
-
 
 - name: "homebrew add tap monkeys-audio"
   shell: "[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && /home/linuxbrew/.linuxbrew/bin/brew tap fernandotcl/homebrew-fernandotcl || ([[ -f /home/{{ user }}/.linuxbrew/bin/brew ]] && /home/{{ user }}/.linuxbrew/bin/brew tap fernandotcl/homebrew-fernandotcl)"
@@ -87,9 +92,7 @@
 - name: "homebrew monkeys-audio"
   homebrew:
     path: "/home/linuxbrew/.linuxbrew/bin:/home/{{ user }}/.linuxbrew/bin"
-    name: [
-      monkeys-audio
-      ]
+    name: [monkeys-audio]
     state: present
   become: yes
   become_user: "{{ user }}"
