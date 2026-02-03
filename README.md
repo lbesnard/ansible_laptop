@@ -100,7 +100,7 @@ install manuall vbox ext pack because of manual licencing
 ```sudo apt-get install virtualbox-ext-pack```
 
 
-# Proxmox provisionning
+# Proxmox provisionning 🧱
 
 ### Location-Based Execution
 | Location | Command |
