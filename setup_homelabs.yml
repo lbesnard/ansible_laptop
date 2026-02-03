@@ -128,9 +128,9 @@
     #       tags: miniforge
     #   tags: miniforge
     #
-    - name: docker compose up
+    - name: docker compose
       include_tasks:
-        file: tasks/docker_up_services.yml
+        file: tasks/docker_services.yml
         apply:
           become: false
           tags: compose
