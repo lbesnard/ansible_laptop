@@ -1,333 +1,69 @@
 - name: Install YQ
-  ignore_errors: yes
+  become: true
   block:
-    - name: Ansible check yq exists
+    - name: Check if yq exists
       stat:
         path: "/usr/bin/yq"
-      register: yq_file_details
-    - name: Create temporary dir
-      ansible.builtin.tempfile:
-        state: directory
-        prefix: yq-
-      register: yq_binary
-    - name: Download yq
-      unarchive:
-        src: "{{yq_url}}"
-        dest: "{{ yq_binary.path }}"
-        remote_src: yes
-        mode: +x
-    - name: move yq binary
-      copy:
-        remote_src: True
-        src: "{{ yq_binary.path }}/yq_linux_amd64"
-        dest: /usr/bin/yq
-        mode: +x
-      when: not yq_file_details.stat.exists
+      register: yq_check
 
-- name: Install essential packages
-  ignore_errors: yes
+    - name: Download and Install yq
+      shell: |
+        curl -L {{ yq_url }} | tar -xzC /tmp/
+        mv /tmp/yq_linux_amd64 /usr/bin/yq
+        chmod +x /usr/bin/yq
+      when: not yq_check.stat.exists
+      args:
+        warn: false # Optional: suppresses "you should use a module" warnings
+- name: Force fix broken dependencies
+  become: true
+  shell: |
+    # Clear the locks if they exist
+    rm -f /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock
+    # Force apt to download missing dependencies and fix the state
+    apt-get update
+    apt-get install -f -y
+  register: apt_fix
+
+- name: Final dpkg configuration
+  become: true
+  shell: dpkg --configure -a
+  when: apt_fix is success
+
+- name: Install truly essential CLI tools
+  become: true
   apt:
-    name: "{{ item }}"
-  loop:
-    - 'python3-apt'
-    - 'ant'
-    - 'atool'
-    - 'autojump'
-    - 'bash-completion'
-    - 'build-essential'
-    - 'blueman' #bluetooth
-    - 'brightnessctl'
-    - 'chromium-browser'
-    - 'chromium'
-    - 'cifs-utils'
-    - calc
-    - 'cmake'
-    - 'coreutils'
-    - 'copyq'
-    - 'cowsay'
-    - 'devscripts'
-    - 'emacs'
-    - 'fasd'
-    - 'gftp'
-    - 'git'
-    - gparted
-    - 'gt5'
-    # - 'gtg'
-    - 'guake'
-    - 'htop'
-    # - 'ipython'
-    - 'keepassxc'
-    - 'pass'
-    - 'kpcli'
-    - 'libpq-dev'
-    - 'libxml2-utils'
-    - 'linux-oem-22.04b'  # for dell 7450; otherwise video card not recognised
-    - 'mc'
-    - nodejs
-    - nfs-common
-    # - 'orage'
-    - 'pasystray' # volume applet
-    - 'p7zip'
-    - 'pdfposter'
-    - 'powerline'
-    - 'fonts-powerline'
-    # - 'python-pip'
-    - 'rake'
-    - 'ruby-dev'
-    - 'screen'
-    - 'shunit2'
-    - 'snap'
-    # - 'snapd'
-    - 'source-highlight'
-    - 'sshfs'
-    - 'sublime-text'
-    - 'terminator'
-    - 'tilda'
-    - 'time'
-    - 'tmux'
-    - 'ttf-ancient-fonts'
-    - 'txt2regex'
-    - 'udiskie' # package to facilitate mount of HD
-    - 'unrar'
-    - 'unzip'
-    - 'vim-python-jedi'
-    - 'x11-utils'
-    - xclip
-    - 'xdotool'
-    - 'xmlindent'
-    - 'xsltproc'
-    - 'xvfb'
-    - 'yajl-tools'
-    - 'zsh'
+    name:
+      - build-essential
+      - curl
+      - git
+      - htop
+      - tmux
+      - vim
+      - zsh
+      - unzip
+      - p7zip
+      - python3-apt
+      - coreutils
+      - wget
+      - zsh
+      - tmux
+      - ranger
+      - silversearcher-ag
+    state: present
+    update_cache: yes
 
-- name: Install network packages
-  ignore_errors: yes
+- name: Install Development & Network Tools
+  become: true
+  ignore_errors: yes # Keep this for the "nice to haves"
   apt:
-    name: "{{ item }}"
-  loop:
-    - curl
-    - filezilla
-    - 'dnsmasq'
-    - 'dnsmasq-utils'
-    - 'elinks'
-    - 'gufw'
-    - 'irssi'
-    - ifstat
-    - 'libnotify-bin'
-    - libtest-www-mechanize-perl
-    - libnet-whois-ip-perl
-    - 'lighttpd'
-    - 'network-manager'
-    - 'network-manager-gnome'
-    - 'network-manager-openvpn'
-    - 'network-manager-openvpn-gnome'
-    - 'network-manager-pptp'
-    - 'network-manager-pptp-gnome'
-    - 'network-manager-vpnc'
-    - 'network-manager-vpnc-gnome'
-    - 'ngrep'
-    - 'nmap'
-    - 'openssh-server'
-    #- openresolv
-    - samba
-    - 'strace'
-    - 'transmission-gtk'
-    - 'traceroute'
-    - vnstat
-    - 'wavemon'
-    - 'whois'
-    - wireguard
-
-- name: Install NetCDF
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - libfreetype6-dev
-    - hdf4-tools
-    - hdf5-helpers
-    - hdf5-tools
-    - hdfview
-    - libhdf5-dev
-    - libjpeg-dev
-    - libnetcdf-dev
-    - libpython3-dev
-    # - libpython3.6-dev
-    - libudunits2-dev
-    - nco
-    - ncview
-    - netcdf-bin
-
-- name: install games packages
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - dos2unix
-    - playonlinux
-
-- name: Install virtualbox specific version
-  ignore_errors: yes
-  apt:
-    deb: "{{vbox_url}}"
-    only_upgrade: yes
-
-- name: install virtual packages
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - bundler
-    - gem
-    - rbenv
-    # - xorg-video-abi-23
-    - xserver-xorg-core
-    - xserver-xorg-input-all # VERY IMPORTANT. HAS frozen my logging prompt
-    # - virtualbox-guest-dkms
-    - virtualbox-guest-utils
-    - virtualbox-guest-x11
-    - virtualenv
-    - qemu-system
-    # - wine1.6
-    - linux-headers-generic
-    - virt-manager
-    - qemu-kvm
-    - libvirt-daemon-system
-    - libvirt-clients
-    - bridge-utils
-
-- name: Install vagrant packages
-  ignore_errors: yes
-  apt:
-    deb: "{{vagrant_url}}"
-    only_upgrade: yes
-
-# - name: Install chef-dk
-  # ignore_errors: yes
-  # apt:
-    # deb: "{{chefdk_url}}"
-
-- name: install berkshelf plugin
-  shell: command -v berks >/dev/null || vagrant plugin install vagrant-berkshelf
-
-- name: install make packages
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - autoconf
-    - automake
-    - checkinstall
-    - intltool
-    - libcurl4-openssl-dev
-    - libevent-dev
-    - libglib2.0-dev
-    - libgtk2.0-dev
-    - libnotify-dev
-    - libtool
-    - libxml2-dev
-    - pkg-config
-
-- name: install multimedia packages
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - arandr
-    - audacity
-    - cantata
-    - clementine
-    - cmus
-    - darktable
-    - easytag
-    - exiftool
-    - ffmpeg
-    - flac
-    - gimp
-    - gmpc
-    - gstreamer1.0-plugins-bad
-    - gstreamer1.0-plugins-good
-    - gstreamer1.0-plugins-ugly
-    - handbrake
-    - handbrake-cli
-    - imagemagick
-    - kazam
-    - kdenlive
-    - lmms
-    - mediainfo
-    - mp3blaster
-    - mp3val
-    # - puddletag
-    # - python-gi
-    - pavucontrol
-    - shntool
-    - subtitleeditor
-    # - spark
-    - timidity
-    - tuxguitar
-    - tuxguitar-jsa
-    - vlc
-    - vlc-data
-    - vlc-plugin-notify
-    - webp
-
-- name: install java
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - openjdk-11-jre
-    - openjdk-11-jdk
-
-- name: install pdf packages
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - pdfmod
-    # - scantailor
-
-- name: install database packages
-  ignore_errors: yes
-  apt:
-    name: "{{ item }}"
-  loop:
-    - postgresql
-    - sqlite3
-    - sqlitebrowser
-
-- name: Install skype
-  ignore_errors: yes
-  apt:
-    deb: "{{skype_url}}"
-
-- name: Install zoom
-  ignore_errors: yes
-  apt:
-    deb: "{{zoom_url}}"
-
-- name: install snap packages
-  ignore_errors: yes
-  block:
-    - name: remove nosnap
-      shell: "rm -f /etc/apt/preferences.d/nosnap.pref"
-    - name: update repositories
-      apt: update_cache=yes
-    - name: install snapd
-      apt:
-        name: snapd
-    - name: Install snap packages
-      snap:
-        name:
-          - snap-store
-          - pdftk
-          - youtube-dl
-        channel: latest/stable
-    - name: install snap classic
-      snap:
-        name:
-          - alacritty
-          - slack
-          - btop
-        classic: yes
-
+    name:
+      - cmake
+      - libpq-dev
+      - nmap
+      - mtr-tiny
+      - strace
+      - whois
+      - sshfs
+      - screen
+      - tree
+    state: present

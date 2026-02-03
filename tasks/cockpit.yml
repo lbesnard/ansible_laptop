@@ -1,0 +1,12 @@
+- name: Ensure Cockpit is installed
+  become: true
+  apt:
+    name: cockpit
+    state: present
+
+- name: Start and enable Cockpit socket
+  become: true
+  service:
+    name: cockpit.socket
+    state: started
+    enabled: yes

@@ -1,0 +1,14 @@
+- name: Install and enable QEMU Guest Agent
+  become: true
+  block:
+    - name: Install package
+      apt:
+        name: qemu-guest-agent
+        state: present
+        update_cache: yes
+
+    - name: Ensure service is started and enabled
+      systemd:
+        name: qemu-guest-agent
+        state: started
+        enabled: yes

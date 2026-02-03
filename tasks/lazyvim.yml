@@ -1,0 +1,34 @@
+---
+- name: Check if Neovim config already exists
+  stat:
+    path: ~/.config/nvim/init.lua
+  register: nvim_config
+
+- name: Install Neovim and dependencies
+  become: true
+  apt:
+    name: [neovim, git, xclip, ripgrep, fd-find, fzf]
+    state: present
+  when: not nvim_config.stat.exists
+
+- name: Back up existing Neovim config
+  become: false
+  shell: |
+    mv ~/.config/nvim ~/.config/nvim.bak || true
+    mv ~/.local/share/nvim ~/.local/share/nvim.bak || true
+  # Only run if the backup doesn't exist AND the current config does exist
+  args:
+    creates: ~/.config/nvim.bak
+  when: not nvim_config.stat.exists
+
+- name: Clone LazyVim starter repo
+  become: false
+  shell: git clone https://github.com/LazyVim/starter ~/.config/nvim
+  when: not nvim_config.stat.exists
+
+- name: Remove the .git folder from starter
+  become: false
+  file:
+    path: ~/.config/nvim/.git
+    state: absent
+  when: not nvim_config.stat.exists

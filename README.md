@@ -98,3 +98,25 @@ ansible-playbook user.yml --list-tags
 ## 3 Post Installation
 install manuall vbox ext pack because of manual licencing
 ```sudo apt-get install virtualbox-ext-pack```
+
+
+# Proxmox provisionning
+
+### Location-Based Execution
+| Location | Command |
+| :--- | :--- |
+| **BFunk** | `ansible-playbook -i hosts.ini setup_homelabs.yml --limit "bfunk_vms"` |
+| **BeeFunk** | `ansible-playbook -i hosts.ini setup_homelabs.yml --limit "beefunk_vms"` |
+| **EvryFunk** | `ansible-playbook -i hosts.ini setup_homelabs.yml --limit "evryfunk_vms"` |
+
+### Role-Based Execution
+* **NAS Servers:**
+  ```bash
+  ansible-playbook -i hosts.ini setup_homelabs.yml --limit "nas_servers"
+
+### Filtered Execution (Intersections)
+* Brownfunk NAS only
+```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "nas_servers:&bfunk_vms"```
+
+* BeeFunk Media Only: 
+```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "media_servers:&beefunk_vms"```

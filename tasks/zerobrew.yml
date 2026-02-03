@@ -1,0 +1,85 @@
+- name: Install ZeroBrew (zb)
+  shell: |
+    curl -sSL https://raw.githubusercontent.com/lucasgelfond/zerobrew/main/install.sh | bash
+  args:
+    creates: "/home/{{ ansible_user }}/.local/bin/zb"
+  become: false
+
+# OLD way to install one by one, should be slower
+- name: Install packages using zerobrew
+  shell: "/home/{{ ansible_user }}/.local/bin/zb install {{ item }}"
+  become: false
+  ignore_errors: yes
+  loop:
+    #
+    # - name: Install packages using zerobrew (batch)
+    #   shell: "/home/{{ ansible_user }}/.local/bin/zb install {{ packages | join(' ') }}"
+    #   become: false
+    #   ignore_errors: yes
+    #   vars:
+    # packages:
+    - cmake
+    - gcc
+    - ruby
+    - ruby-install
+    - act
+    - angle-grinder
+    # - ansible
+    - autojump
+    - awscli
+    - bat
+    - btop
+    - coreutils
+    - curl
+    - croc
+    - dfc
+    - diff-so-fancy
+    - ffmpeg
+    - fpp
+    - freetype
+    - fzf
+    - git
+    - git-delta
+    - gh
+    - glow
+    - grc
+    - htop
+    - httpie
+    - hub
+    - lazygit
+    - lf
+    - lnav
+    - lsd
+    - mdcat
+    - midnight-commander
+    - mycli
+    - ncdu
+    - neovim
+    - node
+    - openssh
+    - pandoc
+    - p7zip
+    - pgcli
+    - pyenv
+    - pyenv-virtualenv
+    - ranger
+    - rbenv
+    - ripgrep
+    - sad
+    - sk
+    - task
+    - the_silver_searcher
+    - thefuck
+    - tig
+    - tldr
+    - tmux
+    - tree
+    - urlview
+    - vim
+    - viu
+    - xclip
+    - yazi
+    - yt-dlp
+    - yq
+    - zsh
+    - zoxide

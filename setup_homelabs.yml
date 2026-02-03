@@ -1,0 +1,137 @@
+- name: Proxmox Global Configuration
+  hosts: all
+  remote_user: ubuntu# Use the user created via Cloud-Init
+  become: true # Use sudo for system tasks (Docker, etc.)
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Debug user variables
+      debug:
+        msg:
+          - "Current ansible_user_id: {{ ansible_user_id }}"
+          - "SSH User ansible_user: {{ ansible_user }}"
+          - "sudo Home: {{ ansible_env.HOME }}"
+    # 1. THE SYSTEM STUFF (Requires sudo)
+
+    - name: Force resize of sda1
+      become: true
+      shell: |
+        # This grows the partition first
+        growpart /dev/sda 1 || true
+        # This stretches the filesystem
+        resize2fs /dev/sda1
+      register: resize_res
+
+    - name: Verify new size
+      debug:
+        msg: "Root partition is now: {{ ansible_facts['mounts'] | selectattr('mount', 'equalto', '/') | map(attribute='size_total') | first | human_readable }}"
+
+    - name: Wait for cloud-init to finish
+      ansible.builtin.command: cloud-init status --wait
+      register: cloud_init_result
+      # Allow rc 0 (success) or rc 2 (already done)
+      failed_when: cloud_init_result.rc not in [0, 2]
+      changed_when: false
+
+    - name: Setup QEMU Guest Agent
+      include_tasks:
+        file: tasks/qemu_agent.yml
+        apply:
+          tags: vm
+
+    - name: Apply the packages and apt tags to the include and to all tasks in packages.yml
+      include_tasks:
+        file: tasks/packages.yml
+        apply:
+          tags: packages
+      tags:
+        - packages
+        - apt
+
+    - name: Install docker
+      include_tasks:
+        file: tasks/docker_install.yml
+        apply:
+          tags: docker
+      tags: [docker]
+
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
+
+# PLAY 2: Only the NAS servers get this
+- name: NAS Specific Configuration
+  hosts: nas_servers
+  remote_user: ubuntu# Use the user created via Cloud-Init
+  become: true # Use sudo for system tasks (Docker, etc.)
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Install Cockpit
+      include_tasks:
+        file: tasks/cockpit.yml
+        apply:
+          tags: cockpit
+      tags: [cockpit]
+
+# PLAY 3: Only the Media servers get this
+- name: Media Specific Configuration
+  hosts: media_servers
+  remote_user: ubuntu# Use the user created via Cloud-Init
+  become: true # Use sudo for system tasks (Docker, etc.)
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Install Homebrew
+      include_tasks:
+        file: tasks/homebrew.yml
+        apply:
+          tags: brew_install
+      tags: brew_install
+
+    - name: Install Homebrew Packages
+      include_tasks:
+        file: tasks/homebrew_packages.yml
+        apply:
+          tags: brew
+      tags: [brew, packages]
+    # - name: Install zerobrew Packages
+    #   include_tasks:
+    #     file: tasks/zerobrew.yml
+    #     apply:
+    #       tags: brew
+    #   tags: [brew, packages]
+    #
+    - name: Setup Dotfiles
+      include_tasks:
+        file: tasks/dotfiles.yml
+        apply:
+          become: false
+          tags: dotfiles
+      tags: dotfiles
+
+    - name: Setup lazyvim
+      include_tasks:
+        file: tasks/lazyvim.yml
+        apply:
+          become: false
+          tags: lazyvim
+      tags: dotfiles
+
+    # - name: Apply the miniforge tag to the include and to all tasks in miniforge.yml
+    #   include_tasks:
+    #     file: tasks/miniforge.yml
+    #     apply:
+    #       tags: miniforge
+    #   tags: miniforge
+    #
+    - name: docker compose up
+      include_tasks:
+        file: tasks/docker_up_services.yml
+        apply:
+          become: false
+          tags: compose
+      tags: docker

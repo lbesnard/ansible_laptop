@@ -1,0 +1,21 @@
+- name: Harden SSH Configuration
+  become: true
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: "^#?PasswordAuthentication", line: "PasswordAuthentication no" }
+    - {
+        regexp: "^#?PermitRootLogin",
+        line: "PermitRootLogin prohibit-password",
+      }
+    - { regexp: "^#?PubkeyAuthentication", line: "PubkeyAuthentication yes" }
+  notify: Restart SSH
+
+- name: Ensure SSH service is running
+  service:
+    name: ssh
+    state: started
+    enabled: yes

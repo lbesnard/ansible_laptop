@@ -12,7 +12,7 @@
         mode: 0550
     - name: Create miniforge folder
       become: yes
-      become_user: "{{ user }}"
+      become_user: "{{ ansible_user }}"
       #become: True
       file:
         path: "{{miniforge_path}}"
@@ -22,7 +22,7 @@
         recurse: yes
     - name: Run the installer
       become: yes
-      become_user: "{{ user }}"
+      become_user: "{{ ansible_user }}"
       shell: "/tmp/install-miniforge.sh -b -u -s"
     - name: Remove the installer
       file:
@@ -30,20 +30,19 @@
         path: /tmp/install-miniforge.sh
     - name: miniforge - execution permission for all
       become: yes
-      become_user: "{{ user }}"
+      become_user: "{{ ansible_user }}"
       #become: True
       file:
         path: "{{miniforge_path}}/bin"
         mode: +x
         recurse: yes
   become: yes
-  become_user: "{{ user }}"
+  become_user: "{{ ansible_user }}"
   ignore_errors: yes
   when: not miniforge_file_details.stat.exists
 
 - name: miniforge add conda-forge channel
   shell: "{{miniforge_path}}/condabin/conda  config --add channels conda-forge"
   become: yes
-  become_user: "{{ user }}"
+  become_user: "{{ ansible_user }}"
   ignore_errors: true
-

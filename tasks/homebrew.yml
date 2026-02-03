@@ -1,13 +1,11 @@
-- name: Check if Homebrew is already installed as root
-  stat:
-    path: /home/linuxbrew/.linuxbrew/bin/brew
-  register: linuxbrew_root
-
-- name: Check if Homebrew is already installed as user
-  stat:
-    path: "{{user_home}}.linuxbrew/bin/brew"
-  register: linuxbrew_user
-
 - name: Install Homebrew
-  script: install-homebrew.sh
-  when: (not linuxbrew_root.stat.exists) and (not linuxbrew_user.stat.exists)
+  shell: |
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  environment:
+    NONINTERACTIVE: "1"
+  become: false # Runs the command as 'lbesnard'
+  register: brew_install_out
+
+- name: Show brew install output
+  debug:
+    var: brew_install_out.stdout_lines

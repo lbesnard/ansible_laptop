@@ -1,0 +1,16 @@
+- name: Run Docker Compose Up
+  become: false
+  shell:
+    cmd: |
+      docker compose config --images | xargs -L 1 docker pull && \
+      docker compose up -d
+    chdir: "{{ user_home }}/github_repo/dotfiles/{{ project_dir }}/docker-compose/"
+  environment:
+    DOCKER_CLI_ANSI: "never" # <--- Disables the messy progress bars
+  register: docker_out
+  async: 1800
+  poll: 30
+
+- name: Show Docker Results
+  debug:
+    msg: "{{ docker_out.stderr_lines + docker_out.stdout_lines }}"
