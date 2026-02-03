@@ -1,5 +1,9 @@
+- name: Refresh SSH connection to pick up docker group membership
+  meta: reset_connection
+
 - name: Run Docker Compose Up
-  become: false
+  become: true
+  become_user: "{{ ansible_user }}"
   shell:
     cmd: |
       docker compose config --images | xargs -L 1 docker pull && \
