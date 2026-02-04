@@ -1,0 +1,28 @@
+---
+- name: Load encrypted vault variables
+  include_vars: vars/vault.yml
+
+- name: Enable IPv4 forwarding (Required for Subnet Routing)
+  become: true
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Install Tailscale
+  become: true
+  shell: "curl -fsSL https://tailscale.com/install.sh | sh"
+  args:
+    creates: /usr/bin/tailscale
+
+- name: Bring Tailscale up as Subnet Router
+  become: true
+  command: >
+    tailscale up 
+    --authkey={{ vault_tailscale_auth_key }} 
+    {{ '--advertise-routes=' + tailscale_routes if tailscale_routes is defined else '' }}
+    --accept-dns=true
+  register: ts_up
+  changed_when: "'Success' in ts_up.stdout"

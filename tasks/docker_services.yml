@@ -2,12 +2,12 @@
   meta: reset_connection
 
   # removed && docker compose up -d for now
-- name: Run Docker Compose Up
+- name: Run Docker Compose Pull
   become: true
   become_user: "{{ ansible_user }}"
   shell:
     cmd: |
-      docker compose config --images | xargs -L 1 docker pull 
+      docker compose config --images | xargs -L 1 docker pull
     chdir: "{{ user_home }}/github_repo/dotfiles/{{ project_dir }}/docker-compose/"
   environment:
     DOCKER_CLI_ANSI: "never" # <--- Disables the messy progress bars

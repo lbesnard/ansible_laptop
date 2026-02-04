@@ -55,12 +55,20 @@
           tags: docker
       tags: [docker]
 
-
   handlers:
     - name: Restart SSH
       service:
         name: ssh
         state: restarted
+
+- name: Provision Network Infrastructure
+  hosts: network_servers
+  remote_user: ubuntu# Use the user created via Cloud-Init
+  become: true # Use sudo for system tasks (Docker, etc.)
+  vars_files:
+    - vars.yml
+  tasks:
+    - include_tasks: tasks/tailscale.yml
 
 # PLAY 2: Only the NAS servers get this
 - name: NAS Specific Configuration
