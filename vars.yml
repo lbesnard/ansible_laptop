@@ -62,4 +62,4 @@ conda_data_services: data_services_3.6
 conda_ncvue: ncvue
 
 #
-DOCKKER_CONFIG_PATH: /opt/docker_config
+DOCKER_CONFIG_PATH: /opt/docker_config

@@ -6,7 +6,7 @@
   become_user: "{{ ansible_user }}"
   shell:
     cmd: |
-      docker compose config --images | xargs -L 1 docker up -d
+      docker compose up -d
     chdir: "{{ user_home }}/github_repo/dotfiles/docker_compose/{{ project_dir }}/{{ vm_type }}"
   environment:
     DOCKER_CLI_ANSI: "never" # <--- Disables the messy progress bars

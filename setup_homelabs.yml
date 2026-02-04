@@ -90,19 +90,19 @@
     - name: Setup Tailscale
       include_tasks: tasks/tailscale.yml
 
-    - name: Create local DNS mappings for Pi-hole
-      template:
-        src: templates/05-lan.conf.j2
-        dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
-      notify: Restart Pi-hole
-
-    - name: docker compose
+    - name: docker compose up
       include_tasks:
         file: tasks/docker_services_up.yml
         apply:
           become: false
           tags: compose
       tags: docker
+
+    - name: Create local DNS mappings for Pi-hole
+      template:
+        src: templates/05-lan.conf.j2
+        dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
+      notify: Restart Pi-hole
 
   handlers:
     - name: Restart Pi-hole

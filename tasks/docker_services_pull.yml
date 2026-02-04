@@ -1,19 +1,20 @@
 - name: Refresh SSH connection to pick up docker group membership
   meta: reset_connection
 
-  # removed && docker compose up -d for now
-- name: Run Docker Compose Pull
+- name: Run Docker Compose Pull (Only if missing)
   become: true
   become_user: "{{ ansible_user }}"
   shell:
     cmd: |
-      docker compose config --images | xargs -L 1 docker pull
+      for img in $(docker compose config --images); do
+        if ! docker image inspect "$img" >/dev/null 2>&1; then
+          docker pull "$img"
+        fi
+      done
     chdir: "{{ user_home }}/github_repo/dotfiles/docker_compose/{{ project_dir }}/{{ vm_type }}"
-  environment:
-    DOCKER_CLI_ANSI: "never" # <--- Disables the messy progress bars
   register: docker_out
   async: 1800
-  poll: 30
+  poll: 10
 
 - name: Show Docker Results
   debug:

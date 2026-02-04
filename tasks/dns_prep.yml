@@ -7,7 +7,7 @@
   register: resolved_config
 
 - name: Restart systemd-resolved
-  systemctl:
+  ansible.builtin.systemd:
     name: systemd-resolved
     state: restarted
   when: resolved_config.changed
