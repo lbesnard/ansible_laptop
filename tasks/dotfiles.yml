@@ -6,22 +6,22 @@
     state: directory
     mode: 0775
 
-- name: clone repo "{{item.name}}"
+- name: clone or update repos
   become: yes
   become_user: "{{ ansible_user }}"
   git:
-    repo: "{{item.url}}"
-    dest: "{{github_repo_dir}}/{{item.name}}"
+    repo: "{{ item.url }}"
+    dest: "{{ github_repo_dir }}/{{ item.name }}"
     accept_hostkey: yes
-    #key_file: "{{key_file}}"
     track_submodules: yes
-    #depth: 1
-    clone: yes
-    update: no
+    # Set update to yes to perform a 'git pull' if the repo exists
+    update: yes
+    # Optional: ensure it doesn't discard local changes if you have any
+    force: no
   with_items:
-    - { url: "{{repo_dotfiles}}", name: dotfiles }
-    - { url: "{{repo_dotfiles_private}}", name: dotfiles_private }
-  ignore_errors: true
+    - { url: "{{ repo_dotfiles }}", name: dotfiles }
+    - { url: "{{ repo_dotfiles_private }}", name: dotfiles_private }
+  ignore_errors: yes
 
 - name: install dotfiles
   shell: ./install
