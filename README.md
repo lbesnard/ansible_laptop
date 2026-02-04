@@ -122,3 +122,63 @@ install manuall vbox ext pack because of manual licencing
 
 * BeeFunk Media Only: 
 ```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "media_servers:&beefunk_vms"```
+
+# 📈 Scaling: Adding a New Project to Proxmox
+
+To add a new environment (e.g., `bluefunk`), follow these three steps:
+
+
+## 1. Update `vars/paths.yml`
+
+Add the directory structure for the new project in the `storage_map`:
+
+```yaml
+bluefunk:
+  shared: "/media/blue_12tb/shared"
+  movies: "/media/blue_12tb/movies"
+```
+
+## 2. Update `hosts.ini`
+
+Define the new VMs and project-specific variables. Ensure the group name ends in `_vms` to satisfy the DNS and NFS logic:
+
+```ini
+[bluefunk_vms:children]
+bf-nas-02
+bf-media-02
+
+[bluefunk_vms:vars]
+project_dir=bluefunk
+trusted_network="192.168.8.0/24"
+nfs_allowed_ips="192.168.8.200 192.168.8.50"
+```
+
+## 3. Directory Structure
+
+Ensure your docker-compose files exist in the expected path:
+
+```
+~/github_repo/dotfiles/docker_compose/bluefunk/
+```
+
+---
+
+## 🏗️ Architecture Overview
+
+Your lab follows a **"Hub and Spoke"** model per project:
+
+- **The Hub**: The Network/NAS server provides DNS and storage.
+- **The Spokes**: Media and Service VMs consume these via NFS mounts and local DNS resolution.
+- **The Glue**: Ansible ensures that Spokes wait for the Hub to be *ready* (ports **53** and **2049**) before attempting to mount or start containers.
+
+---
+
+## ✨ Final Polish: The "Quick Check" Command
+
+If you ever doubt your permissions, add this to your **Useful Commands** section:
+
+```bash
+# Check what the NAS thinks it is exporting:
+ansible nas_servers -m shell -a "exportfs -v"
+```
+

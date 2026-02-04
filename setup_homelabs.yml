@@ -145,6 +145,7 @@
           become: false
           tags: compose
       tags: docker
+      ignore_errors: yes
 
   handlers:
     - name: Restart Pi-hole
@@ -184,26 +185,32 @@
     - vars/paths.yml
     - vars.yml
   tasks:
+    - name: Wait for Pi-hole DNS to be reachable (Port 53)
+      wait_for:
+        host: "{{ hostvars[groups[project_dir + '_vms'] | select('match', '.*net.*') | first]['ansible_host'] }}"
+        port: 53
+        timeout: 60
+
     - name: Configure Docker DNS from PiHole on Media
       template:
         src: templates/docker_daemon.json.j2
         dest: /etc/docker/daemon.json
       notify: Restart Docker
 
-    - name: Install Homebrew
-      include_tasks:
-        file: tasks/homebrew.yml
-        apply:
-          tags: brew_install
-      tags: brew_install
-
-    - name: Install Homebrew Packages
-      include_tasks:
-        file: tasks/homebrew_packages.yml
-        apply:
-          tags: brew
-      tags: [brew, packages]
-
+    # - name: Install Homebrew
+    #   include_tasks:
+    #     file: tasks/homebrew.yml
+    #     apply:
+    #       tags: brew_install
+    #   tags: brew_install
+    #
+    # - name: Install Homebrew Packages
+    #   include_tasks:
+    #     file: tasks/homebrew_packages.yml
+    #     apply:
+    #       tags: brew
+    #   tags: [brew, packages]
+    #
     # - name: Install zerobrew Packages
     #   include_tasks:
     #     file: tasks/zerobrew.yml
@@ -229,6 +236,7 @@
           become: false
           tags: compose
       tags: docker
+      ignore_errors: yes
 
 
     # - name: Apply the miniforge tag to the include and to all tasks in miniforge.yml

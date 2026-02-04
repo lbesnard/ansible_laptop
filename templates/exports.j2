@@ -6,11 +6,7 @@
 {% set p_gid = pgid | default(1000) %}
 
 {% for key, path in project_paths.items() %}
-{% if key in ['pictures', 'shared'] %}
-{#- Loop through each IP in the nfs_allowed_ips string -#}
+{#- Whitelisted IPs get RW -#}
 {%- set ip_list = nfs_allowed_ips.split() -%}
-{{ path }} {% for ip in ip_list %}{{ ip }}(rw,sync,no_subtree_check,no_root_squash) {% endfor %}{{ trusted_network.split('-')[0] }}(ro,sync,no_subtree_check)
-{% else %}
-{{ path }} {{ trusted_network.split('-')[0] }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
-{% endif %}
+{{ path }} {% for ip in ip_list %}{{ ip }}(rw,sync,no_subtree_check,no_root_squash) {% endfor %}{{ trusted_network.split('-')[0] }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
 {% endfor %}
