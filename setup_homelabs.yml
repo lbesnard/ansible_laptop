@@ -1,3 +1,35 @@
+- name: "Inventory Sanity Check"
+  hosts: all
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - vars/paths.yml
+  tasks:
+    - name: "Check: project_dir is defined"
+      assert:
+        that: 
+          - project_dir is defined
+          - project_dir != ""
+        fail_msg: "ERROR: project_dir is missing for {{ inventory_hostname }}. Check hosts.ini."
+
+    - name: "Check: project_dir exists in storage_map"
+      assert:
+        that:
+          - project_dir in storage_map
+        fail_msg: "ERROR: '{{ project_dir }}' not found in vars/paths.yml. Spelling error?"
+
+    - name: "Check: trusted_network syntax (no trailing dashes)"
+      assert:
+        that:
+          - "'-' not in trusted_network"
+        fail_msg: "ERROR: trusted_network for {{ inventory_hostname }} has a trailing dash or typo: '{{ trusted_network }}'"
+
+    - name: "Check: nfs_allowed_ips is formatted correctly"
+      assert:
+        that:
+          - nfs_allowed_ips is search('^([0-9]{1,3}\.){3}[0-9]{1,3}')
+        fail_msg: "ERROR: nfs_allowed_ips looks malformed. It should be a space-separated string of IPs."
+
 - name: Proxmox Global Configuration
   hosts: all
   remote_user: ubuntu# Use the user created via Cloud-Init
@@ -63,7 +95,7 @@
           tags: dotfiles
       tags: dotfiles
 
-    - name: docker compose
+    - name: docker compose pull
       include_tasks:
         file: tasks/docker_services_pull.yml
         apply:
@@ -90,6 +122,22 @@
     - name: Setup Tailscale
       include_tasks: tasks/tailscale.yml
 
+    - name: Ensure Pi-hole configuration directory exists
+      file:
+        path: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d"
+        state: directory
+        owner: ubuntu
+        group: users
+        mode: '0755'
+        recurse: yes  # Ensures the parent 'pihole' folder is also set correctly
+      tags: dns
+
+    - name: Create local DNS mappings for Pi-hole
+      template:
+        src: templates/05-lan.conf.j2
+        dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
+      notify: Restart Pi-hole
+
     - name: docker compose up
       include_tasks:
         file: tasks/docker_services_up.yml
@@ -97,12 +145,6 @@
           become: false
           tags: compose
       tags: docker
-
-    - name: Create local DNS mappings for Pi-hole
-      template:
-        src: templates/05-lan.conf.j2
-        dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
-      notify: Restart Pi-hole
 
   handlers:
     - name: Restart Pi-hole
@@ -115,6 +157,8 @@
   hosts: nas_servers
   remote_user: ubuntu# Use the user created via Cloud-Init
   become: true # Use sudo for system tasks (Docker, etc.)
+  vars_files:
+    - vars/paths.yml
   tasks:
     - name: Install Cockpit
       include_tasks:
@@ -126,6 +170,10 @@
     - name: Setup NFS
       include_tasks: tasks/nfs_server_nas.yml
       ignore_errors: yes
+  handlers:
+    - name: Reload NFS
+      command: exportfs -ra
+      become: true
 
 # PLAY 3: Only the Media servers get this
 - name: Media Specific Configuration
@@ -133,8 +181,8 @@
   remote_user: ubuntu
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
-    - vars.yml
     - vars/paths.yml
+    - vars.yml
   tasks:
     - name: Configure Docker DNS from PiHole on Media
       template:
@@ -142,19 +190,22 @@
         dest: /etc/docker/daemon.json
       notify: Restart Docker
 
-    - name: Install Homebrew
-      include_tasks:
-        file: tasks/homebrew.yml
-        apply:
-          tags: brew_install
-      tags: brew_install
+    # - name: Install Homebrew
+    #   include_tasks:
+    #     file: tasks/homebrew.yml
+    #     apply:
+    #       tags: brew_install
+    #   tags: brew_install
+    #
+    # - name: Install Homebrew Packages
+    #   include_tasks:
+    #     file: tasks/homebrew_packages.yml
+    #     apply:
+    #       tags: brew
+    #   tags: [brew, packages]
+    #
+    #
 
-    - name: Install Homebrew Packages
-      include_tasks:
-        file: tasks/homebrew_packages.yml
-        apply:
-          tags: brew
-      tags: [brew, packages]
     # - name: Install zerobrew Packages
     #   include_tasks:
     #     file: tasks/zerobrew.yml
@@ -172,6 +223,15 @@
 
     - name: Setup NFS Client Mounts
       include_tasks: tasks/nfs_client_media.yml
+
+    - name: docker compose up
+      include_tasks:
+        file: tasks/docker_services_up.yml
+        apply:
+          become: false
+          tags: compose
+      tags: docker
+
 
     # - name: Apply the miniforge tag to the include and to all tasks in miniforge.yml
     #   include_tasks:

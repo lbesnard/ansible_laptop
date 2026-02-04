@@ -1,4 +1,10 @@
-# Local DNS mappings
-address=/bf-nas-01/192.168.8.181
-address=/bf-media-01/192.168.8.182
-address=/bf-net-01/192.168.8.183
+# 05-lan.conf - Managed by Ansible
+# Local DNS for project: {{ project_dir }}
+
+{% if project_dir + '_vms' in groups %}
+{% for host in groups[project_dir + '_vms'] %}
+{% if hostvars[host]['ansible_host'] is defined %}
+address=/{{ host }}/{{ hostvars[host]['ansible_host'] }}
+{% endif %}
+{% endfor %}
+{% endif %}

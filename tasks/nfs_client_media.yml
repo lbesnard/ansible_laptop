@@ -1,26 +1,48 @@
 - name: Set Local Task Variables
   set_fact:
     project_paths: "{{ storage_map[project_dir] | default({}) }}"
+    # Extract the NAS IP once so we can reuse it
+    nas_ip: "{{ hostvars[groups[project_dir + '_vms'] | select('match', '.*nas.*') | first]['ansible_host'] }}"
+
+- name: Debug Client variables
+  debug:
+    msg: 
+      - "Project Dir: {{ project_dir }}"
+      - "NAS IP: {{ nas_ip }}"
+      - "Paths found: {{ project_paths }}"
+
 
 - name: Install NFS Client
   apt:
     name: nfs-common
     state: present
 
+- name: Notify about health check
+  debug:
+    msg: "Checking if NAS at {{ nas_ip }} is ready for NFS connections..."
+
+- name: Wait for NFS port on NAS to be ready
+  wait_for:
+    host: "{{ nas_ip }}"
+    port: 2049
+    state: started
+    delay: 0
+    timeout: 60
+
 - name: Create local mount points
   file:
     path: "/mnt/nfs/{{ item.key }}"
     state: directory
+    owner: "1000"
+    group: "1000"
     mode: "0755"
   loop: "{{ project_paths | dict2items }}"
 
 - name: Mount NFS shares
   mount:
-    # We find the NAS IP by looking at the first host in the 'nas_servers'
-    # group that belongs to the same project.
     path: "/mnt/nfs/{{ item.key }}"
-    src: "{{ hostvars[groups[project_dir + '_vms'] | select('match', '.*nas.*') | first]['ansible_host'] }}:{{ item.value }}"
+    src: "{{ nas_ip }}:{{ item.value }}"
     fstype: nfs
-    opts: rw,soft,intr,bg # 'soft' prevents the VM from hanging if NAS is down
+    opts: "rw,soft,intr,bg,nfsvers=4.1"
     state: mounted
   loop: "{{ project_paths | dict2items }}"

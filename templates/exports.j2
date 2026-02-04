@@ -1,29 +1,16 @@
 # /etc/exports - Managed by Ansible
 # Project: {{ project_dir }}
 
+{% set project_paths = storage_map[project_dir] | default({}) %}
 {% set p_uid = puid | default(1000) %}
 {% set p_gid = pgid | default(1000) %}
 
-{% if project_paths.ebooks is defined %}
-{{ project_paths.ebooks }} {{ trusted_network }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
+{% for key, path in project_paths.items() %}
+{% if key in ['pictures', 'shared'] %}
+{#- Loop through each IP in the nfs_allowed_ips string -#}
+{%- set ip_list = nfs_allowed_ips.split() -%}
+{{ path }} {% for ip in ip_list %}{{ ip }}(rw,sync,no_subtree_check,no_root_squash) {% endfor %}{{ trusted_network.split('-')[0] }}(ro,sync,no_subtree_check)
+{% else %}
+{{ path }} {{ trusted_network.split('-')[0] }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
 {% endif %}
-
-{% if project_paths.games is defined %}
-{{ project_paths.games }} {{ trusted_network }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
-{% endif %}
-
-{% if project_paths.movies is defined %}
-{{ project_paths.movies }} {{ trusted_network }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
-{% endif %}
-
-{% if project_paths.pictures is defined %}
-{{ project_paths.pictures }} {{ nfs_allowed_ips }}(rw,sync,no_subtree_check,no_root_squash) {{ trusted_network }}(ro,sync,no_subtree_check)
-{% endif %}
-
-{% if project_paths.shared is defined %}
-{{ project_paths.shared }} {{ nfs_allowed_ips }}(rw,sync,no_subtree_check,no_root_squash) {{ trusted_network }}(ro,sync,no_subtree_check)
-{% endif %}
-
-{% if project_paths.torrents is defined %}
-{{ project_paths.torrents }} {{ trusted_network }}(ro,sync,no_subtree_check,all_squash,anonuid={{ p_uid }},anongid={{ p_gid }})
-{% endif %}
+{% endfor %}

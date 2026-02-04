@@ -1,36 +1,22 @@
-- name: Setup Multi-Site NFS Server
-  hosts: nas_servers
+- name: Install NFS Server
+  apt:
+    name: nfs-kernel-server
+    state: present
   become: true
-  vars_files:
-    - vars/paths.yml
-  vars:
-    # Safely get the dict for the current project, or an empty dict if missing
-    project_paths: "{{ storage_map[project_dir] | default({}) }}"
-    puid: 1000
-    pgid: 1000
 
-  tasks:
-    - name: Install NFS Server
-      apt:
-        name: nfs-kernel-server
-        state: present
+- name: Ensure existing folders have correct permissions
+  file:
+    path: "{{ item.value }}"
+    state: directory
+    owner: "1000"
+    group: "1000"
+  loop: "{{ storage_map[project_dir] | default({}) | dict2items }}"
+  when: storage_map[project_dir] is defined
+  become: true
 
-    - name: Ensure existing folders have correct permissions
-      file:
-        path: "{{ item.value }}"
-        state: directory
-        owner: "{{ puid }}"
-        group: "{{ pgid }}"
-      # Loops through the dictionary and skips if it's empty
-      loop: "{{ project_paths | dict2items }}"
-      when: project_paths != {}
-
-    - name: Configure /etc/exports
-      template:
-        src: exports.j2
-        dest: /etc/exports
-      notify: Reload NFS
-
-  handlers:
-    - name: Reload NFS
-      command: exportfs -ra
+- name: Configure /etc/exports
+  template:
+    src: exports.j2
+    dest: /etc/exports
+  become: true
+  notify: Reload NFS
