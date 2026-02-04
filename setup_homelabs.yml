@@ -190,21 +190,19 @@
         dest: /etc/docker/daemon.json
       notify: Restart Docker
 
-    # - name: Install Homebrew
-    #   include_tasks:
-    #     file: tasks/homebrew.yml
-    #     apply:
-    #       tags: brew_install
-    #   tags: brew_install
-    #
-    # - name: Install Homebrew Packages
-    #   include_tasks:
-    #     file: tasks/homebrew_packages.yml
-    #     apply:
-    #       tags: brew
-    #   tags: [brew, packages]
-    #
-    #
+    - name: Install Homebrew
+      include_tasks:
+        file: tasks/homebrew.yml
+        apply:
+          tags: brew_install
+      tags: brew_install
+
+    - name: Install Homebrew Packages
+      include_tasks:
+        file: tasks/homebrew_packages.yml
+        apply:
+          tags: brew
+      tags: [brew, packages]
 
     # - name: Install zerobrew Packages
     #   include_tasks:

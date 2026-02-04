@@ -116,7 +116,9 @@ install manuall vbox ext pack because of manual licencing
 
 ### Filtered Execution (Intersections)
 * Brownfunk NAS only
-```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "nas_servers:&bfunk_vms"```
+```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "media_servers:&brownfunk_vms"```
+
+```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "nas_servers:&brownfunk_vms"```
 
 * BeeFunk Media Only: 
 ```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "media_servers:&beefunk_vms"```
