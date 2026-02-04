@@ -1,0 +1,16 @@
+# vars/paths.yml
+storage_map:
+  brownfunk:
+    ebooks: "/media/bfunk_12tb_1/ebooks"
+    games: "/media/bfunk_12tb_1/games"
+    movies: "/media/bfunk_12tb_1/movies"
+    pictures: "/media/bfunk_12tb_1/pictures"
+    shared: "/media/bfunk_12tb_1/shared"
+  beefunk:
+    ebooks: "/mnt/bee_storage/ebooks"
+    games: "/mnt/bee_storage/games"
+    movies: "/mnt/bee_storage/movies"
+    pictures: "/mnt/bee_storage/pictures"
+    shared: "/mnt/bee_storage/shared"
+  efunk:
+    shared: "/storage/ef/shared"

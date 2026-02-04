@@ -55,6 +55,22 @@
           tags: docker
       tags: [docker]
 
+    - name: Setup Dotfiles
+      include_tasks:
+        file: tasks/dotfiles.yml
+        apply:
+          become: false
+          tags: dotfiles
+      tags: dotfiles
+
+    - name: docker compose
+      include_tasks:
+        file: tasks/docker_services_pull.yml
+        apply:
+          become: false
+          tags: compose
+      tags: docker
+
   handlers:
     - name: Restart SSH
       service:
@@ -68,15 +84,37 @@
   vars_files:
     - vars.yml
   tasks:
-    - include_tasks: tasks/tailscale.yml
+    - name: Prepare System DNS (Fix Port 53)
+      include_tasks: tasks/dns_prep.yml
+
+    - name: Setup Tailscale
+      include_tasks: tasks/tailscale.yml
+
+    - name: Create local DNS mappings for Pi-hole
+      template:
+        src: templates/05-lan.conf.j2
+        dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
+      notify: Restart Pi-hole
+
+    - name: docker compose
+      include_tasks:
+        file: tasks/docker_services_up.yml
+        apply:
+          become: false
+          tags: compose
+      tags: docker
+
+  handlers:
+    - name: Restart Pi-hole
+      shell:
+        cmd: "docker compose restart pihole"
+        chdir: "{{ user_home }}/github_repo/dotfiles/docker_compose/{{ project_dir}}/net/"
 
 # PLAY 2: Only the NAS servers get this
 - name: NAS Specific Configuration
   hosts: nas_servers
   remote_user: ubuntu# Use the user created via Cloud-Init
   become: true # Use sudo for system tasks (Docker, etc.)
-  vars_files:
-    - vars.yml
   tasks:
     - name: Install Cockpit
       include_tasks:
@@ -85,14 +123,25 @@
           tags: cockpit
       tags: [cockpit]
 
+    - name: Setup NFS
+      include_tasks: tasks/nfs_server_nas.yml
+      ignore_errors: yes
+
 # PLAY 3: Only the Media servers get this
 - name: Media Specific Configuration
   hosts: media_servers
-  remote_user: ubuntu# Use the user created via Cloud-Init
+  remote_user: ubuntu
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
     - vars.yml
+    - vars/paths.yml
   tasks:
+    - name: Configure Docker DNS from PiHole on Media
+      template:
+        src: templates/docker_daemon.json.j2
+        dest: /etc/docker/daemon.json
+      notify: Restart Docker
+
     - name: Install Homebrew
       include_tasks:
         file: tasks/homebrew.yml
@@ -113,14 +162,6 @@
     #       tags: brew
     #   tags: [brew, packages]
     #
-    - name: Setup Dotfiles
-      include_tasks:
-        file: tasks/dotfiles.yml
-        apply:
-          become: false
-          tags: dotfiles
-      tags: dotfiles
-
     - name: Setup lazyvim
       include_tasks:
         file: tasks/lazyvim.yml
@@ -129,6 +170,9 @@
           tags: lazyvim
       tags: dotfiles
 
+    - name: Setup NFS Client Mounts
+      include_tasks: tasks/nfs_client_media.yml
+
     # - name: Apply the miniforge tag to the include and to all tasks in miniforge.yml
     #   include_tasks:
     #     file: tasks/miniforge.yml
@@ -136,10 +180,8 @@
     #       tags: miniforge
     #   tags: miniforge
     #
-    - name: docker compose
-      include_tasks:
-        file: tasks/docker_services.yml
-        apply:
-          become: false
-          tags: compose
-      tags: docker
+  handlers:
+    - name: Restart Docker
+      service:
+        name: docker
+        state: restarted

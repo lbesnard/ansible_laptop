@@ -1,0 +1,7 @@
+{
+  "dns": [
+    {% set net_host = groups['network_servers'] | map('extract', hostvars) | selectattr('project_dir', 'equalto', project_dir) | first -%}
+    "{{ net_host.ansible_host }}",
+    "1.1.1.1"
+  ]
+}

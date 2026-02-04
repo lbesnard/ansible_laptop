@@ -1,0 +1,26 @@
+- name: Set Local Task Variables
+  set_fact:
+    project_paths: "{{ storage_map[project_dir] | default({}) }}"
+
+- name: Install NFS Client
+  apt:
+    name: nfs-common
+    state: present
+
+- name: Create local mount points
+  file:
+    path: "/mnt/nfs/{{ item.key }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ project_paths | dict2items }}"
+
+- name: Mount NFS shares
+  mount:
+    # We find the NAS IP by looking at the first host in the 'nas_servers'
+    # group that belongs to the same project.
+    path: "/mnt/nfs/{{ item.key }}"
+    src: "{{ hostvars[groups[project_dir + '_vms'] | select('match', '.*nas.*') | first]['ansible_host'] }}:{{ item.value }}"
+    fstype: nfs
+    opts: rw,soft,intr,bg # 'soft' prevents the VM from hanging if NAS is down
+    state: mounted
+  loop: "{{ project_paths | dict2items }}"

@@ -42,6 +42,7 @@
       - zsh
       - unzip
       - p7zip
+      - ncdu
       - python3-apt
       - coreutils
       - wget

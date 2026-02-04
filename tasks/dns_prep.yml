@@ -1,0 +1,20 @@
+---
+- name: Disable systemd-resolved stub listener (Free up Port 53)
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#?DNSStubListener="
+    line: "DNSStubListener=no"
+  register: resolved_config
+
+- name: Restart systemd-resolved
+  systemctl:
+    name: systemd-resolved
+    state: restarted
+  when: resolved_config.changed
+
+- name: Ensure /etc/resolv.conf points to the correct file
+  file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: yes
