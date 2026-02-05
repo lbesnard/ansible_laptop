@@ -3,3 +3,10 @@ terraform.tfvars
 .terraform.*
 .terraform
 terraform.tfstate*
+# Ignore Terraform state and secrets
+*.tfstate
+*.tfstate.backup
+
+# Ignore downloaded Ansible collections and roles
+ansible/collections/ansible_collections/
+ansible/roles/

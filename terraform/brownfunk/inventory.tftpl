@@ -7,7 +7,6 @@ ${name} ansible_host=${config.ip}
 project_dir=${project_name}
 ansible_user=ubuntu
 trusted_network="${trusted_net}"
-# This logic joins the IPs of all nodes in this site EXCEPT the NAS itself
 nfs_allowed_ips="${join(" ", [for n, c in vms : c.ip if !strcontains(n, "nas")])}"
 
 [nas_servers]
@@ -25,6 +24,11 @@ nfs_allowed_ips="${join(" ", [for n, c in vms : c.ip if !strcontains(n, "nas")])
 %{ if strcontains(name, "net") }${name} tailscale_routes="${trusted_net}"%{ endif ~}
 %{ endfor ~}
 
+[dev_servers]
+%{ for name, config in vms ~}
+%{ if strcontains(name, "dev") }${name}%{ endif ~}
+%{ endfor ~}
+
 [nas_servers:vars]
 vm_type=nas
 
@@ -33,3 +37,7 @@ vm_type=media
 
 [network_servers:vars]
 vm_type=net
+
+[dev_servers:vars]
+vm_type=dev
+

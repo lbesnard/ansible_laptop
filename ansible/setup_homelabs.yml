@@ -95,14 +95,6 @@
           tags: dotfiles
       tags: dotfiles
 
-    - name: docker compose pull
-      include_tasks:
-        file: tasks/docker_services_pull.yml
-        apply:
-          become: false
-          tags: compose
-      tags: docker
-
   handlers:
     - name: Restart SSH
       service:
@@ -137,6 +129,16 @@
         src: templates/05-lan.conf.j2
         dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
       notify: Restart Pi-hole
+
+    - name: docker compose pull
+      include_tasks:
+        file: tasks/docker_services_pull.yml
+        apply:
+          become: false
+          tags: compose
+      tags: docker
+      when: vm_type != 'dev' # no specific config for this machine type
+
 
     - name: docker compose up
       include_tasks:
@@ -228,6 +230,16 @@
 
     - name: Setup NFS Client Mounts
       include_tasks: tasks/nfs_client_media.yml
+
+    - name: docker compose pull
+      include_tasks:
+        file: tasks/docker_services_pull.yml
+        apply:
+          become: false
+          tags: compose
+      tags: docker
+      when: vm_type != 'dev' # no specific config for this machine type
+
 
     - name: docker compose up
       include_tasks:

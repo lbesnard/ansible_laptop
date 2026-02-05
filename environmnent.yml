@@ -1,0 +1,11 @@
+name: homelab-tools
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13
+  - ansible-core=2.20.2
+  - terraform=1.14.4
+  - pip
+  - pip:
+      - jmespath # Useful for Ansible json_query

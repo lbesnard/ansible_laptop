@@ -20,6 +20,7 @@ resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
   }
 
   cpu {
+    type = "host"
     cores = each.value.cores
   }
 
@@ -56,6 +57,6 @@ resource "local_file" "ansible_inventory" {
     project_name = var.project_name
     trusted_net  = var.trusted_net
   })
-  filename = "${path.module}/hosts.ini"
+  filename = "${path.module}/../../ansible/inventories/${var.project_name}.ini"
 }
 

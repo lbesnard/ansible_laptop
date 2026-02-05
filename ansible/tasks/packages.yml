@@ -12,8 +12,8 @@
         mv /tmp/yq_linux_amd64 /usr/bin/yq
         chmod +x /usr/bin/yq
       when: not yq_check.stat.exists
-      args:
-        warn: false # Optional: suppresses "you should use a module" warnings
+      # args:
+        # warn: false # Optional: suppresses "you should use a module" warnings
 - name: Force fix broken dependencies
   become: true
   shell: |
