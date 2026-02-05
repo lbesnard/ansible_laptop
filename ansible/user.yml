@@ -1,102 +1,39 @@
 # user specific
-- hosts: localhost
-  tags: local_user_install
+- hosts: all
+  gather_facts: true
+  vars_files:
+    - vars.yml
   ignore_errors: yes
-  #gather_facts: false         # Skip fact gathering to avoid privilege issues
-  connection: local
-  #become: false  # disable sudo for user-level tasks
-  become_user: "{{user}}"
   roles:
     - role: evandam.conda
-  vars_files:
-    - vars.yml
-    #
+  vars:
+    # Uses inventory variable, falls back to the system user
+    real_user: "{{ target_user | default(ansible_user_id) }}"
+
   tasks:
-    - name: Include Miniforge packages with tags
-      include_tasks:
-        file: tasks/miniforge_packages.yml
-        apply:
-          tags: ['miniforge', 'packages']
-      tags: ['miniforge', 'packages']
+    # --- GROUP 1: THE UNIVERSAL BASE (Everyone) ---
+    - name: "Universal: Core Dev Environment"
+      include_tasks: "tasks/{{ item }}.yml"
+      loop:
+        - dotfiles
+        - homebrew_packages
+        - neovim
+        - miniforge_packages
+        - cheat
+        - aodn_chef
+        - data_services
+        - fonts
+        - github_repos
+      tags: ['universal', 'remote', 'core']
 
-    - name: Include dotfiles with tags
-      include_tasks:
-        file: tasks/dotfiles.yml
-        apply:
-          tags: ['dotfiles']
-      tags: ['dotfiles']
+    # --- GROUP 2: LAPTOP ONLY (Desktop Apps) ---
+    - name: "Laptop Only: GUI Services"
+      include_tasks: "tasks/{{ item }}.yml"
+      loop:
+        - nextcloud
+        - mobac
+      # Strictly limit to the laptop group
+      when: "'laptop' in group_names"
+      tags: ['heavy', 'laptop_only']
 
-    - name: Include Homebrew packages with tags
-      include_tasks:
-        file: tasks/homebrew_packages.yml
-        apply:
-          tags: ['brew', 'packages']
-      tags: ['brew', 'packages']
 
-    - name: Include Cheat tasks with tags
-      include_tasks:
-        file: tasks/cheat.yml
-        apply:
-          tags: ['cheat']
-      tags: ['cheat']
-
-    - name: Include Neovim tasks with tags
-      include_tasks:
-        file: tasks/neovim.yml
-        apply:
-          tags: ['neovim']
-      tags: ['neovim']
-
-    - name: Include AODN Chef tasks with tags
-      include_tasks:
-        file: tasks/aodn_chef.yml
-        apply:
-          tags: ['aodn', 'chef']
-      tags: ['aodn', 'chef']
-
-    - name: Include Data Services tasks with tags
-      include_tasks:
-        file: tasks/data_services.yml
-        apply:
-          tags: ['aodn', 'data_services']
-      tags: ['aodn', 'data_services']
-
-    - name: Include Fonts tasks with tags
-      include_tasks:
-        file: tasks/fonts.yml
-        apply:
-          tags: ['fonts']
-      tags: ['fonts']
-
-    - name: Include Nextcloud tasks with tags
-      include_tasks:
-        file: tasks/nextcloud.yml
-        apply:
-          tags: ['appimages', 'nextcloud', 'packages']
-      tags: ['appimages', 'nextcloud', 'packages']
-
-    - name: Include GitHub Repos tasks with tags
-      include_tasks:
-        file: tasks/github_repos.yml
-        apply:
-          tags: ['github', 'repos']
-      tags: ['github', 'repos']
-
-    - name: Include Mobac tasks with tags
-      include_tasks:
-        file: tasks/mobac.yml
-        apply:
-          tags: ['mobac']
-      tags: ['mobac']
-
-    # needs other packages to be installed first prior to run the following
-- hosts: localhost
-  ignore_errors: yes
-  connection: local
-  become: True
-  #become_user: "{{user}}"
-  tags: "jetbrains"
-  roles:
-    - role: webarchitect609.jet_brains_toolbox
-  vars_files:
-    - vars.yml

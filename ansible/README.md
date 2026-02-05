@@ -45,17 +45,18 @@ chmod 644 ~/.ssh/id_rsa.pub
 chmod 600 ~/.ssh/id_rsa
 ssh-add
 ```
-## 2. provision localhost debian based machine with Ansible
-### 2.1 with sudo privileges
+## 2. Running via ansible-pull 
+### 2.1 Full System (Sudo Required)
 
-Run the following command in bash. (will install git, ansible; good for a new OS)
-```bash
-curl -L https://raw.githubusercontent.com/lbesnard/Fleet-Control/master/install.sh | bash
-```
+This runs local.yml, which imports system.yml (for root/apt tasks) and user.yml.
 
-OR if ansible is already installed on the machine
+
 ```
-/usr/bin/ansible-pull -U https://github.com/lbesnard/Fleet-Control.git -K -i hosts local.yml
+ansible-pull -U https://github.com/lbesnard/Fleet-Control.git \
+             -d ~/ansible_pull_tmp \
+             -i ansible/hosts \
+             ansible/local.yml -K
+
 ```
 
 ### 2.2 Without sudo (and if ansible priorly installed via linuxbrew)
