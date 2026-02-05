@@ -1,4 +1,8 @@
 resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
+  lifecycle {
+    prevent_destroy = true
+  }
+
   for_each  = var.vm_fleet
   
   name      = each.key
@@ -50,6 +54,8 @@ resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
     }
   }
 }
+
+
 
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/inventory.tftpl", {

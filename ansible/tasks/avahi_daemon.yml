@@ -1,0 +1,25 @@
+- name: Set VM identity and start advertising
+  become: true
+  block:
+    - name: Set system hostname to the inventory label
+      hostname:
+        # This will set it to 'bf-media-01', NOT the IP
+        name: "{{ inventory_hostname }}"
+
+    - name: Ensure local resolution matches hostname
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1'
+        # Maps 127.0.1.1 to 'bf-media-01'
+        line: "127.0.1.1 {{ inventory_hostname }}"
+
+    - name: Install and start Avahi
+      apt:
+        name: avahi-daemon
+        state: present
+      
+    - name: Ensure daemon is active
+      systemd:
+        name: avahi-daemon
+        state: started
+        enabled: yes

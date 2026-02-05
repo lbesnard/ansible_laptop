@@ -14,15 +14,23 @@
       when: not yq_check.stat.exists
       # args:
         # warn: false # Optional: suppresses "you should use a module" warnings
-- name: Force fix broken dependencies
+# - name: Force fix broken dependencies
+#   become: true
+#   shell: |
+#     # Clear the locks if they exist
+#     rm -f /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock
+#     # Force apt to download missing dependencies and fix the state
+#     apt-get update
+#     apt-get install -f -y
+#   register: apt_fix
+- name: Fix broken dependencies and wait for locks
   become: true
-  shell: |
-    # Clear the locks if they exist
-    rm -f /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock
-    # Force apt to download missing dependencies and fix the state
-    apt-get update
-    apt-get install -f -y
-  register: apt_fix
+  apt:
+    update_cache: yes
+    force_apt_get: yes
+    dpkg_options: 'force-confold,force-confdef'
+    lock_timeout: 300
+  register: apt_fix 
 
 - name: Final dpkg configuration
   become: true
@@ -58,6 +66,7 @@
   ignore_errors: yes # Keep this for the "nice to haves"
   apt:
     name:
+      - avahi-daemon
       - cmake
       - libpq-dev
       - nmap

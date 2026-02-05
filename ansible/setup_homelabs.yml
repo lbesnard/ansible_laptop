@@ -79,6 +79,11 @@
       tags:
         - packages
         - apt
+    - name: Setup Avahi-Daemon
+      include_tasks:
+        file: tasks/avahi_daemon.yml
+        apply:
+          tags: avahi
 
     - name: Install docker
       include_tasks:

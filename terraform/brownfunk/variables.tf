@@ -23,7 +23,7 @@ variable "datastore_id" {
 
 variable "gateway_ip" {
   type    = string
-  default = "192.168.8.1"
+  default = "192.168.1.1"
 }
 
 variable "network_bridge" {
@@ -48,7 +48,7 @@ variable "vm_username" {
 
 variable "trusted_net" {
   type    = string
-  default = "192.168.8.0/24"
+  default = "192.168.1.0/24"
 }
 
 variable "vm_fleet" {
@@ -61,16 +61,16 @@ variable "vm_fleet" {
   }))
   default = {
     "bf-nas-01" = {
-      id = 181, ip = "192.168.8.181", cores = 1, memory = 1024, disk_size = 10
+      id = 181, ip = "192.168.1.181", cores = 1, memory = 1024, disk_size = 10
     }
     "bf-media-01" = {
-      id = 182, ip = "192.168.8.182", cores = 4, memory = 8192, disk_size = 100
+      id = 182, ip = "192.168.1.182", cores = 4, memory = 8192, disk_size = 100
     }
     "bf-net-01" = {
-      id = 183, ip = "192.168.8.183", cores = 1, memory = 1024, disk_size = 10
+      id = 183, ip = "192.168.1.183", cores = 1, memory = 1024, disk_size = 10
     }
     "bf-dev-01" = {
-      id = 184, ip = "192.168.8.184", cores = 2, memory = 4096, disk_size = 40
+      id = 184, ip = "192.168.1.184", cores = 2, memory = 4096, disk_size = 40
     }
   }
 }
