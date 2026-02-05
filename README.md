@@ -1,6 +1,8 @@
-# 🛸 Homelab Infrastructure
+# 🛸 Fleet-Control: Homelab Infrastructure
 
 This repository is the central nervous system for my homelab and laptop provisioning. It manages the lifecycle of Proxmox VMs through a "Define once, Deploy anywhere" workflow.
+
+---
 
 # 📂 Repository Architecture
 ```

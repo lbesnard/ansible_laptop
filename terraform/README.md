@@ -1,4 +1,4 @@
-🚀 Homelab: Provisioning & Setup
+# 🚀 Homelab: Provisioning & Setup
 
 This part of the repository contains the Infrastructure as Code (IaC) to provision Proxmox VMs via Terraform and configure them using Ansible.
 

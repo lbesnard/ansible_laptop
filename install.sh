@@ -23,7 +23,7 @@ ansible-galaxy collection install ansible.builtin
 ansible-galaxy collection install community.general
 ansible-galaxy collection install ansible.posix
 
-ansible-pull -U https://github.com/lbesnard/ansible_laptop.git \
+ansible-pull -U https://github.com/lbesnard/Fleet-Control.git \
   -K \
   -i ansible/hosts \
   ansible/local.yml

@@ -10,7 +10,7 @@ data_services_dir: "{{github_repo_dir}}/chef/src/data-services"
 aodndata_dir: "{{github_repo_dir}}/chef/src/python-aodndata"
 
 repo_awesome_fonts: git@github.com:gabrielelana/awesome-terminal-fonts.git
-repo_ansible_laptop: git@github.com:lbesnard/ansible_laptop.git
+repo_Fleet-Control: git@github.com:lbesnard/Fleet-Control.git
 repo_chef: git@github.com:aodn/chef.git
 repo_chef_private: git@github.com:aodn/chef-private.git
 repo_cloud_deploy: git@github.com:aodn/cloud-deploy.git

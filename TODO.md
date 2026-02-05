@@ -89,6 +89,8 @@ Solutions?:
 * AC power on in the bios should power on when the power is back on. 
 
 # Setup Docker Volume + backups
+* See Blog https://blog.gurucomputing.com.au/Homelabbing%20with%20Proxmox/Backing%20up%20Proxmox/
+
 Old docker volumes should be "downloaded"/SCP'd from a different location on the first provisioning.
 This is a chicken and egg thing. But each node could have a replica and be used for this?
  

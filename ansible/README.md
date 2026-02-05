@@ -50,30 +50,30 @@ ssh-add
 
 Run the following command in bash. (will install git, ansible; good for a new OS)
 ```bash
-curl -L https://raw.githubusercontent.com/lbesnard/ansible_laptop/master/install.sh | bash
+curl -L https://raw.githubusercontent.com/lbesnard/Fleet-Control/master/install.sh | bash
 ```
 
 OR if ansible is already installed on the machine
 ```
-/usr/bin/ansible-pull -U https://github.com/lbesnard/ansible_laptop.git -K -i hosts local.yml
+/usr/bin/ansible-pull -U https://github.com/lbesnard/Fleet-Control.git -K -i hosts local.yml
 ```
 
 ### 2.2 Without sudo (and if ansible priorly installed via linuxbrew)
 ```bash
-ansible-pull -U https://github.com/lbesnard/ansible_laptop.git remote.yml -i hosts
+ansible-pull -U https://github.com/lbesnard/Fleet-Control.git remote.yml -i hosts
 ```
 
 ### 2.3 Install specific tag with no sudo privileges
 ```bash
 
-ansible-pull -i hosts user.yml -U https://github.com/lbesnard/ansible_laptop.git -t conda
-ansible-pull -i hosts user.yml -U https://github.com/lbesnard/ansible_laptop.git -t neovim
+ansible-pull -i hosts user.yml -U https://github.com/lbesnard/Fleet-Control.git -t conda
+ansible-pull -i hosts user.yml -U https://github.com/lbesnard/Fleet-Control.git -t neovim
 ```
 
 ### 2.4 Run locally (examples)
 ```bash
-git clone https://github.com/lbesnard/ansible_laptop.git
-cd ansible_laptop
+git clone https://github.com/lbesnard/Fleet-Control.git
+cd Fleet-Control
 
 # run as root
 /usr/bin/ansible-playbook -i hosts local.yml -K
@@ -105,23 +105,13 @@ install manuall vbox ext pack because of manual licencing
 ### Location-Based Execution
 | Location | Command |
 | :--- | :--- |
-| **BFunk** | `ansible-playbook -i hosts.ini setup_homelabs.yml --limit "bfunk_vms"` |
-| **BeeFunk** | `ansible-playbook -i hosts.ini setup_homelabs.yml --limit "beefunk_vms"` |
-| **EvryFunk** | `ansible-playbook -i hosts.ini setup_homelabs.yml --limit "evryfunk_vms"` |
+| **BrownFunk** | `ansible-playbook -i inventory/brownfunk.ini setup_homelabs.yml"` |
+| **BeeFunk** | `ansible-playbook -i inventory/beefunk.ini setup_homelabs.yml"` |
 
 ### Role-Based Execution
 * **NAS Servers:**
   ```bash
-  ansible-playbook -i hosts.ini setup_homelabs.yml --limit "nas_servers"
-
-### Filtered Execution (Intersections)
-* Brownfunk NAS only
-```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "media_servers:&brownfunk_vms"```
-
-```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "nas_servers:&brownfunk_vms"```
-
-* BeeFunk Media Only: 
-```ansible-playbook -i hosts.ini setup_homelabs.yml --limit "media_servers:&beefunk_vms"```
+  ansible-playbook -i inventory/brownfunk.ini setup_homelabs.yml --limit "nas_servers"
 
 # 📈 Scaling: Adding a New Project to Proxmox
 
@@ -138,7 +128,7 @@ bluefunk:
   movies: "/media/blue_12tb/movies"
 ```
 
-## 2. Update `hosts.ini`
+## 2. Create `inventory/bluefunk.ini` - Should be done by Proxmox automatically
 
 Define the new VMs and project-specific variables. Ensure the group name ends in `_vms` to satisfy the DNS and NFS logic:
 
@@ -165,11 +155,12 @@ Ensure your docker-compose files exist in the expected path:
 
 ## 🏗️ Architecture Overview
 
-Your lab follows a **"Hub and Spoke"** model per project:
+* The Data Core (*-nas-*): Manages the 4x LUKS2 encrypted physical HDDs. Acts as the primary storage provider via NFS.
 
-- **The Hub**: The Network/NAS server provides DNS and storage.
-- **The Spokes**: Media and Service VMs consume these via NFS mounts and local DNS resolution.
-- **The Glue**: Ansible ensures that Spokes wait for the Hub to be *ready* (ports **53** and **2049**) before attempting to mount or start containers.
+* The Gateway *-net-*): Handles external connectivity and Tailscale subnet routing for the rest of the fleet.
+
+* The Workloads (*-media-*,*-dev-*): Specialised compute nodes. They consume storage from the Data Core and provide services (Docker/Homebrew) to the network.
+
 
 ---
 
