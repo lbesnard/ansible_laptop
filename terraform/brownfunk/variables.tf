@@ -7,6 +7,11 @@ variable "pm_api_token" {
   sensitive = true
 }
 
+variable "tailscale_key" {
+  type      = string
+  sensitive = true
+}
+
 variable "ssh_key" {
   type = string
 }
@@ -51,6 +56,15 @@ variable "trusted_net" {
   default = "192.168.1.0/24"
 }
 
+variable "tailscale_lxc_ip" {
+  type    = string
+  default = "192.168.1.199"
+}
+
+variable "proxmox_ip" {
+  type    = string
+  default = "192.168.1.162"
+}
 variable "vm_fleet" {
   type = map(object({
     id        = number
@@ -61,16 +75,16 @@ variable "vm_fleet" {
   }))
   default = {
     "bf-nas-01" = {
-      id = 181, ip = "192.168.1.181", cores = 1, memory = 1024, disk_size = 10
+      id = 181, ip = "192.168.1.201", cores = 1, memory = 1024, disk_size = 10
     }
     "bf-media-01" = {
-      id = 182, ip = "192.168.1.182", cores = 4, memory = 8192, disk_size = 100
+      id = 182, ip = "192.168.1.202", cores = 4, memory = 8192, disk_size = 100
     }
     "bf-net-01" = {
-      id = 183, ip = "192.168.1.183", cores = 1, memory = 1024, disk_size = 10
+      id = 183, ip = "192.168.1.203", cores = 1, memory = 2048, disk_size = 15
     }
     "bf-dev-01" = {
-      id = 184, ip = "192.168.1.184", cores = 2, memory = 4096, disk_size = 40
+      id = 184, ip = "192.168.1.204", cores = 2, memory = 4096, disk_size = 40
     }
   }
 }
