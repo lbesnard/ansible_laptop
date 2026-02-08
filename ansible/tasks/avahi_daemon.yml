@@ -1,25 +1,65 @@
 - name: Set VM identity and start advertising
   become: true
   block:
-    - name: Set system hostname to the inventory label
+    - name: Set system hostname
       hostname:
-        # This will set it to 'bf-media-01', NOT the IP
         name: "{{ inventory_hostname }}"
 
     - name: Ensure local resolution matches hostname
       lineinfile:
         path: /etc/hosts
         regexp: '^127\.0\.1\.1'
-        # Maps 127.0.1.1 to 'bf-media-01'
         line: "127.0.1.1 {{ inventory_hostname }}"
 
-    - name: Install and start Avahi
+    - name: Disable systemd-resolved mDNS conflict
+      lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?MulticastDNS='
+        line: 'MulticastDNS=no'
+      register: resolved_config
+
+    - name: Restart resolved if needed
+      systemd:
+        name: systemd-resolved
+        state: restarted
+      when: resolved_config.changed
+
+    - name: Install Avahi and mDNS support
       apt:
-        name: avahi-daemon
+        name: 
+          - avahi-daemon
+          - libnss-mdns
         state: present
-      
-    - name: Ensure daemon is active
+        update_cache: yes
+
+    - name: Configure Avahi (Clean Slate)
+      copy:
+        dest: /etc/avahi/avahi-daemon.conf
+        content: |
+          [server]
+          use-ipv4=yes
+          use-ipv6=no
+          allow-interfaces={{ ansible_facts['default_ipv4']['interface'] }}
+          deny-interfaces=docker0
+          ratelimit-interval-usec=1000000
+          ratelimit-burst=1000
+
+          [wide-area]
+          enable-wide-area=yes
+
+          [publish]
+          publish-hinfo=no
+          publish-workstation=no
+
+          [reflector]
+          enable-reflector=no
+
+          [rlimits]
+      register: avahi_config
+
+    - name: Ensure Avahi is started and enabled
       systemd:
         name: avahi-daemon
-        state: started
+        state: restarted # Force restart to apply the clean config
         enabled: yes
+
