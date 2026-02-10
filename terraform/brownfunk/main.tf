@@ -1,6 +1,14 @@
 resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
   lifecycle {
     prevent_destroy = true
+    ignore_changes  = [
+      agent,
+      clone, 
+      # This tells Terraform: "Don't recreate the VM just because it's already cloned"
+      # This allows the physical disks to exist at their real size 
+      # without Terraform trying to "fix" them back to 8GB
+      disk,
+    ]
   }
 
   for_each  = var.vm_fleet
@@ -21,6 +29,19 @@ resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
     datastore_id = var.datastore_id
     size         = each.value.disk_size
     interface    = "scsi0"
+    file_format  = "raw"
+  }
+  # 2. THE PASSTHROUGH DISKS (Using the BPG official method)
+  dynamic "disk" {
+    # Since var.passthrough_disks is already a list(object), just use it directly
+    for_each = each.value.is_nas ? var.passthrough_disks : []
+    
+    content {
+      datastore_id      = ""       # The "Magic" fix from the BPG docs
+      path_in_datastore = disk.value.id
+      file_format       = "raw"
+      interface         = "scsi${disk.value.slot}"
+    }
   }
 
   cpu {
@@ -152,12 +173,15 @@ resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
 #     ]
 #   }
 #
+
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/inventory.tftpl", {
     vms          = var.vm_fleet
     project_name = var.project_name
     trusted_net  = var.trusted_net
+    passthrough_disks = var.passthrough_disks
   })
   filename = "${path.module}/../../ansible/inventories/${var.project_name}.ini"
 }
+
 

@@ -31,6 +31,8 @@ nfs_allowed_ips="${join(" ", [for n, c in vms : c.ip if !strcontains(n, "nas")])
 
 [nas_servers:vars]
 vm_type=nas
+# We pass the list of disks here as a JSON string so Ansible can parse it
+passthrough_disks='${jsonencode(passthrough_disks)}'
 
 [media_servers:vars]
 vm_type=media

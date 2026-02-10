@@ -1,0 +1,85 @@
+---
+- name: "Storage: Process each passthrough disk"
+  vars:
+    disks_to_process: "{{ (passthrough_disks is string) | ternary(passthrough_disks | from_json, passthrough_disks) }}"
+  block:
+    - name: "Storage: Map Slots to VM Persistent IDs"
+      set_fact:
+        disk_map: "{{ disk_map | default({}) | combine({ item.id: '/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi' ~ item.slot ~ '-part1' }) }}"
+      loop: "{{ disks_to_process }}"
+
+    - name: "Storage: Ensure mount point directory exists"
+      ansible.builtin.file:
+        path: "{{ disk_configs[item.id].parent_path }}/{{ disk_configs[item.id].name }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: users
+        mode: '0755'
+      loop: "{{ disks_to_process }}"
+
+    - name: "Storage: Unlock LUKS (Conditional)"
+      shell: |
+        if cryptsetup isLuks {{ disk_map[item.id] }}; then
+          if ! cryptsetup status {{ disk_configs[item.id].name }} >/dev/null 2>&1; then
+            echo "{{ disk_configs[item.id].luks_password }}" | cryptsetup open {{ disk_map[item.id] }} {{ disk_configs[item.id].name }}
+          fi
+        fi
+      loop: "{{ disks_to_process }}"
+      when: disk_configs[item.id].luks_password is defined
+      register: luks_unlock
+      changed_when: "'Key slot' in luks_unlock.stdout | default('')"
+
+    - name: "Storage: Get Filesystem UUID"
+      command: "blkid -s UUID -o value {{ disk_map[item.id] }}"
+      loop: "{{ disks_to_process }}"
+      register: disk_uuids
+      changed_when: false
+      failed_when: false
+
+    - name: "DEBUG: Show exactly what will be written to fstab"
+      debug:
+        msg:
+          - "Disk ID: {{ item.id }}"
+          - "Local Path: {{ disk_map[item.id] }}"
+          - "UUID Found: {{ disk_uuids.results | selectattr('item.id', 'equalto', item.id) | map(attribute='stdout') | first }}"
+          - "Final Mount SRC: {% if disk_configs[item.id].luks_password is defined %}/dev/mapper/{{ disk_configs[item.id].name }}{% else %}{% set u = disk_uuids.results | selectattr('item.id', 'equalto', item.id) | map(attribute='stdout') | first %}{% if u %}UUID={{ u }}{% else %}{{ disk_map[item.id] }}{% endif %}{% endif %}"
+      loop: "{{ disks_to_process }}"
+
+    - name: "Storage: Ensure keyfile directory exists"
+      file:
+        path: /etc/luks-keys
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: "Storage: Create LUKS keyfile from password"
+      copy:
+        dest: "/etc/luks-keys/{{ disk_configs[item.id].name }}.key"
+        content: "{{ disk_configs[item.id].luks_password }}"
+        owner: root
+        group: root
+        mode: '0400'
+      loop: "{{ disks_to_process }}"
+      when: disk_configs[item.id].luks_password is defined
+      no_log: true  # This hides your password from the Ansible logs
+
+    - name: "Storage: Configure /etc/crypttab for permanent unlocking"
+      ansible.builtin.lineinfile:
+        path: /etc/crypttab
+        # This regex looks for the mapper name at the start of the line
+        regexp: "^{{ disk_configs[item.id].name }}\\s"
+        line: "{{ disk_configs[item.id].name }} {{ disk_map[item.id] }} /etc/luks-keys/{{ disk_configs[item.id].name }}.key luks,nofail"
+        state: present
+      loop: "{{ disks_to_process }}"
+      # ONLY run this if the config says it's a LUKS disk
+      when: disk_configs[item.id].luks_password is defined
+
+    - name: "Storage: Configure /etc/fstab and Mount"
+      ansible.posix.mount:
+        path: "{{ disk_configs[item.id].parent_path }}/{{ disk_configs[item.id].name }}"
+        src: "{% if disk_configs[item.id].luks_password is defined %}/dev/mapper/{{ disk_configs[item.id].name }}{% else %}UUID={{ disk_uuids.results | selectattr('item.id', 'equalto', item.id) | map(attribute='stdout') | first }}{% endif %}"
+        fstype: "{{ disk_configs[item.id].fstype | default('ext4') }}"
+        opts: "defaults,nofail"
+        state: mounted
+      loop: "{{ disks_to_process }}"

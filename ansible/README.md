@@ -106,13 +106,13 @@ install manuall vbox ext pack because of manual licencing
 ### Location-Based Execution
 | Location | Command |
 | :--- | :--- |
-| **BrownFunk** | `ansible-playbook -i inventory/brownfunk.ini setup_homelabs.yml"` |
-| **BeeFunk** | `ansible-playbook -i inventory/beefunk.ini setup_homelabs.yml"` |
+| **BrownFunk** | `ansible-playbook -i inventories/brownfunk.ini setup_homelabs.yml"` |
+| **BeeFunk** | `ansible-playbook -i inventories/beefunk.ini setup_homelabs.yml"` |
 
 ### Role-Based Execution
 * **NAS Servers:**
   ```bash
-  ansible-playbook -i inventory/brownfunk.ini setup_homelabs.yml --limit "nas_servers"
+  ansible-playbook -i inventories/brownfunk.ini setup_homelabs.yml --limit "nas_servers"
 
 # 📈 Scaling: Adding a New Project to Proxmox
 
@@ -129,7 +129,7 @@ bluefunk:
   movies: "/media/blue_12tb/movies"
 ```
 
-## 2. Create `inventory/bluefunk.ini` - Should be done by Proxmox automatically
+## 2. Create `inventories/bluefunk.ini` - Should be done by Proxmox automatically
 
 Define the new VMs and project-specific variables. Ensure the group name ends in `_vms` to satisfy the DNS and NFS logic:
 

@@ -167,6 +167,7 @@
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
     - vars/paths.yml
+    - vars/vault.yml
   tasks:
     - name: Install Cockpit
       include_tasks:
@@ -175,6 +176,9 @@
           tags: cockpit
       tags: [cockpit]
 
+    - name: Set up storage
+      include_tasks: tasks/storage_setup.yml
+    
     - name: Setup NFS
       include_tasks: tasks/nfs_server_nas.yml
       ignore_errors: yes

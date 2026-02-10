@@ -72,10 +72,11 @@ variable "vm_fleet" {
     cores     = number
     memory    = number
     disk_size = number
+    is_nas        = optional(bool, false)
   }))
   default = {
     "bf-nas-01" = {
-      id = 181, ip = "192.168.1.201", cores = 1, memory = 1024, disk_size = 10
+      id = 181, ip = "192.168.1.201", cores = 1, memory = 4096, disk_size = 10, is_nas = true,
     }
     "bf-media-01" = {
       id = 182, ip = "192.168.1.202", cores = 4, memory = 8192, disk_size = 100
@@ -87,4 +88,19 @@ variable "vm_fleet" {
       id = 184, ip = "192.168.1.204", cores = 2, memory = 4096, disk_size = 40
     }
   }
+} 
+
+variable "passthrough_disks" {
+  description = "List of physical disks to pass through to the NAS"
+  type = list(object({
+    id       = string # The /dev/disk/by-id/... path
+    slot     = number # e.g. 1 for scsi1, 2 for scsi2
+  }))
+  default = [
+    {
+      id   = "/dev/disk/by-id/usb-WD_Elements_25A3_443748534438384E-0:0"
+      slot = 1
+    }
+    # { id = "/dev/disk/by-id/future-id", slot = 2 }
+  ]
 }
