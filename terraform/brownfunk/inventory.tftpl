@@ -43,3 +43,10 @@ vm_type=net
 [dev_servers:vars]
 vm_type=dev
 
+[lxcs]
+%{ for hostname, config in lxcs ~}
+${hostname} ansible_host=${config.ip}
+%{ endfor ~}
+
+[jellyfin_nodes]
+jellyfin

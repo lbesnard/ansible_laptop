@@ -46,6 +46,7 @@
       - git
       - htop
       - tmux
+      - fzf
       - vim
       - zsh
       - unzip

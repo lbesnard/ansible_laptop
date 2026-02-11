@@ -177,6 +177,7 @@ resource "proxmox_virtual_environment_vm" "brownfunk_vms" {
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/inventory.tftpl", {
     vms          = var.vm_fleet
+    lxcs              = var.lxc_fleet
     project_name = var.project_name
     trusted_net  = var.trusted_net
     passthrough_disks = var.passthrough_disks

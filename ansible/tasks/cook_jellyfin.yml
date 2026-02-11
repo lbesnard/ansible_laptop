@@ -1,0 +1,59 @@
+- name: Ensure nfs-common is installed
+  apt:
+    name: nfs-common
+    state: present
+
+- name: Mount NFS shares from NAS (Read-Only)
+  ansible.posix.mount:
+    # Use item.value.path because dict2items creates a 'value' object
+    src: "{{ hostvars[groups['nas_servers'][0]]['ansible_host'] }}:{{ item.value.path }}"
+    path: "/media/{{ item.key }}" # The dictionary key (e.g., 'movies')
+    fstype: nfs
+    opts: "ro,defaults,_netdev,nofail"
+    state: mounted
+  loop: "{{ storage_map | dict2items }}"
+  when: item.key in ['movies', 'tv_shows']
+
+- name: Install Docker Dependencies
+  apt:
+    name: 
+      - docker.io
+      - docker-compose-v2
+      - python3-docker    # Required for Ansible to manage Docker
+    state: present
+    update_cache: yes
+
+- name: Create Jellyfin App Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - /opt/jellyfin
+    - /opt/jellyfin/config
+    - /opt/jellyfin/cache
+
+- name: Deploy Jellyfin Compose File
+  copy:
+    dest: /opt/jellyfin/docker-compose.yml
+    content: |
+      services:
+        jellyfin:
+          image: ghcr.io/jellyfin/jellyfin:latest
+          container_name: jellyfin
+          user: 0:0
+          network_mode: host
+          volumes:
+            - /opt/jellyfin/config:/config
+            - /opt/jellyfin/cache:/cache
+            - /media/:/data/
+          devices:
+            - /dev/dri/renderD128:/dev/dri/renderD128
+            - /dev/dri/card0:/dev/dri/card0
+          restart: unless-stopped
+
+- name: Pull and Start Jellyfin
+  community.docker.docker_compose_v2:
+    project_src: /opt/jellyfin
+    state: present
+    pull: always
