@@ -1,5 +1,5 @@
 - name: "Inventory Sanity Check"
-  hosts: all
+  hosts: "all:!lxcs"
   gather_facts: false
   run_once: true
   vars_files:
@@ -31,8 +31,8 @@
         fail_msg: "ERROR: nfs_allowed_ips looks malformed. It should be a space-separated string of IPs."
 
 - name: Proxmox Global Configuration
-  hosts: all
-  remote_user: ubuntu# Use the user created via Cloud-Init
+  hosts: "all:!lxcs"
+  # remote_user: ubuntu # Use the user created via Cloud-Init
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
     - vars.yml
@@ -108,7 +108,7 @@
 
 - name: Provision Network Infrastructure
   hosts: network_servers
-  remote_user: ubuntu# Use the user created via Cloud-Init
+  # remote_user: ubuntu # Use the user created via Cloud-Init
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
     - vars.yml
@@ -123,7 +123,7 @@
       file:
         path: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d"
         state: directory
-        owner: ubuntu
+        owner: ubuntu  # to change with "{{ ansible_user }}"
         group: users
         mode: '0755'
         recurse: yes  # Ensures the parent 'pihole' folder is also set correctly
@@ -163,7 +163,7 @@
 # PLAY 2: Only the NAS servers get this
 - name: NAS Specific Configuration
   hosts: nas_servers
-  remote_user: ubuntu# Use the user created via Cloud-Init
+  # remote_user: ubuntu # Use the user created via Cloud-Init
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
     - vars/paths.yml
@@ -190,7 +190,7 @@
 # PLAY 3: Only the Media servers get this
 - name: Media Specific Configuration
   hosts: media_servers
-  remote_user: ubuntu
+  # remote_user: ubuntu
   become: true # Use sudo for system tasks (Docker, etc.)
   vars_files:
     - vars/paths.yml
@@ -272,3 +272,17 @@
       service:
         name: docker
         state: restarted
+
+- name: Provision LXC container - Jellyfin
+  hosts: jellyfin_nodes
+  remote_user: root  # LXC containers have root
+  vars_files:
+    - vars.yml
+    - vars/paths.yml
+    - vars/vault.yml
+  tasks:
+    - name: Install Jellyfin on LXC container
+      include_tasks:
+        file: tasks/cook_jellyfin.yml
+        apply:
+          tags: jellyfin

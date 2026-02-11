@@ -104,3 +104,26 @@ variable "passthrough_disks" {
     # { id = "/dev/disk/by-id/future-id", slot = 2 }
   ]
 }
+
+variable "lxc_fleet" {
+  type = map(object({
+    id        = number
+    ip        = string
+    memory    = number
+    cores     = number
+    disk_size = number
+    template  = string # e.g., "local:vztmpl/ubuntu-22.04..."
+    type      = string # e.g., "ubuntu"
+  }))
+  default = {
+    "jellyfin" = {
+      id        = 300
+      ip        = "192.168.1.205"
+      memory    = 4096
+      cores     = 4
+      disk_size = 30
+      template  = "local:vztmpl/ubuntu-25.04-standard_25.04-1.1_amd64.tar.zst"
+      type      = "ubuntu"
+    }
+  }
+}
