@@ -18,7 +18,7 @@ variable "ssh_key" {
 
 variable "node_name" {
   type    = string
-  default = "brownfunk"
+  default = "beefunk"
 }
 
 variable "datastore_id" {
@@ -28,7 +28,7 @@ variable "datastore_id" {
 
 variable "gateway_ip" {
   type    = string
-  default = "192.168.1.1"
+  default = "192.168.8.1"
 }
 
 variable "network_bridge" {
@@ -43,7 +43,7 @@ variable "template_id" {
 
 variable "project_name" {
   type    = string
-  default = "brownfunk"
+  default = "beefunk"
 }
 
 variable "vm_username" {
@@ -53,17 +53,17 @@ variable "vm_username" {
 
 variable "trusted_net" {
   type    = string
-  default = "192.168.1.0/24"
+  default = "192.168.8.0/24"
 }
 
 variable "tailscale_lxc_ip" {
   type    = string
-  default = "192.168.1.199"
+  default = "192.168.8.199"
 }
 
 variable "proxmox_ip" {
   type    = string
-  default = "192.168.1.162"
+  default = "192.168.8.162"
 }
 variable "vm_fleet" {
   type = map(object({
@@ -75,17 +75,17 @@ variable "vm_fleet" {
     is_nas        = optional(bool, false)
   }))
   default = {
-    "bf-nas-01" = {
-      id = 181, ip = "192.168.1.201", cores = 1, memory = 4096, disk_size = 10, is_nas = true,
+    "bee-nas-01" = {
+      id = 181, ip = "192.168.8.201", cores = 1, memory = 4096, disk_size = 10, is_nas = true,
     }
-    "bf-media-01" = {
-      id = 182, ip = "192.168.1.202", cores = 4, memory = 8192, disk_size = 100
+    "bee-media-01" = {
+      id = 182, ip = "192.168.8.202", cores = 4, memory = 8192, disk_size = 100
     }
-    "bf-net-01" = {
-      id = 183, ip = "192.168.1.203", cores = 1, memory = 2048, disk_size = 15
+    "bee-net-01" = {
+      id = 183, ip = "192.168.8.203", cores = 1, memory = 2048, disk_size = 15
     }
-    "bf-dev-01" = {
-      id = 184, ip = "192.168.1.204", cores = 2, memory = 4096, disk_size = 40
+    "bee-dev-01" = {
+      id = 184, ip = "192.168.8.204", cores = 2, memory = 4096, disk_size = 40
     }
   }
 } 
@@ -98,30 +98,24 @@ variable "passthrough_disks" {
   }))
   default = [
     {
-      name = "bfunk_10tb_1"
-      id   = "/dev/disk/by-id/usb-WDC_WD10_0EDAZ-11F3RA0_152D00539000-0:0"
+      name = "beefunk_12tb_a"
+      id   = "/dev/disk/by-id/usb-WDC_WD12_0EFBX-68B0EN0_152D00539000-0:0"
       slot = 1
     },
     {
-      name = "bfunk_10tb_2"
-      id   = "/dev/disk/by-id/usb-WDC_WD10_1EDBZ-11B1DA0_152D00539000-0:1"
+      name = "beefunk_12tb_b"
+      id   = "/dev/disk/by-id/usb-WDC_WD12_0EFBX-68B0EN0_152D00539000-0:1"
       slot = 2
     },
     {
-      name = "bfunk_12tb_1"
+      name = "beefunk_12tb_c"
       id   = "/dev/disk/by-id/usb-WDC_WD12_0EFBX-68B0EN0_152D00539000-0:2"
       slot = 3
     },
     {
-      name = "bfunk_10tb_4"
-      id   = "/dev/disk/by-id/usb-WDC_WD10_0EDBZ-11B1HA0_152D00539000-0:3"
+      name = "beefunk_12tb_d"
+      id   = "/dev/disk/by-id/usb-WDC_WD12_0EFBX-68B0EN0_152D00539000-0:3"
       slot = 4
-    },
-
-    {
-      name = "bfunk_4tb_1"
-      id   = "/dev/disk/by-id/scsi-SSeagate_Expansion_Desk_NAABM8QG"
-      slot = 5
     }
   ]
 }
@@ -139,7 +133,7 @@ variable "lxc_fleet" {
   default = {
     "jellyfin" = {
       id        = 300
-      ip        = "192.168.1.205"
+      ip        = "192.168.8.205"
       memory    = 4096
       cores     = 4
       disk_size = 30
