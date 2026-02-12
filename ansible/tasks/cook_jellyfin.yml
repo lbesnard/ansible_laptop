@@ -16,10 +16,10 @@
 
 - name: Install Docker Dependencies
   apt:
-    name: 
+    name:
       - docker.io
       - docker-compose-v2
-      - python3-docker    # Required for Ansible to manage Docker
+      - python3-docker # Required for Ansible to manage Docker
     state: present
     update_cache: yes
 
@@ -27,30 +27,17 @@
   file:
     path: "{{ item }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
   loop:
     - /opt/jellyfin
     - /opt/jellyfin/config
     - /opt/jellyfin/cache
 
 - name: Deploy Jellyfin Compose File
-  copy:
+  template:
+    src: templates/jellyfin-compose.yml.j2
     dest: /opt/jellyfin/docker-compose.yml
-    content: |
-      services:
-        jellyfin:
-          image: ghcr.io/jellyfin/jellyfin:latest
-          container_name: jellyfin
-          user: 0:0
-          network_mode: host
-          volumes:
-            - /opt/jellyfin/config:/config
-            - /opt/jellyfin/cache:/cache
-            - /media/:/data/
-          devices:
-            - /dev/dri/renderD128:/dev/dri/renderD128
-            - /dev/dri/card0:/dev/dri/card0
-          restart: unless-stopped
+    mode: "0644"
 
 - name: Pull and Start Jellyfin
   community.docker.docker_compose_v2:
