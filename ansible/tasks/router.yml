@@ -1,0 +1,71 @@
+- name: Ensure VLAN and routing packages are installed
+  become: true
+  apt:
+    name:
+      - vlan
+      - iproute2
+      - wireguard
+      - curl
+    state: present
+    update_cache: yes
+
+- name: Enable 8021q kernel module
+  become: true
+  modprobe:
+    name: 8021q
+    state: present
+
+- name: Configure sysctl for IPv4 forwarding
+  become: true
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Write Netplan VLAN configuration
+  become: true
+  copy:
+    dest: /etc/netplan/01-vlans.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+          eth0:
+            dhcp4: no
+        vlans:
+          vlan10:
+            id: 10
+            link: eth0
+            addresses: ["192.168.10.1/24"]
+          vlan20:
+            id: 20
+            link: eth0
+            addresses: ["192.168.20.1/24"]
+  notify: Apply netplan
+
+- name: Apply netplan
+  become: true
+  command: netplan apply
+
+- name: Install Tailscale
+  become: true
+  shell: curl -fsSL https://tailscale.com/install.sh | sh
+  args:
+    creates: /usr/bin/tailscale
+
+- name: Bring up Tailscale with VLAN routes
+  become: true
+  command: >
+    tailscale up
+    --authkey={{ vault_tailscale_auth_key }}
+    --advertise-routes=192.168.10.0/24,192.168.20.0/24
+    --accept-dns=true
+  register: ts_up
+  changed_when: "'Success' in ts_up.stdout"
+
+# handler to reapply netplan if needed
+- name: Apply netplan
+  become: true
+  command: netplan apply
