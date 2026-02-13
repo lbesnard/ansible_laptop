@@ -18,13 +18,36 @@
 - Updates (e.g., adding or modifying nodes) automatically trigger inventory regeneration, linking configuration files, templates, and secure vault data.
 
 ## The "New Server" Workflow
-1. **Terraform Configuration Update**:
-   - Edit the appropriate `variables.tf` (in either `terraform/brownfunk` or `terraform/beefunk`) to add a new entry in the `vm_fleet` map.
+When adding a new server, it is critical to follow the established naming conventions and understand the purpose of each VM type. The primary types include:
+- **NAS Servers** (e.g. `bf-nas-01` or `bee-nas-01`): These nodes handle shared storage with NFS exports and disk passthrough.
+- **Media Servers** (e.g. `bf-media-01` or `bee-media-01`): Responsible for managing containerized media services.
+- **Network Servers** (e.g. `bf-net-01` or `bee-net-01`): Dedicated to networking, routing, and Tailscale operations.
+- **Development Servers** (e.g. `bf-dev-01` or `bee-dev-01`): Provide development environments for various projects.
+
+Each VM entry is defined in Terraform’s `vm_fleet` map with specific parameters such as unique VM IDs, IP addresses, CPU cores, memory allocation, disk sizes, and (for NAS nodes) a flag `is_nas` along with associated physical disks. IP addresses and gateways are preconfigured per environment (e.g., Brownfunk uses gateway `192.168.1.1` while Beefunk uses `192.168.8.1`).
+
+**Steps to add a new server:**
+1. **Terraform Variable Update**:
+   - Identify the correct environment: edit `terraform/brownfunk/variables.tf` for Brownfunk or `terraform/beefunk/variables.tf` for Beefunk.
+   - In the `vm_fleet` map, add a new key following the naming pattern (`bf-<type>-NN` or `bee-<type>-NN`), where `<type>` is one of `nas`, `media`, `net`, or `dev` and `NN` is the next sequential number.
+   - Specify the VM parameters (ID, IP, cores, memory, disk size) and set `is_nas=true` if it is a NAS server.
 2. **Provisioning**:
-   - Run `terraform apply` to provision the new node. This updates the Terraform state and regenerates the corresponding inventory file.
-3. **Inventory Regeneration & Ansible Provisioning**:
-   - The updated inventory (from `inventory.tftpl`) is stored under `ansible/inventories/`.
-   - Execute the main playbook (e.g., `ansible-playbook -i ansible/inventories/<project_name>.ini setup_homelabs.yml`) to configure the new server.
+   - Run `terraform apply` from the corresponding directory. This updates the Terraform state, provisions the hardware, and regenerates the Ansible inventory via the `inventory.tftpl` template.
+   - Note that the IP addresses and gateway configurations are set based on your Terraform variables.
+3. **Ansible Inventory & Playbook Execution**:
+   - The generated inventory file will be located in `ansible/inventories/` (e.g., `brownfunk.ini`), with VMs grouped under `[nas_servers]`, `[media_servers]`, `[network_servers]`, and `[dev_servers]`.
+   - Execute the main playbook:
+     ```bash
+     ansible-playbook -i ansible/inventories/brownfunk.ini setup_homelabs.yml
+     ```
+   - This playbook runs tasks defined in `ansible/setup_homelabs.yml`, such as hostname configuration, package installations, Avahi setup, Docker services, and NFS exports.
+   
+**Additional Considerations**:
+- **Naming Conventions**: Use prefixes (`bf-` for Brownfunk, `bee-` for Beefunk) consistently to ensure proper grouping and task execution in Ansible.
+- **IP & Gateway Details**: Each VM's IP must be within the defined subnet, and the correct gateway (e.g., `192.168.1.1` or `192.168.8.1`) must be specified. These are validated during provisioning.
+- **Server Roles**: Review the tasks in `ansible/setup_homelabs.yml` and the group definitions in `ansible/inventories/brownfunk.ini` to understand each server’s responsibilities.
+
+Following these steps and considerations will ensure a robust process when adding new nodes to your infrastructure.
 
 ## Ansible File Mapping and Configuration Structure
 - **Variable Organization**: 
