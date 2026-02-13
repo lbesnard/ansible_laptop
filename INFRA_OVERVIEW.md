@@ -36,6 +36,21 @@ This repository delivers a streamlined homelab automation framework optimized fo
   - Inventory templates dynamically embed project-specific variables and secrets, ensuring seamless coordination during deployments.
 - Updates (e.g., adding or modifying nodes) automatically trigger inventory regeneration, linking configuration files, templates, and secure vault data.
 
+### Disk Configurations & Encryption
+- **Disk Configurations**:
+  - The `vars/vault.yml` file stores encrypted disk credentials (e.g., LUKS2 passphrases) and custom mount settings under a `disk_configs` mapping.
+  - Each entry defines:
+    - `parent_path`: the base directory for mounting.
+    - `name`: the subdirectory name used for the mount point.
+    - `fstype`: the filesystem type (e.g., `ext4`, `xfs`, `btrfs`).
+    - `luks_password` (optional): the LUKS2 encryption key for unlocking volumes.
+- **Storage Setup Playbook**:
+  - `ansible/tasks/storage_setup.yml` reads `passthrough_disks`, converts JSON strings via `from_json` when needed, and builds a `disk_map` of device IDs to partition paths.
+  - It ensures mount directories exist, unlocks encrypted volumes using `cryptsetup` if `luks_password` is provided, and writes entries to `/etc/crypttab`.
+  - It retrieves UUIDs for unencrypted disks via `blkid` and mounts them with the appropriate `fstype`, updating `/etc/fstab` and mounting via `ansible.posix.mount`.
+- **Supported Filesystems**:
+  - The playbook supports common filesystems (`ext4`, `xfs`, `btrfs`) by templating mount entries with correct options and ensuring idempotent mounts.
+  
 ## The "New Server" Workflow
 When adding a new server, it is critical to follow the established naming conventions and understand the purpose of each VM type. The primary types include:
 - **NAS Servers** (e.g. `bf-nas-01` or `bee-nas-01`): These nodes handle shared storage with NFS exports and disk passthrough.
