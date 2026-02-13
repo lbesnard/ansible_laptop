@@ -19,3 +19,12 @@ If hardware is indeed minimal, consider runtime metrics (CPU utilization, memory
   2. Or keep the separation but store the generated inventory in a version-controlled or shared artifact location. This ensures consistent inventory usage across teams.
 
 By refining how state is stored and how provisioning transitions to configuration, the solution can become more robust, especially as the environment grows or more operators become involved.
+
+## Phase 2: Ansible Quality Audit
+
+| Task Name                              | The Issue                                                                                       | The Fix                                                                                          |
+|----------------------------------------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| Shell tasks without idempotency guards | Many `shell` or `command` modules lack `creates`, `removes`, or `changed_when: false`, causing repeated execution and slow runs | Add appropriate `creates`/`removes` arguments or set `changed_when: false` to mark tasks as no-op when already applied |
+| NFS mounts use default hard mounts     | Media client mounts use default hard mounts, which can hang indefinitely if the NAS is down     | Use `opts: "rw,soft,intr,bg,nfsvers=4.1"` to enable `soft`, `bg`, and appropriate timeouts       |
+| LUKS unlock tasks leak secrets         | Passing `luks_password` inline in shell tasks exposes secrets in logs                           | Use `no_log: true` and reference vault-protected vars in templated tasks to hide sensitive data   |
+| Proxmox SSH hacks instead of API modules | Using SSH `remote-exec` to edit LXC configs instead of leveraging Ansible Proxmox modules      | Replace SSH hacks with `community.general.proxmox_lxc` (or similar) modules for native resource management |
