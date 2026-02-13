@@ -156,6 +156,30 @@ Following these steps and considerations will ensure a robust process when addin
 - **Playbooks**:
   - The primary playbook (`setup_homelabs.yml`) orchestrates all tasks, while incorporating dependencies from inventory templates, vault files, and role definitions.
 
+## Proxmox Topology Diagram
+
+```mermaid
+flowchart TB
+    subgraph Proxmox Host
+      PH(Bare-Metal Proxmox)
+      NET(Net VM<br>bf-net-01<br>192.168.1.203<br>(Tailscale Router))
+      NAS(NAS VM<br>bf-nas-01<br>192.168.1.201<br>(Disk Passthrough & NFS Server))
+      MEDIA(Media VM<br>bf-media-01<br>192.168.1.202<br>(NFS Client))
+      LXC(LXC Container<br>jellyfin<br>192.168.1.205<br>(Media Container))
+    end
+    PH --> NET
+    PH --> NAS
+    PH --> MEDIA
+    PH --> LXC
+    NAS --> HDD(Physical HDDs<br>(LUKS2 Encrypted))
+    NAS -- "Decrypt & Mount" --> HDD
+    NAS -- "Exports via NFS" --> MEDIA
+    NAS -- "Exports via NFS" --> LXC
+    MEDIA -- "Mounts NFS" --> NAS
+    LXC -- "Mounts NFS" --> NAS
+    NET -- "Tailscale/WireGuard" --> Internet(Internet)
+```
+
 ## Visual Logic and Dependency Mapping
 
 ```mermaid
