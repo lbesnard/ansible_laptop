@@ -33,3 +33,13 @@
 | NFS mounts use default hard mounts     | Media client mounts use default hard mounts, which can hang indefinitely if the NAS is down     | Use `opts: "rw,soft,intr,bg,nfsvers=4.1"` to enable `soft`, `bg`, and appropriate timeouts       |
 | LUKS unlock tasks leak secrets         | Passing `luks_password` inline in shell tasks exposes secrets in logs                           | Use `no_log: true` and reference vault-protected vars in templated tasks to hide sensitive data   |
 | Proxmox SSH hacks instead of API modules | Using SSH `remote-exec` to edit LXC configs instead of leveraging Ansible Proxmox modules      | Replace SSH hacks with `community.general.proxmox_lxc` (or similar) modules for native resource management |
+
+## Phase 2: VLAN & Router VM Recommendations
+
+| Recommendation      | Details                                                                                                                |
+|---------------------|------------------------------------------------------------------------------------------------------------------------|
+| Router VM Viability | Leverage nested virtualization to run an OpenWrt or OPNsense VM with 512 MB–1 GB RAM and 1–2 vCPUs using a qcow2 image   |
+| Terraform Provision | Add a new `vm_fleet` entry for the router VM in `terraform/<env>/variables.tf` and apply via `terraform apply`        |
+| Ansible Setup       | Create `ansible/tasks/router.yml` to install VLAN, WireGuard, and Tailscale; configure VLAN subinterfaces via netplan |
+| VPN & Routing       | Advertise VLAN subnets via Tailscale (`--advertise-routes`), configure WireGuard; forward UDP ports 41641 & 51820     |
+| Benefits & Risks    | Enables network segmentation and centralized VPN termination; adds complexity and resource overhead; ensure security   |
