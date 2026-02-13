@@ -1,24 +1,29 @@
 # Terraform Review
 
-## 1. Reality Check (Infrastructure vs. INFRA_OVERVIEW.md)
-- **Provisioning Scope**: The Terraform files for `brownfunk` and `beefunk` match the high-level description in `INFRA_OVERVIEW.md`: each environment provisions its own VMs, sets IPs, CPU/memory allocation, and includes optional disk passthrough for NAS nodes. Additionally, both generate separate Ansible inventory artifacts.
-- **LXC Integration**: The doc references LXC containers for media-serving tasks (e.g., `jellyfin`). The Terraform code indeed creates LXC containers (e.g., `fleet_lxcs` in both `brownfunk` and `beefunk`) and passes advanced features like GPU nesting.
+## 1. Alignment with INFRA_OVERVIEW.md
+- **Environment-specific configs**: Terraform modules for `brownfunk` and `beefunk` provision consistent VM definitions, matching documented IP ranges and resource allocations. Inventory generation via `local_file` and `inventory.tftpl` accurately reflects dynamic mapping to Ansible inventory.
 
-Overall, Terraform is consistent with the overview: it provisions Proxmox VMs, configures disk passthrough where `is_nas=true`, and automatically generates Ansible inventory files.
+## 2. Backend & State Management
+- **Local state**: Current configuration uses local Terraform state files, which can lead to conflicts in multi-operator or CI environments.
+- **Recommended**: Adopt a remote backend (e.g., Terraform Cloud, S3 with DynamoDB locking, or HashiCorp Consul) to ensure state locking, versioning, and secure storage. This prevents drift and supports collaboration.
 
-## 2. Resource Audit (Over-Provisioning Risks)
-- **Media VMs**: Some VMs (e.g., `bf-media-01`) have 4 cores and 8–8.2 GB RAM. For a small homelab, that’s moderately large. If the host has limited resources, it might constrain other services. Suggest reviewing resource usage or leveraging dynamic scaling to reclaim resources when not needed.
-- **NAS VMs**: Setting 4+ GB RAM for a dedicated NAS might be more than enough in typical hobby setups, but the doc indicates it’s also hosting additional services (like NFS), so 4 GB might be acceptable.
-  
-If hardware is indeed minimal, consider runtime metrics (CPU utilization, memory usage) and reduce VM specs accordingly.
+## 3. Module & DRY Refactoring
+- **Duplication**: The `brownfunk` and `beefunk` directories contain nearly identical resources for VMs and LXC containers.
+- **Recommended**: Extract a reusable Terraform module for VM provisioning that parameterizes `vm_fleet`, `lxc_fleet`, and environment-specific variables. This reduces duplication, simplifies future environment additions, and centralizes changes.
 
-## 3. State & Scalability (Hand-Off to Ansible)
-- **State Logic**: Local state is used for generating inventory, which works when a single operator runs Terraform. However, if multiple team members or remote CI/CD pipelines manage this, a remote backend (e.g., Terraform Cloud, S3) is safer to avoid state drift and concurrency problems.
-- **Handoff to Ansible**: Currently, Terraform writes out the dynamic inventory via `local_file` and then relies on manual `ansible-playbook` calls. For better automation:
-  1. Use `null_resource` or a post-provisioner within Terraform to trigger `ansible-playbook` automatically after provisioning completes (optionally with a “dry-run” safety).
-  2. Or keep the separation but store the generated inventory in a version-controlled or shared artifact location. This ensures consistent inventory usage across teams.
+## 4. Dynamic Inventory Lifecycle
+- **Inventory regeneration**: Terraform writes Ansible inventory via `local_file`, but no automation triggers downstream Ansible runs.
+- **Recommended**:
+  1. Use a `null_resource` with `triggers = { terraform = timestamp() }` and a provisioner to call `ansible-playbook` after apply.
+  2. Or integrate Terraform and Ansible workflows via Terraform Cloud or CI pipelines that consume generated inventory.
 
-By refining how state is stored and how provisioning transitions to configuration, the solution can become more robust, especially as the environment grows or more operators become involved.
+## 5. Provider & Version Pinning
+- **Provider version**: The `proxmox` provider is pinned at v0.94.0. While pinning is good, consider adding `required_version` constraint for Terraform CLI and tracking provider upgrades.
+- **Recommended**: Define `terraform.required_version` in `terraform { }` block, update `required_providers` to latest stable minor versions, and schedule periodic provider audits.
+
+## 6. Resource Consistency & Tagging
+- **Naming conventions**: VM names follow documented prefixes. However, tags or labels at the Proxmox VM resource level are not utilized.
+- **Recommended**: Use `tags` or custom attributes (if supported by the provider) to annotate VMs with roles (nas, media, net, dev) and environment (brownfunk, beefunk) for easier filtering in the Proxmox UI and API.
 
 ## Phase 2: Ansible Quality Audit
 
