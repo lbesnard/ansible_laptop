@@ -6,9 +6,32 @@ This repository delivers a streamlined homelab automation framework optimized fo
 - **Terraform**
   - Declaratively provisions VMs and LXC containers on Proxmox across multiple nodes (`brownfunk` and `beefunk`) using parameterized modules and maps.
   - Generates dynamic Ansible inventories and export files via `local_file` and template resources, closing the loop between infrastructure and configuration.
+
+  Example (`terraform/brownfunk/variables.tf`):
+  ```hcl
+  vm_fleet = {
+    "bf-nas-01" = {
+      id        = 181
+      ip        = "192.168.1.201"
+      cores     = 1
+      memory    = 4096
+      disk_size = 10
+      is_nas    = true
+    }
+  }
+  ```
 - **Ansible**
   - Applies post-provisioning system and user configuration through top-level playbooks (`setup_homelabs.yml`, `local.yml`, `remote.yml`).
   - Organizes tasks into modular directories (`tasks/`, `templates/`, `vars/`), leverages tags for targeted execution, and secures secrets with Ansible Vault.
+
+  Inventory example (`ansible/inventories/brownfunk.ini`):
+  ```ini
+  [nas_servers]
+  bf-nas-01 ansible_host=192.168.1.201
+
+  [media_servers]
+  bf-media-01 ansible_host=192.168.1.202
+  ```
 - **Containers & Services**
   - Uses Docker and LXC to isolate services such as media servers, Pi-hole, and Jellyfin, simplifying deployment, scaling, and updates.
   - Employs `community.docker.docker_compose_v2` for declarative lifecycle management of containerized applications.
@@ -44,9 +67,27 @@ This repository delivers a streamlined homelab automation framework optimized fo
     - `name`: the subdirectory name used for the mount point.
     - `fstype`: the filesystem type (e.g., `ext4`, `xfs`, `btrfs`).
     - `luks_password` (optional): the LUKS2 encryption key for unlocking volumes.
+
+  Example (`vars/vault.yml`):
+  ```yaml
+  disk_configs:
+    "/dev/disk/by-id/usb-Example-0:0":
+      parent_path: "/media"
+      name: "data"
+      fstype: "xfs"
+      luks_password: "vault_passphrase"
+  ```
 - **Storage Setup Playbook**:
   - `ansible/tasks/storage_setup.yml` reads `passthrough_disks`, converts JSON strings via `from_json` when needed, and builds a `disk_map` of device IDs to partition paths.
   - It ensures mount directories exist, unlocks encrypted volumes using `cryptsetup` if `luks_password` is provided, and writes entries to `/etc/crypttab`.
+
+  Task snippet (`ansible/tasks/storage_setup.yml`):
+  ```yaml
+  - name: "Storage: Map Slots to VM Persistent IDs"
+    set_fact:
+      disk_map: "{{ disk_map | default({}) | combine({ item.id: '/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi' ~ item.slot ~ '-part1' }) }}"
+    loop: "{{ disks_to_process }}"
+  ```
   - It retrieves UUIDs for unencrypted disks via `blkid` and mounts them with the appropriate `fstype`, updating `/etc/fstab` and mounting via `ansible.posix.mount`.
 - **Supported Filesystems**:
   - The playbook supports common filesystems (`ext4`, `xfs`, `btrfs`) by templating mount entries with correct options and ensuring idempotent mounts.
@@ -67,6 +108,11 @@ Each VM entry is defined in Terraform’s `vm_fleet` map with specific parameter
    - Specify the VM parameters (ID, IP, cores, memory, disk size) and set `is_nas=true` if it is a NAS server.
 2. **Provisioning**:
    - Run `terraform apply` from the corresponding directory. This updates the Terraform state, provisions the hardware, and regenerates the Ansible inventory via the `inventory.tftpl` template.
+
+     Example:
+     ```bash
+     cd terraform/brownfunk && terraform apply
+     ```
    - Note that the IP addresses and gateway configurations are set based on your Terraform variables.
 3. **Ansible Inventory & Playbook Execution**:
    - The generated inventory file will be located in `ansible/inventories/` (e.g., `brownfunk.ini`), with VMs grouped under `[nas_servers]`, `[media_servers]`, `[network_servers]`, and `[dev_servers]`.
