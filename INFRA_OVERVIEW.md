@@ -81,20 +81,20 @@ Following these steps and considerations will ensure a robust process when addin
 ```mermaid
 flowchart TD
     subgraph Terraform Layer
-      A1[Terraform State<br>(brownfunk & beefunk)]
-      A2[Inventory Template<br>(inventory.tftpl)]
+      A1["Terraform State<br>(brownfunk & beefunk)"]
+      A2["Inventory Template<br>(inventory.tftpl)"]
       A1 --> A2
     end
     subgraph Generated Artifacts
-      B1[Inventory Files<br>(ansible/inventories/*.ini)]
-      B2[Terraform State Output]
+      B1["Inventory Files<br>(ansible/inventories/*.ini)"]
+      B2["Terraform State Output"]
       A2 --> B1
       A1 --> B2
     end
     subgraph Ansible Execution
-      C1[Main Playbook<br>(setup_homelabs.yml)]
-      C2[Roles & Tasks]
-      C3[Vault File<br>(vars/vault.yml)]
+      C1["Main Playbook<br>(setup_homelabs.yml)"]
+      C2["Roles & Tasks"]
+      C3["Vault File<br>(vars/vault.yml)"]
       B1 --> C1
       C1 --> C2
       C3 --> C2
