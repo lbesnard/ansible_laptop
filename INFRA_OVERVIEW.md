@@ -1,50 +1,71 @@
 
-## The Stack: Cloud Provider and Main Services
-- **Terraform** manages VM provisioning using Proxmox.
-- **Ansible** handles configuration management, orchestration, and deployment.
-- **Docker** is used for containerized services.
-- Additional tools include **Molecule** for testing, **Pylint** for linting, and **Homebrew/Linuxbrew** for package installation.
+## The Stack: Cloud Provider, Provisioning, and Configuration
+- **Terraform**: Manages provisioning of VMs and containers on Proxmox. Notice two distinct configurations:
+  - **terraform/brownfunk**: Configures the Brownfunk node, handling its VM settings, storage passthrough, and associated parameters.
+  - **terraform/beefunk**: Independently provisions the Beefunk node with its own configuration and resource definitions.
+- **Ansible**: Orchestrates post-provisioning configuration by generating inventories from Terraform outputs, applying roles, and executing tasks.
+- **Docker**: Facilitates running containerized services required by each node.
+- Supplementary tools such as **Molecule** for testing, **Pylint** for code quality, and **Homebrew/Linuxbrew** for package management further support the ecosystem.
 
-## The Handover
-- **Inventory Automation**: The Ansible inventory is automatically recreated by Terraform.
-- A `local_file` resource in Terraform uses the template file `terraform/beefunk/inventory.tftpl` to generate the inventory file (located in `ansible/inventories/`).
-- When Terraform changes (such as adding or modifying nodes), re-running Terraform updates the inventory file, which is then used by Ansible when executing playbooks like `setup_homelabs.yml`.
+## The Handover and Automated Inventory Generation
+- **Inventory Automation**: 
+  - Terraform uses `local_file` resources along with inventory templates (`inventory.tftpl`) to generate inventory files for each environment:
+    - **terraform/brownfunk** produces an inventory tailored for the Brownfunk node.
+    - **terraform/beefunk** generates its own separate inventory file, ensuring distinct configurations.
+- **Vault Integration & Templates**:
+  - Sensitive data is managed via Ansible Vault (e.g., `vars/vault.yml`) and injected into playbooks as needed.
+  - Inventory templates dynamically embed project-specific variables and secrets, ensuring seamless coordination during deployments.
+- Updates (e.g., adding or modifying nodes) automatically trigger inventory regeneration, linking configuration files, templates, and secure vault data.
 
 ## The "New Server" Workflow
-1. **Edit Terraform Configuration**:  
-   - In `terraform/beefunk/variables.tf`, add a new entry to the `vm_fleet` map for the new node.
-2. **Apply Terraform Changes**:  
-   - Run `terraform apply` to provision the new VM and update the Terraform state.
-3. **Inventory Regeneration**:  
-   - The Terraform `local_file` resource regenerates the Ansible inventory using `inventory.tftpl`.
-4. **Ansible Provisioning**:  
-   - Run the appropriate playbook (e.g., `ansible-playbook -i ansible/inventories/<project_name>.ini setup_homelabs.yml`) to configure the new node.
+1. **Terraform Configuration Update**:
+   - Edit the appropriate `variables.tf` (in either `terraform/brownfunk` or `terraform/beefunk`) to add a new entry in the `vm_fleet` map.
+2. **Provisioning**:
+   - Run `terraform apply` to provision the new node. This updates the Terraform state and regenerates the corresponding inventory file.
+3. **Inventory Regeneration & Ansible Provisioning**:
+   - The updated inventory (from `inventory.tftpl`) is stored under `ansible/inventories/`.
+   - Execute the main playbook (e.g., `ansible-playbook -i ansible/inventories/<project_name>.ini setup_homelabs.yml`) to configure the new server.
 
-## Ansible File Mapping
-- **group_vars/ and host_vars/**:  
-  - Store variables specific to groups and individual hosts.
-- **roles/**:  
-  - Contain reusable tasks (e.g., for conda, Docker, and more).
-- **Main Playbook (`setup_homelabs.yml`)**:  
-  - Orchestrates roles and imports tasks from various files.
-- Variables are also defined in `vars.yml` and `vars/paths.yml`, ensuring that configurations cascade correctly to tasks and roles.
+## Ansible File Mapping and Configuration Structure
+- **Variable Organization**: 
+  - Core variables are maintained in `vars.yml` and `vars/paths.yml`, ensuring consistency across configurations.
+- **Host and Group Variables**:
+  - `group_vars/` and `host_vars/` hold environment and node-specific settings.
+- **Roles**:
+  - Reusable roles (e.g., for Conda, Docker, network services) encapsulate detailed configuration procedures.
+- **Playbooks**:
+  - The primary playbook (`setup_homelabs.yml`) orchestrates all tasks, while incorporating dependencies from inventory templates, vault files, and role definitions.
 
-## Visual Logic
+## Visual Logic and Dependency Mapping
 
 ```mermaid
-graph TD;
-    A[Terraform State] --> B[Generate Inventory<br>(using inventory.tftpl)];
-    B --> C[Ansible Inventory File];
-    C --> D[Ansible Playbook Execution];
+flowchart TD
+    subgraph Terraform Layer
+      A1[Terraform State<br>(brownfunk & beefunk)]
+      A2[Inventory Template<br>(inventory.tftpl)]
+      A1 --> A2
+    end
+    subgraph Generated Artifacts
+      B1[Inventory Files<br>(ansible/inventories/*.ini)]
+      B2[Terraform State Output]
+      A2 --> B1
+      A1 --> B2
+    end
+    subgraph Ansible Execution
+      C1[Main Playbook<br>(setup_homelabs.yml)]
+      C2[Roles & Tasks]
+      C3[Vault File<br>(vars/vault.yml)]
+      B1 --> C1
+      C1 --> C2
+      C3 --> C2
+    end
 ```
 
-## Naming & Tags
-- **Naming Patterns**:
-  - Terraform resources use prefixes (e.g., `bf-` for Brownfunk, `bee-` for Beefunk) to indicate node roles.
-  - VM names follow a consistent pattern such as `<prefix>-<role>-<index>`.
-- **Ansible Groups and Tags**:
-  - Inventory groups include `nas_servers`, `media_servers`, `network_servers`, and `dev_servers`.
-  - Tags like `docker`, `brew_install`, and `packages` are used to target specific tasks during playbook runs.
-- **Key Highlights**:
-  - The seamless integration between Terraform and Ansible is powered by the automated regeneration of the inventory.
-  - Maintaining consistent naming conventions and proper tagging helps avoid missed dependencies during configuration edits.
+## Naming Conventions and Tagging Strategies
+- **Resource Naming**:
+  - Terraform enforces naming patterns through prefixes (`bf-` for Brownfunk and `bee-` for Beefunk) and structured names (e.g., `bf-nas-01`, `bee-media-01`).
+- **Tagging in Ansible**:
+  - Tags such as `docker`, `brew_install`, and `packages` enable precise targeting of tasks.
+  - This systematic approach to naming and tagging ensures clarity during troubleshooting and scalability of the infrastructure.
+
+**Important Note**: The clear separation between **brownfunk** and **beefunk** configurations supports independent management and evolution of each node's infrastructure, ensuring that updates in one environment do not inadvertently affect the other.
