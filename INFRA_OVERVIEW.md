@@ -160,49 +160,103 @@ Following these steps and considerations will ensure a robust process when addin
 
 ```mermaid
 flowchart TB
-    subgraph Proxmox Host
-      PH(Bare-Metal Proxmox)
-      NET(Net VM<br>bf-net-01<br>192.168.1.203<br>(Tailscale Router))
-      NAS(NAS VM<br>bf-nas-01<br>192.168.1.201<br>(Disk Passthrough & NFS Server))
-      MEDIA(Media VM<br>bf-media-01<br>192.168.1.202<br>(NFS Client))
-      LXC(LXC Container<br>jellyfin<br>192.168.1.205<br>(Media Container))
+    %% --- Subgraph Styling ---
+    subgraph Proxmox_Host ["`**Proxmox Physical Node**`"]
+      PH["`Bare-Metal Proxmox`"]
+      
+      %% Networking Node (Stadium Shape)
+      NET(["`**Network VM**
+      bf-net-01
+      192.168.1.203
+      (Tailscale Router)`"])
+      
+      %% Storage Node (Cylinder Shape)
+      NAS[("`**NAS VM**
+      bf-nas-01
+      192.168.1.201
+      (Disk Passthrough)`")]
+      
+      %% Computation Node (Rounded)
+      MEDIA("`**Media VM**
+      bf-media-01
+      192.168.1.202
+      (NFS Client)`")
+      
+      %% Container Node (Hexagon Shape)
+      LXC{{"`**LXC Container**
+      jellyfin
+      192.168.1.205
+      (Media Server)`"}}
     end
-    PH --> NET
-    PH --> NAS
-    PH --> MEDIA
-    PH --> LXC
-    NAS --> HDD(Physical HDDs<br>(LUKS2 Encrypted))
-    NAS -- "Decrypt & Mount" --> HDD
-    NAS -- "Exports via NFS" --> MEDIA
-    NAS -- "Exports via NFS" --> LXC
-    MEDIA -- "Mounts NFS" --> NAS
-    LXC -- "Mounts NFS" --> NAS
-    NET -- "Tailscale/WireGuard" --> Internet(Internet)
+
+    %% --- Connections ---
+    PH -.-> NET & NAS & MEDIA & LXC
+    
+    NAS ==>|NFS Export| MEDIA
+    NAS ==>|NFS Export| LXC
+    
+    HDD[("`**Physical HDDs**
+    (LUKS2 Encrypted)`")]
+    
+    NAS <-->|SATA Passthrough| HDD
+    NET --- Internet["`**Public Internet**`"]
+
+    %% --- Class Assignments (The "Nicer" part) ---
+    classDef host fill:#f9f9f9,stroke:#333,stroke-width:2px,color:#000;
+    classDef storage fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#01579b;
+    classDef network fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#e65100;
+    classDef compute fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#4a148c;
+    classDef container fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#1b5e20;
+
+    class PH host;
+    class NAS,HDD storage;
+    class NET,Internet network;
+    class MEDIA compute;
+    class LXC container;
 ```
 
 ## Visual Logic and Dependency Mapping
 
 ```mermaid
 flowchart TD
-    subgraph Terraform Layer
-      A1["Terraform State<br>(brownfunk & beefunk)"]
-      A2["Inventory Template<br>(inventory.tftpl)"]
+    %% --- Styling Definitions ---
+    classDef logic fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#4a148c;
+    classDef artifact fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#01579b;
+    classDef execute fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#1b5e20;
+    classDef security fill:#fff8e1,stroke:#ff8f00,stroke-width:2px,color:#ff8f00;
+
+    subgraph TF_Layer ["`**1. Terraform Provisioning**`"]
+      A1[("`**Terraform State**
+      (brownfunk & beefunk)`")]:::logic
+      A2[["`**Inventory Template**
+      (inventory.tftpl)`"]]:::logic
       A1 --> A2
     end
-    subgraph Generated Artifacts
-      B1["Inventory Files<br>(ansible/inventories/*.ini)"]
-      B2["Terraform State Output"]
+
+    subgraph Artifact_Layer ["`**2. Generated Artifacts**`"]
+      B1[("`**Inventory Files**
+      (ansible/inventories/*.ini)`")]:::artifact
+      B2["`Terraform State Output`"]:::artifact
       A2 --> B1
       A1 --> B2
     end
-    subgraph Ansible Execution
-      C1["Main Playbook<br>(setup_homelabs.yml)"]
-      C2["Roles & Tasks"]
-      C3["Vault File<br>(vars/vault.yml)"]
-      B1 --> C1
-      C1 --> C2
-      C3 --> C2
+
+    subgraph Ansible_Layer ["`**3. Configuration Management**`"]
+      C1{{"`**Main Playbook**
+      (setup_homelabs.yml)`"}}:::execute
+      C2{{"`**Roles & Tasks**`"}}:::execute
+      C3[["`**Vault File**
+      (vars/vault.yml)`"]]:::security
+      
+      B1 ==> C1
+      C1 ==> C2
+      C3 -.->|Decrypted at Runtime| C2
     end
+
+    %% Legend/Note
+    Note1["`**NOTE:** The Inventory is ephemeral.
+    It is auto-recreated by Terraform.`"]
+    Note1 --- B1
 ```
 
 ## Naming Conventions and Tagging Strategies
