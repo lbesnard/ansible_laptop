@@ -49,6 +49,23 @@ Each VM entry is defined in Terraform’s `vm_fleet` map with specific parameter
 
 Following these steps and considerations will ensure a robust process when adding new nodes to your infrastructure.
 
+## VM Roles and Purposes
+
+- **NAS Servers**:  
+  These nodes (e.g., `bf-nas-01` or `bee-nas-01`) are dedicated storage providers. They manage NFS exports and disk passthrough of physical disks defined in Terraform. Tasks like configuring `/etc/exports` via the `exports.j2` template and running storage setup playbooks ensure all other nodes can reliably access shared data.
+
+- **Network Servers**:  
+  Represented by entries such as `bf-net-01` or `bee-net-01`, these servers are responsible for network services. They configure network routing (e.g., via Tailscale in `ansible/tasks/tailscale.yml`), adjust DNS settings, and serve as gateways for secure data transmission across the infrastructure.
+
+- **Media Servers**:  
+  Typical examples include `bf-media-01` (and planned `bee-media-01`). These servers focus on deploying containerized media applications using Docker (see `ansible/tasks/docker_services_up.yml` and related tasks). They also integrate with Homebrew and NFS mounts to access media libraries hosted by the NAS servers.
+
+- **Development Servers**:  
+  With names like `bf-dev-01` or `bee-dev-01`, these nodes provide environments tailored for development and testing. They install developer tools, manage dotfiles, and set up necessary packages (via tasks such as `ansible/tasks/packages.yml` and `ansible/tasks/dotfiles.yml`) to support coding and system experimentation.
+
+- **Jellyfin LXC Container**:  
+  Deployed as a Linux container (configured in `terraform/beefunk/lxc_containers.tf` and managed by `ansible/tasks/cook_jellyfin.yml`), the Jellyfin container leverages hardware acceleration (e.g., GPU passthrough) to optimize media streaming performance. It runs Jellyfin with tailored NFS mounts from the NAS and is isolated for improved media processing.
+
 ## Ansible File Mapping and Configuration Structure
 - **Variable Organization**: 
   - Core variables are maintained in `vars.yml` and `vars/paths.yml`, ensuring consistency across configurations.
