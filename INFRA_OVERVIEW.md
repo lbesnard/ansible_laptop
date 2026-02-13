@@ -1,11 +1,30 @@
 
-## The Stack: Cloud Provider, Provisioning, and Configuration
-- **Terraform**: Manages provisioning of VMs and containers on Proxmox. Notice two distinct configurations:
-  - **terraform/brownfunk**: Configures the Brownfunk node, handling its VM settings, storage passthrough, and associated parameters.
-  - **terraform/beefunk**: Independently provisions the Beefunk node with its own configuration and resource definitions.
-- **Ansible**: Orchestrates post-provisioning configuration by generating inventories from Terraform outputs, applying roles, and executing tasks.
-- **Docker**: Facilitates running containerized services required by each node.
-- Supplementary tools such as **Molecule** for testing, **Pylint** for code quality, and **Homebrew/Linuxbrew** for package management further support the ecosystem.
+## Infrastructure Overview
+This repository delivers a streamlined homelab automation framework optimized for modest, hobbyist environments with limited hardware. It provides a unified control plane for both provisioning and configuration, ensuring reproducibility, simplicity, and ease of maintenance.
+
+### Core Components
+- **Terraform**
+  - Declaratively provisions VMs and LXC containers on Proxmox across multiple nodes (`brownfunk` and `beefunk`) using parameterized modules and maps.
+  - Generates dynamic Ansible inventories and export files via `local_file` and template resources, closing the loop between infrastructure and configuration.
+- **Ansible**
+  - Applies post-provisioning system and user configuration through top-level playbooks (`setup_homelabs.yml`, `local.yml`, `remote.yml`).
+  - Organizes tasks into modular directories (`tasks/`, `templates/`, `vars/`), leverages tags for targeted execution, and secures secrets with Ansible Vault.
+- **Containers & Services**
+  - Uses Docker and LXC to isolate services such as media servers, Pi-hole, and Jellyfin, simplifying deployment, scaling, and updates.
+  - Employs `community.docker.docker_compose_v2` for declarative lifecycle management of containerized applications.
+- **Testing & Quality Assurance**
+  - **Molecule** with **Testinfra** validates Ansible roles in ephemeral containers, ensuring idempotency and behavior correctness.
+  - **Pylint** enforces coding standards on custom modules (e.g., `ansible/evandam.conda/library/conda.py`).
+- **User-Space Package Management**
+  - **Homebrew/Linuxbrew** provides non-privileged installation for development tools, ideal for environments with restricted sudo permissions.
+
+### Design Principles
+- Minimal footprint: Tailored for home servers with limited CPU, RAM, and storage resources.
+- Idempotency & Transparency: Terraform and Ansible guarantee a consistent end state; debug tasks and logs provide clear insights into operations.
+- Modularity & Reusability: A clear separation between provisioning (Terraform) and configuration (Ansible), with reusable modules and roles.
+- Simple Onboarding: Dynamic inventory generation and a single orchestrating playbook streamline adding or refreshing nodes.
+
+## The "New Server" Workflow
 
 ## The Handover and Automated Inventory Generation
 - **Inventory Automation**: 
