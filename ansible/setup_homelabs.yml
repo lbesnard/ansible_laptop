@@ -7,7 +7,7 @@
   tasks:
     - name: "Check: project_dir is defined"
       assert:
-        that: 
+        that:
           - project_dir is defined
           - project_dir != ""
         fail_msg: "ERROR: project_dir is missing for {{ inventory_hostname }}. Check hosts.ini."
@@ -123,16 +123,25 @@
       file:
         path: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d"
         state: directory
-        owner: ubuntu  # to change with "{{ ansible_user }}"
+        owner: ubuntu # to change with "{{ ansible_user }}"
         group: users
-        mode: '0755'
-        recurse: yes  # Ensures the parent 'pihole' folder is also set correctly
+        mode: "0755"
+        recurse: yes # Ensures the parent 'pihole' folder is also set correctly
       tags: dns
 
     - name: Create local DNS mappings for Pi-hole
       template:
         src: templates/05-lan.conf.j2
         dest: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-dnsmasq.d/05-lan.conf"
+      notify: Restart Pi-hole
+
+    - name: Enable custom dnsmasq directory in pihole.toml
+      lineinfile:
+        path: "{{ DOCKER_CONFIG_PATH }}/pihole/etc-pihole/pihole.toml"
+        regexp: '^#?etc_dnsmasq_d\s*='
+        line: "etc_dnsmasq_d = true"
+        create: yes
+      tags: dns
       notify: Restart Pi-hole
 
     - name: docker compose pull
@@ -143,7 +152,6 @@
           tags: compose
       tags: docker
       when: vm_type != 'dev' # no specific config for this machine type
-
 
     - name: docker compose up
       include_tasks:
@@ -178,7 +186,7 @@
 
     - name: Set up storage
       include_tasks: tasks/storage_setup.yml
-    
+
     - name: Setup NFS
       include_tasks: tasks/nfs_server_nas.yml
       ignore_errors: yes
@@ -249,7 +257,6 @@
       tags: docker
       when: vm_type != 'dev' # no specific config for this machine type
 
-
     - name: docker compose up
       include_tasks:
         file: tasks/docker_services_up.yml
@@ -258,7 +265,6 @@
           tags: compose
       tags: docker
       ignore_errors: yes
-
 
     # - name: Apply the miniforge tag to the include and to all tasks in miniforge.yml
     #   include_tasks:
@@ -275,7 +281,7 @@
 
 - name: Provision LXC container - Jellyfin
   hosts: jellyfin_nodes
-  remote_user: root  # LXC containers have root
+  remote_user: root # LXC containers have root
   vars_files:
     - vars.yml
     - vars/paths.yml

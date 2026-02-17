@@ -1,6 +1,7 @@
 # 05-lan.conf - Managed by Ansible
 # Local DNS for project: {{ project_dir }}
 
+{# 1. Standard one-to-one mappings for ALL project VMs #}
 {% if project_dir + '_vms' in groups %}
 {% for host in groups[project_dir + '_vms'] %}
 {% if hostvars[host]['ansible_host'] is defined %}
@@ -8,3 +9,18 @@ address=/{{ host }}/{{ hostvars[host]['ansible_host'] }}
 {% endif %}
 {% endfor %}
 {% endif %}
+
+{# 2. Multi-suffix wildcards for Media and Network servers #}
+{% set special_groups = ['media_servers', 'network_servers'] %}
+{% for g in special_groups %}
+  {% if g in groups %}
+    {% for host in groups[g] %}
+      {% set ip = hostvars[host]['ansible_host'] | default('') %}
+      {% if ip %}
+address=/.{{ host }}.lan/{{ ip }}
+address=/.{{ host }}.home/{{ ip }}
+address=/.{{ host }}.local/{{ ip }}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
