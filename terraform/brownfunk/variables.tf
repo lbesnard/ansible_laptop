@@ -75,13 +75,13 @@ variable "vm_fleet" {
     is_nas        = optional(bool, false)
   }))
   default = {
-    "bf-nas-01" = {
+    "bf-nas" = {
       id = 181, ip = "192.168.1.201", cores = 1, memory = 4096, disk_size = 10, is_nas = true,
     }
-    "bf-media-01" = {
+    "bf-media" = {
       id = 182, ip = "192.168.1.202", cores = 4, memory = 8192, disk_size = 100
     }
-    "bf-net-01" = {
+    "bf-net" = {
       id = 183, ip = "192.168.1.203", cores = 1, memory = 2048, disk_size = 15
     }
     "bf-dev-01" = {

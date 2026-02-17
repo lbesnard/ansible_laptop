@@ -11,7 +11,7 @@ address=/{{ host }}/{{ hostvars[host]['ansible_host'] }}
 {% endif %}
 
 {# 2. Multi-suffix wildcards for Media and Network servers #}
-{% set special_groups = ['media_servers', 'network_servers'] %}
+{% set special_groups = ['media_servers', 'network_servers', 'lxcs'] %}
 {% for g in special_groups %}
   {% if g in groups %}
     {% for host in groups[g] %}

@@ -15,7 +15,7 @@ variable "vm_fleet" {
     passthrough_disks = optional(list(string), [])
   }))
   default = {
-    "bf-nas-01" = { 
+    "bf-nas" = { 
       id = 181, ip = "192.168.8.181", cores = 1, memory = 1024, disk_size = 10,
       passthrough_disks = [
         "/dev/disk/by-id/ata-ST8000VN004-ID1",

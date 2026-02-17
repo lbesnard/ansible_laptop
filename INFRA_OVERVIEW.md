@@ -10,7 +10,7 @@ This repository delivers a streamlined homelab automation framework optimized fo
   Example (`terraform/brownfunk/variables.tf`):
   ```hcl
   vm_fleet = {
-    "bf-nas-01" = {
+    "bf-nas" = {
       id        = 181
       ip        = "192.168.1.201"
       cores     = 1
@@ -27,10 +27,10 @@ This repository delivers a streamlined homelab automation framework optimized fo
   Inventory example (`ansible/inventories/brownfunk.ini`):
   ```ini
   [nas_servers]
-  bf-nas-01 ansible_host=192.168.1.201
+  bf-nas ansible_host=192.168.1.201
 
   [media_servers]
-  bf-media-01 ansible_host=192.168.1.202
+  bf-media ansible_host=192.168.1.202
   ```
 - **Containers & Services**
   - Uses Docker and LXC to isolate services such as media servers, Pi-hole, and Jellyfin, simplifying deployment, scaling, and updates.
@@ -94,9 +94,9 @@ This repository delivers a streamlined homelab automation framework optimized fo
   
 ## The "New Server" Workflow
 When adding a new server, it is critical to follow the established naming conventions and understand the purpose of each VM type. The primary types include:
-- **NAS Servers** (e.g. `bf-nas-01` or `bee-nas-01`): These nodes handle shared storage with NFS exports and disk passthrough.
-- **Media Servers** (e.g. `bf-media-01` or `bee-media-01`): Responsible for managing containerized media services.
-- **Network Servers** (e.g. `bf-net-01` or `bee-net-01`): Dedicated to networking, routing, and Tailscale operations.
+- **NAS Servers** (e.g. `bf-nas` or `bee-nas`): These nodes handle shared storage with NFS exports and disk passthrough.
+- **Media Servers** (e.g. `bf-media` or `bee-media`): Responsible for managing containerized media services.
+- **Network Servers** (e.g. `bf-net` or `bee-net`): Dedicated to networking, routing, and Tailscale operations.
 - **Development Servers** (e.g. `bf-dev-01` or `bee-dev-01`): Provide development environments for various projects.
 
 Each VM entry is defined in Terraform’s `vm_fleet` map with specific parameters such as unique VM IDs, IP addresses, CPU cores, memory allocation, disk sizes, and (for NAS nodes) a flag `is_nas` along with associated physical disks. IP addresses and gateways are preconfigured per environment (e.g., Brownfunk uses gateway `192.168.1.1` while Beefunk uses `192.168.8.1`).
@@ -132,13 +132,13 @@ Following these steps and considerations will ensure a robust process when addin
 ## VM Roles and Purposes
 
 - **NAS Servers**:  
-  These nodes (e.g., `bf-nas-01` or `bee-nas-01`) are dedicated storage providers. They manage NFS exports and disk passthrough of physical disks defined in Terraform. Tasks like configuring `/etc/exports` via the `exports.j2` template and running storage setup playbooks ensure all other nodes can reliably access shared data.
+  These nodes (e.g., `bf-nas` or `bee-nas`) are dedicated storage providers. They manage NFS exports and disk passthrough of physical disks defined in Terraform. Tasks like configuring `/etc/exports` via the `exports.j2` template and running storage setup playbooks ensure all other nodes can reliably access shared data.
 
 - **Network Servers**:  
-  Represented by entries such as `bf-net-01` or `bee-net-01`, these servers are responsible for network services. They configure network routing (e.g., via Tailscale in `ansible/tasks/tailscale.yml`), adjust DNS settings, and serve as gateways for secure data transmission across the infrastructure.
+  Represented by entries such as `bf-net` or `bee-net`, these servers are responsible for network services. They configure network routing (e.g., via Tailscale in `ansible/tasks/tailscale.yml`), adjust DNS settings, and serve as gateways for secure data transmission across the infrastructure.
 
 - **Media Servers**:  
-  Typical examples include `bf-media-01` (and planned `bee-media-01`). These servers focus on deploying containerized media applications using Docker (see `ansible/tasks/docker_services_up.yml` and related tasks). They also integrate with Homebrew and NFS mounts to access media libraries hosted by the NAS servers.
+  Typical examples include `bf-media` (and planned `bee-media`). These servers focus on deploying containerized media applications using Docker (see `ansible/tasks/docker_services_up.yml` and related tasks). They also integrate with Homebrew and NFS mounts to access media libraries hosted by the NAS servers.
 
 - **Development Servers**:  
   With names like `bf-dev-01` or `bee-dev-01`, these nodes provide environments tailored for development and testing. They install developer tools, manage dotfiles, and set up necessary packages (via tasks such as `ansible/tasks/packages.yml` and `ansible/tasks/dotfiles.yml`) to support coding and system experimentation.
@@ -166,19 +166,19 @@ flowchart TB
       
       %% Networking Node (Stadium Shape)
       NET(["`**Network VM**
-      bf-net-01
+      bf-net
       192.168.1.203
       (Tailscale Router)`"])
       
       %% Storage Node (Cylinder Shape)
       NAS[("`**NAS VM**
-      bf-nas-01
+      bf-nas
       192.168.1.201
       (Disk Passthrough)`")]
       
       %% Computation Node (Rounded)
       MEDIA("`**Media VM**
-      bf-media-01
+      bf-media
       192.168.1.202
       (NFS Client)`")
       
@@ -261,7 +261,7 @@ flowchart TD
 
 ## Naming Conventions and Tagging Strategies
 - **Resource Naming**:
-  - Terraform enforces naming patterns through prefixes (`bf-` for Brownfunk and `bee-` for Beefunk) and structured names (e.g., `bf-nas-01`, `bee-media-01`).
+  - Terraform enforces naming patterns through prefixes (`bf-` for Brownfunk and `bee-` for Beefunk) and structured names (e.g., `bf-nas`, `bee-media`).
 - **Tagging in Ansible**:
   - Tags such as `docker`, `brew_install`, and `packages` enable precise targeting of tasks.
   - This systematic approach to naming and tagging ensures clarity during troubleshooting and scalability of the infrastructure.

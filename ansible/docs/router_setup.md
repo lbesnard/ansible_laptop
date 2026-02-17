@@ -97,7 +97,7 @@ resource "null_resource" "wait_router" {
   depends_on = [proxmox_virtual_environment_vm.bf-router-01]
 }
 
-resource "proxmox_virtual_environment_vm" "bf-media-01" {
+resource "proxmox_virtual_environment_vm" "bf-media" {
   depends_on = [null_resource.wait_router]
   # ...
 }

@@ -75,13 +75,13 @@ variable "vm_fleet" {
     is_nas        = optional(bool, false)
   }))
   default = {
-    "bee-nas-01" = {
+    "bee-nas" = {
       id = 181, ip = "192.168.8.201", cores = 1, memory = 4096, disk_size = 10, is_nas = true,
     }
-    "bee-media-01" = {
+    "bee-media" = {
       id = 182, ip = "192.168.8.202", cores = 4, memory = 8192, disk_size = 100
     }
-    "bee-net-01" = {
+    "bee-net" = {
       id = 183, ip = "192.168.8.203", cores = 1, memory = 2048, disk_size = 15
     }
     "bee-dev-01" = {

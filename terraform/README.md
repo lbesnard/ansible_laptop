@@ -35,7 +35,7 @@ ssh_key      = "ssh-rsa AAAAB3Nza... user@laptop"
 The `vm_fleet` map in `variables.tf` is the **Source of Truth** for your hardware.  
 To add a node, add an entry to the `default` block of the `vm_fleet` variable.
 
-**Note:** The name (e.g., `bf-media-01`) is used by the inventory template to assign Ansible groups.
+**Note:** The name (e.g., `bf-media`) is used by the inventory template to assign Ansible groups.
 
 **Note**: 4 VMs are created [nas, net, media, dev]
 
@@ -50,8 +50,8 @@ variable "vm_fleet" {
     disk_size = number
   }))
   default = {
-    "bf-nas-01"   = { id = 181, ip = "192.168.8.181", cores = 1, memory = 1024, disk_size = 10 }
-    "bf-media-01" = { id = 182, ip = "192.168.8.182", cores = 4, memory = 8192, disk_size = 100 }
+    "bf-nas"   = { id = 181, ip = "192.168.8.181", cores = 1, memory = 1024, disk_size = 10 }
+    "bf-media" = { id = 182, ip = "192.168.8.182", cores = 4, memory = 8192, disk_size = 100 }
     # Add your new node here:
     "bf-new-01"   = { id = 185, ip = "192.168.8.185", cores = 2, memory = 4096, disk_size = 40 }
   }

@@ -1,7 +1,10 @@
 {
   "dns": [
-    {% set net_host = groups['network_servers'] | map('extract', hostvars) | selectattr('project_dir', 'equalto', project_dir) | first -%}
-    "{{ net_host.ansible_host }}",
-    "1.1.1.1"
+    {% set net_hosts = groups['network_servers'] | map('extract', hostvars) | selectattr('project_dir', 'defined') | selectattr('project_dir', 'equalto', project_dir) | list -%}
+    {% if net_hosts | length > 0 -%}
+    "{{ net_hosts[0].ansible_host }}",
+    {% endif -%}
+    "1.1.1.1",
+    "8.8.8.8"
   ]
 }
