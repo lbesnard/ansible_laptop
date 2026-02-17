@@ -1,0 +1,59 @@
+---
+- name: Configure Local DNS with dnsmasq and systemd-resolved
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install dnsmasq
+      apt:
+        name: dnsmasq
+        state: present
+        update_cache: yes
+
+    - name: Configure dnsmasq
+      copy:
+        dest: /etc/dnsmasq.conf
+        content: |
+          # General Settings
+          interface=lo
+          bind-interfaces
+
+          # Local Mappings
+          address=/beefunk.lan/100.107.210.10
+          address=/beefunk.home/100.107.210.10
+          address=/beefunk.local/100.107.210.10
+
+          # Upstream Internet
+          server=8.8.8.8
+          server=1.1.1.1
+          no-resolv
+
+          # Debugging for the future
+          log-queries
+          log-facility=/var/log/dnsmasq.log
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart dnsmasq
+
+    - name: Configure systemd-resolved to use local dnsmasq
+      ini_file:
+        path: /etc/systemd/resolved.conf
+        section: Resolve
+        option: "{{ item.option }}"
+        value: "{{ item.value }}"
+        no_extra_spaces: yes
+      loop:
+        - { option: "DNS", value: "127.0.0.1" }
+        - { option: "Domains", value: "~." }
+      notify: Restart systemd-resolved
+
+  handlers:
+    - name: Restart dnsmasq
+      service:
+        name: dnsmasq
+        state: restarted
+
+    - name: Restart systemd-resolved
+      service:
+        name: systemd-resolved
+        state: restarted

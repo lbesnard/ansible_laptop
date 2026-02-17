@@ -4,7 +4,7 @@
   tags: local_system_install
   connection: local
   become: true
-  gather_facts: true   # Gather facts here since it requires elevated permissions
+  gather_facts: true # Gather facts here since it requires elevated permissions
   pre_tasks:
     - name: update repositories
       apt: update_cache=yes
@@ -45,4 +45,9 @@
           tags: samba
       tags: samba
 
-
+    - name: Apply dns config.yml
+      include_tasks:
+        file: tasks/setup_local_dns.yml
+        apply:
+          tags: dns
+      tags: dns
